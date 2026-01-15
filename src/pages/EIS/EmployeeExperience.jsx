@@ -486,7 +486,7 @@ export default function EmployeeExperience() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Company Name *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="Company Name"
                       value={form.company}
@@ -496,7 +496,7 @@ export default function EmployeeExperience() {
 
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Job Title *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="Job Title"
                       value={form.job_title}
@@ -508,7 +508,7 @@ export default function EmployeeExperience() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Department</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="Department"
                       value={form.department}
@@ -518,7 +518,7 @@ export default function EmployeeExperience() {
 
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Employment Type</label>
-                    <select
+                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={form.employment_type}
                       onChange={(e) => setForm({ ...form, employment_type: e.target.value })}
@@ -535,7 +535,7 @@ export default function EmployeeExperience() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Start Date *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="date"
                       className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={form.start_date}
@@ -545,7 +545,7 @@ export default function EmployeeExperience() {
 
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">End Date</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="date"
                       className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 disabled:bg-gray-100"
                       value={form.end_date}
@@ -556,7 +556,7 @@ export default function EmployeeExperience() {
 
                   <div className="flex items-end">
                     <label className="flex items-center gap-2 text-sm text-secondary">
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="checkbox"
                         checked={form.current_job}
                         onChange={(e) => setForm({ ...form, current_job: e.target.checked, end_date: e.target.checked ? "" : form.end_date })}
@@ -570,7 +570,7 @@ export default function EmployeeExperience() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Location</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="City, State, Country"
                       value={form.location}
@@ -580,7 +580,7 @@ export default function EmployeeExperience() {
 
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Salary (Optional)</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="Annual salary"
                       value={form.salary}
@@ -591,7 +591,7 @@ export default function EmployeeExperience() {
 
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Job Description & Responsibilities</label>
-                  <textarea
+                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     rows="3"
                     placeholder="Describe your role and responsibilities..."
@@ -602,7 +602,7 @@ export default function EmployeeExperience() {
 
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Key Achievements</label>
-                  <textarea
+                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     rows="3"
                     placeholder="Notable achievements and accomplishments..."
@@ -614,7 +614,7 @@ export default function EmployeeExperience() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Reporting Manager</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="Manager's name"
                       value={form.reporting_manager}
@@ -624,7 +624,7 @@ export default function EmployeeExperience() {
 
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Manager Contact</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="Email or phone number"
                       value={form.manager_contact}
@@ -636,7 +636,7 @@ export default function EmployeeExperience() {
                 {!form.current_job && (
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Reason for Leaving</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="Reason for leaving this position"
                       value={form.reason_for_leaving}
@@ -648,8 +648,8 @@ export default function EmployeeExperience() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Relieving Letter/Experience Certificate</label>
                   <div className="flex items-center gap-2">
-                    <FiUpload className="" style={{color: 'var(--text-muted, #6b7280)'}} />
-                    <input
+                    <FiUpload  style={{color: 'var(--text-muted, #6b7280)'}} />
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="file"
                       accept=".pdf,.jpg,.jpeg,.png"
                       onChange={(e) => setForm({ ...form, file: e.target.files[0] })}

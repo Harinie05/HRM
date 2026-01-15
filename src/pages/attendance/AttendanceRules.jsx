@@ -272,7 +272,7 @@ export default function AttendanceRules() {
             <div className="p-5">
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
               <span className="text-sm font-medium text-gray-700">Status Filter:</span>
-              <select
+              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="px-3 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
@@ -623,7 +623,7 @@ export default function AttendanceRules() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-2 text-gray-700">Rule Name</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="text"
                     value={ruleForm.rule_name}
                     onChange={(e) => setRuleForm({...ruleForm, rule_name: e.target.value})}
@@ -636,7 +636,7 @@ export default function AttendanceRules() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2 text-gray-700">Rule Type</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={ruleForm.rule_type}
                     onChange={(e) => setRuleForm({...ruleForm, rule_type: e.target.value})}
                     className="w-full border-0 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent text-sm"
@@ -651,7 +651,7 @@ export default function AttendanceRules() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2 text-gray-700">Value (minutes)</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     value={ruleForm.value}
                     onChange={(e) => setRuleForm({...ruleForm, value: parseInt(e.target.value)})}
@@ -697,7 +697,7 @@ export default function AttendanceRules() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-2 text-gray-700">Location Name</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="text"
                     value={locationForm.location_name}
                     onChange={(e) => setLocationForm({...locationForm, location_name: e.target.value})}
@@ -710,7 +710,7 @@ export default function AttendanceRules() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2 text-gray-700">Grace Time (minutes)</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     value={locationForm.grace_time}
                     onChange={(e) => setLocationForm({...locationForm, grace_time: parseInt(e.target.value)})}
@@ -722,7 +722,7 @@ export default function AttendanceRules() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2 text-gray-700">OT Rule (optional)</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="text"
                     value={locationForm.ot_rule}
                     onChange={(e) => setLocationForm({...locationForm, ot_rule: e.target.value})}

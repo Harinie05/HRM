@@ -167,27 +167,35 @@ export default function HolidayCalendar() {
   return (
     <div className="space-y-6">
       {/* Holiday Configuration */}
-      <div className="bg-white rounded-2xl border-0 overflow-hidden">
-        <div className="p-6 border-b-0">
+      <div className="bg-white rounded-xl p-5 shadow-sm overflow-hidden relative border" style={{
+        background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+      }}>
+        <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+          transform: 'translate(40%, -40%)'
+        }}></div>
+        <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+          transform: 'translate(-40%, 40%)'
+        }}></div>
+        <div className="p-5 border-b-0 relative z-10">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+              <div className="p-2 rounded-lg" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <svg className="w-5 h-5" style={{
+                <svg className="h-5 w-5" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} fill="currentColor" viewBox="0 0 20 20">
                   <path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM4 7h12v9H4V7z"/>
                 </svg>
               </div>
-              <div>
-                <h2 className="text-lg font-medium text-gray-900">Holiday Calendar</h2>
-                <p className="text-sm text-gray-600">Configure company holidays and observances</p>
-              </div>
+              <h2 className="text-lg font-semibold text-gray-900">Holiday Calendar</h2>
             </div>
             <button
               onClick={() => setShowViewHolidays(!showViewHolidays)}
-              className="inline-flex items-center gap-2 text-white px-4 py-2 rounded-xl transition-colors text-sm font-medium"
+              className="inline-flex items-center gap-2 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
               style={{
                 backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
               }}
@@ -205,9 +213,10 @@ export default function HolidayCalendar() {
               View All Holidays ({holidays.length})
             </button>
           </div>
+          <p className="text-sm text-gray-600 mt-2">Configure company holidays and observances</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6">
+        <form onSubmit={handleSubmit} className="p-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Holiday Name */}
             <div>
@@ -220,9 +229,10 @@ export default function HolidayCalendar() {
                 name="name"
                 value={form.name}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                 style={{
-                  focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                 }}
                 placeholder="e.g., Diwali, Christmas"
               />
@@ -239,9 +249,10 @@ export default function HolidayCalendar() {
                 name="date"
                 value={form.date}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                 style={{
-                  focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                 }}
               />
             </div>
@@ -253,9 +264,10 @@ export default function HolidayCalendar() {
                 name="type"
                 value={form.type}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                 style={{
-                  focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                 }}
               >
                 {holidayTypes.map(type => (
@@ -271,9 +283,10 @@ export default function HolidayCalendar() {
                 name="status"
                 value={form.status}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                 style={{
-                  focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                 }}
               >
                 <option value="Active">Active</option>
@@ -290,9 +303,10 @@ export default function HolidayCalendar() {
               value={form.description}
               onChange={handleChange}
               rows={4}
-              className="w-full px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
+              className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
               style={{
-                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
               }}
               placeholder="Holiday description and details"
             />
@@ -307,6 +321,9 @@ export default function HolidayCalendar() {
                 checked={form.repeat_yearly}
                 onChange={handleChange}
                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`
+                }}
               />
               <span className="text-sm font-medium text-gray-700">Repeat Every Year</span>
             </label>
@@ -352,7 +369,7 @@ export default function HolidayCalendar() {
 
         {/* View All Holidays Section */}
         {showViewHolidays && (
-          <div className="border-t-0">
+          <div className="-t-0">
             <div className="p-6">
               {/* Filters */}
               <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -366,9 +383,10 @@ export default function HolidayCalendar() {
                       placeholder="Search holidays..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10 pr-4 py-2 w-full border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                      className="pl-10 pr-4 py-2 w-full rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                       style={{
-                        focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                       }}
                     />
                   </div>
@@ -377,9 +395,10 @@ export default function HolidayCalendar() {
                   <select
                     value={yearFilter}
                     onChange={(e) => setYearFilter(e.target.value)}
-                    className="px-3 py-2 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    className="px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                     style={{
-                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                     }}
                   >
                     {years.map(y => <option key={y} value={y}>{y}</option>)}
@@ -387,9 +406,10 @@ export default function HolidayCalendar() {
                   <select
                     value={typeFilter}
                     onChange={(e) => setTypeFilter(e.target.value)}
-                    className="px-3 py-2 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    className="px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                     style={{
-                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                     }}
                   >
                     <option value="All">All Types</option>
@@ -412,9 +432,16 @@ export default function HolidayCalendar() {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredHolidays.map((holiday) => (
-                    <div key={holiday.id} className="bg-white rounded-xl border-0 p-6 hover:shadow-md transition-all duration-200">
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white" style={{
+                    <div key={holiday.id} className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+                      background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+                      borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                    }}>
+                      <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
+                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                        transform: 'translate(30%, -30%)'
+                      }}></div>
+                      <div className="flex items-start justify-between mb-4 relative z-10">
+                        <div className="w-12 h-12 rounded-lg flex items-center justify-center text-white shadow-sm" style={{
                           backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                         }}>
                           <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">

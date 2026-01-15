@@ -146,7 +146,7 @@ const HospitalRegister = () => {
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-1">
               <label className="block text-xs font-semibold text-gray-700">Tenant ID *</label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="text"
                 name="tenant_id"
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 text-gray-900 bg-white/70 backdrop-blur-sm transition-all duration-300 placeholder-gray-400 shadow-sm text-sm"
@@ -169,7 +169,7 @@ const HospitalRegister = () => {
 
             <div className="space-y-1">
               <label className="block text-xs font-semibold text-gray-700">Tenant Code *</label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="text"
                 name="tenant_code"
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 text-gray-900 bg-white/70 backdrop-blur-sm transition-all duration-300 placeholder-gray-400 shadow-sm text-sm"
@@ -189,7 +189,7 @@ const HospitalRegister = () => {
 
             <div className="space-y-1">
               <label className="block text-xs font-semibold text-gray-700">Tenant DB *</label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="text"
                 name="tenant_db"
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 text-gray-900 bg-white/70 backdrop-blur-sm transition-all duration-300 placeholder-gray-400 shadow-sm text-sm"
@@ -209,7 +209,7 @@ const HospitalRegister = () => {
 
             <div className="md:col-span-2 space-y-1">
               <label className="block text-xs font-semibold text-gray-700">Hospital Name *</label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="text"
                 name="name"
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 text-gray-900 bg-white/70 backdrop-blur-sm transition-all duration-300 placeholder-gray-400 shadow-sm text-sm"
@@ -229,7 +229,7 @@ const HospitalRegister = () => {
 
             <div className="space-y-1">
               <label className="block text-xs font-semibold text-gray-700">Email *</label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="email"
                 name="email"
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 text-gray-900 bg-white/70 backdrop-blur-sm transition-all duration-300 placeholder-gray-400 shadow-sm text-sm"
@@ -249,7 +249,7 @@ const HospitalRegister = () => {
 
             <div className="space-y-1">
               <label className="block text-xs font-semibold text-gray-700">Phone *</label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="text"
                 name="phone"
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 text-gray-900 bg-white/70 backdrop-blur-sm transition-all duration-300 placeholder-gray-400 shadow-sm text-sm"
@@ -269,7 +269,7 @@ const HospitalRegister = () => {
 
             <div className="space-y-1">
               <label className="block text-xs font-semibold text-gray-700">License Number *</label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="text"
                 name="license_number"
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 text-gray-900 bg-white/70 backdrop-blur-sm transition-all duration-300 placeholder-gray-400 shadow-sm text-sm"
@@ -289,7 +289,7 @@ const HospitalRegister = () => {
 
             <div className="space-y-1">
               <label className="block text-xs font-semibold text-gray-700">Contact Person</label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="text"
                 name="contact_person"
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 text-gray-900 bg-white/70 backdrop-blur-sm transition-all duration-300 placeholder-gray-400 shadow-sm text-sm"
@@ -308,7 +308,7 @@ const HospitalRegister = () => {
 
             <div className="space-y-1">
               <label className="block text-xs font-semibold text-gray-700">Logo URL</label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="text"
                 name="logo"
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 text-gray-900 bg-white/70 backdrop-blur-sm transition-all duration-300 placeholder-gray-400 shadow-sm text-sm"
@@ -327,7 +327,7 @@ const HospitalRegister = () => {
 
             <div className="space-y-1">
               <label className="block text-xs font-semibold text-gray-700">Pincode</label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="text"
                 name="pincode"
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 text-gray-900 bg-white/70 backdrop-blur-sm transition-all duration-300 placeholder-gray-400 shadow-sm text-sm"
@@ -346,7 +346,7 @@ const HospitalRegister = () => {
 
             <div className="md:col-span-2 space-y-1">
               <label className="block text-xs font-semibold text-gray-700">Admin Password *</label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="password"
                 name="password"
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 text-gray-900 bg-white/70 backdrop-blur-sm transition-all duration-300 placeholder-gray-400 shadow-sm text-sm"
@@ -380,7 +380,7 @@ const HospitalRegister = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-1">
                     <label className="block text-xs font-semibold text-gray-700">Subscription Plan</label>
-                    <select
+                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       name="subscription_plan"
                       value={form.subscription_plan}
                       onChange={handleChange}

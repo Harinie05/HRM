@@ -383,7 +383,7 @@ const ProbationTracking = () => {
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">Employee *</label>
-                    <select
+                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       required
                       value={formData.employee_id}
                       onChange={(e) => setFormData({ ...formData, employee_id: e.target.value })}
@@ -398,7 +398,7 @@ const ProbationTracking = () => {
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">Date of Joining *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="date"
                       required
                       value={formData.date_of_joining}
@@ -409,7 +409,7 @@ const ProbationTracking = () => {
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">Probation Period *</label>
-                    <select
+                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       required
                       value={formData.probation_months}
                       onChange={(e) => setFormData({ ...formData, probation_months: parseInt(e.target.value) })}
@@ -423,7 +423,7 @@ const ProbationTracking = () => {
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">Remarks</label>
-                    <textarea
+                    <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       value={formData.remarks}
                       onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
                       rows={3}
@@ -463,7 +463,7 @@ const ProbationTracking = () => {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">Extension Period *</label>
-                    <select
+                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       value={extensionMonths}
                       onChange={(e) => setExtensionMonths(parseInt(e.target.value))}
                       className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"

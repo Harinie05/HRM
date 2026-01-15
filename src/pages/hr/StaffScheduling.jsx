@@ -301,7 +301,7 @@ export default function StaffScheduling() {
             <form onSubmit={handlePatientLoadSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={patientLoadForm.department_id}
                   onChange={(e) => setPatientLoadForm({...patientLoadForm, department_id: e.target.value, custom_department: ''})}
                   className=" rounded-md px-3 py-2 w-full"
@@ -314,7 +314,7 @@ export default function StaffScheduling() {
                   <option value="other">Other</option>
                 </select>
                 {patientLoadForm.department_id === 'other' && (
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="text"
                     placeholder="Enter department name"
                     value={patientLoadForm.custom_department}
@@ -326,7 +326,7 @@ export default function StaffScheduling() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="date"
                   value={patientLoadForm.date}
                   onChange={(e) => setPatientLoadForm({...patientLoadForm, date: e.target.value})}
@@ -336,7 +336,7 @@ export default function StaffScheduling() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Shift</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={patientLoadForm.shift}
                   onChange={(e) => setPatientLoadForm({...patientLoadForm, shift: e.target.value})}
                   className=" rounded-md px-3 py-2 w-full"
@@ -348,7 +348,7 @@ export default function StaffScheduling() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Total Patients</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   placeholder="Enter total patient count"
                   value={patientLoadForm.total_patients}
@@ -359,7 +359,7 @@ export default function StaffScheduling() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Critical Patients</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   placeholder="Enter critical patient count"
                   value={patientLoadForm.critical_patients}
@@ -370,7 +370,7 @@ export default function StaffScheduling() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">ICU Patients</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   placeholder="Enter ICU patient count"
                   value={patientLoadForm.icu_patients}
@@ -381,7 +381,7 @@ export default function StaffScheduling() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">OPD Patients</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   placeholder="Enter OPD patient count"
                   value={patientLoadForm.opd_patients}
@@ -392,7 +392,7 @@ export default function StaffScheduling() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Emergency Patients</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   placeholder="Enter emergency patient count"
                   value={patientLoadForm.emergency_patients}
@@ -425,7 +425,7 @@ export default function StaffScheduling() {
             <form onSubmit={handleAllocationSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={allocationForm.department_id}
                   onChange={(e) => setAllocationForm({...allocationForm, department_id: e.target.value, custom_department: ''})}
                   className=" rounded-md px-3 py-2 w-full"
@@ -438,7 +438,7 @@ export default function StaffScheduling() {
                   <option value="other">Other</option>
                 </select>
                 {allocationForm.department_id === 'other' && (
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="text"
                     placeholder="Enter department name"
                     value={allocationForm.custom_department}
@@ -450,7 +450,7 @@ export default function StaffScheduling() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="date"
                   value={allocationForm.date}
                   onChange={(e) => setAllocationForm({...allocationForm, date: e.target.value})}
@@ -460,7 +460,7 @@ export default function StaffScheduling() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Shift</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={allocationForm.shift}
                   onChange={(e) => setAllocationForm({...allocationForm, shift: e.target.value})}
                   className=" rounded-md px-3 py-2 w-full"
@@ -472,7 +472,7 @@ export default function StaffScheduling() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Required Nurses</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   placeholder="How many nurses needed?"
                   value={allocationForm.required_nurses}
@@ -483,7 +483,7 @@ export default function StaffScheduling() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Allocated Nurses</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   placeholder="How many nurses assigned?"
                   value={allocationForm.allocated_nurses}
@@ -494,7 +494,7 @@ export default function StaffScheduling() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Required Doctors</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   placeholder="How many doctors needed?"
                   value={allocationForm.required_doctors}
@@ -505,7 +505,7 @@ export default function StaffScheduling() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Allocated Doctors</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   placeholder="How many doctors assigned?"
                   value={allocationForm.allocated_doctors}
@@ -516,7 +516,7 @@ export default function StaffScheduling() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Required Support Staff</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   placeholder="How many support staff needed?"
                   value={allocationForm.required_support_staff}
@@ -527,7 +527,7 @@ export default function StaffScheduling() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Allocated Support Staff</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   placeholder="How many support staff assigned?"
                   value={allocationForm.allocated_support_staff}

@@ -252,7 +252,7 @@ export default function EmployeeMedical() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Blood Group</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.blood_group}
                     onChange={(e) => setForm({ ...form, blood_group: e.target.value })}
@@ -270,7 +270,7 @@ export default function EmployeeMedical() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Height (cm)</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="170"
@@ -280,7 +280,7 @@ export default function EmployeeMedical() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Weight (kg)</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="70"
@@ -297,7 +297,7 @@ export default function EmployeeMedical() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Known Allergies</label>
-                  <textarea
+                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     rows="3"
                     placeholder="List any food, medication, or environmental allergies..."
@@ -307,7 +307,7 @@ export default function EmployeeMedical() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Chronic Conditions</label>
-                  <textarea
+                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     rows="3"
                     placeholder="List any chronic conditions like diabetes, hypertension, etc..."
@@ -317,7 +317,7 @@ export default function EmployeeMedical() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Current Medications</label>
-                  <textarea
+                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     rows="3"
                     placeholder="List current medications and dosages..."
@@ -339,7 +339,7 @@ export default function EmployeeMedical() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Contact Name</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Full name"
                     value={form.emergency_contact_name}
@@ -348,7 +348,7 @@ export default function EmployeeMedical() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Phone Number</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Phone number"
                     value={form.emergency_contact_phone}
@@ -357,7 +357,7 @@ export default function EmployeeMedical() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Relationship</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.emergency_contact_relation}
                     onChange={(e) => setForm({ ...form, emergency_contact_relation: e.target.value })}
@@ -385,7 +385,7 @@ export default function EmployeeMedical() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Insurance Provider</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Insurance company name"
                     value={form.medical_insurance_provider}
@@ -394,7 +394,7 @@ export default function EmployeeMedical() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Policy/Member Number</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Policy or member ID"
                     value={form.medical_insurance_number}
@@ -417,7 +417,7 @@ export default function EmployeeMedical() {
                   <label className="block text-sm font-medium text-secondary mb-2">
                     Registration Number <span className="text-red-500">*</span>
                   </label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     required
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Medical council registration number"
@@ -429,7 +429,7 @@ export default function EmployeeMedical() {
                   <label className="block text-sm font-medium text-secondary mb-2">
                     Council Name <span className="text-red-500">*</span>
                   </label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     required
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Medical council name"
@@ -441,7 +441,7 @@ export default function EmployeeMedical() {
                   <label className="block text-sm font-medium text-secondary mb-2">
                     State/Province <span className="text-red-500">*</span>
                   </label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     required
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="State or province"
@@ -453,7 +453,7 @@ export default function EmployeeMedical() {
                   <label className="block text-sm font-medium text-secondary mb-2">
                     Country <span className="text-red-500">*</span>
                   </label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     required
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Country"
@@ -465,7 +465,7 @@ export default function EmployeeMedical() {
                   <label className="block text-sm font-medium text-secondary mb-2">
                     Issue Date <span className="text-red-500">*</span>
                   </label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="date"
                     required
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
@@ -477,7 +477,7 @@ export default function EmployeeMedical() {
                   <label className="block text-sm font-medium text-secondary mb-2">
                     Expiry Date <span className="text-red-500">*</span>
                   </label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="date"
                     required
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
@@ -489,7 +489,7 @@ export default function EmployeeMedical() {
                   <label className="block text-sm font-medium text-secondary mb-2">
                     Medical Degree <span className="text-red-500">*</span>
                   </label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     required
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="MBBS, MD, etc."
@@ -501,7 +501,7 @@ export default function EmployeeMedical() {
                   <label className="block text-sm font-medium text-secondary mb-2">
                     Specialization
                   </label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Cardiology, Surgery, etc."
                     value={form.medical_specialization || ''}
@@ -512,7 +512,7 @@ export default function EmployeeMedical() {
                   <label className="block text-sm font-medium text-secondary mb-2">
                     Registration Status <span className="text-red-500">*</span>
                   </label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     required
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.medical_council_status || 'Active'}
@@ -541,7 +541,7 @@ export default function EmployeeMedical() {
                   <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border border-gray-300 rounded-xl">
                     <div>
                       <label className="block text-sm font-medium text-secondary mb-2">Vaccine</label>
-                      <select
+                      <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                         value={vaccine.vaccine}
                         onChange={(e) => {
@@ -561,7 +561,7 @@ export default function EmployeeMedical() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-secondary mb-2">Date</label>
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="date"
                         className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                         value={vaccine.date}
@@ -574,7 +574,7 @@ export default function EmployeeMedical() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-secondary mb-2">Status</label>
-                      <select
+                      <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                         value={vaccine.status}
                         onChange={(e) => {
@@ -630,7 +630,7 @@ export default function EmployeeMedical() {
             {/* Additional Notes */}
             <div>
               <label className="block text-sm font-medium text-secondary mb-2">Additional Medical Information</label>
-              <textarea
+              <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                 rows="4"
                 placeholder="Any additional medical remarks, notes, or special considerations..."
@@ -643,8 +643,8 @@ export default function EmployeeMedical() {
             <div>
               <label className="block text-sm font-medium text-secondary mb-2">Medical Certificate</label>
               <div className="flex items-center gap-2 mb-2">
-                <FiUpload className="" style={{color: 'var(--text-muted, #6b7280)'}} />
-                <input
+                <FiUpload  style={{color: 'var(--text-muted, #6b7280)'}} />
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="file"
                   accept=".pdf,.jpg,.jpeg,.png"
                   onChange={(e) => setFile(e.target.files[0])}

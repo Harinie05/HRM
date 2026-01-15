@@ -357,7 +357,7 @@ export default function NABHCompliance() {
                 <label className="block text-sm font-medium mb-1">
                   Employee ID <span className="text-red-500">*</span>
                 </label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   required
                   name="employee_id"
                   value={form.employee_id}
@@ -397,7 +397,7 @@ export default function NABHCompliance() {
                 <label className="block text-sm font-medium mb-1">
                   Employee Name <span className="text-red-500">*</span>
                 </label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   required
                   name="employee_name"
                   value={form.employee_name}
@@ -435,7 +435,7 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Department</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="text"
                   name="department"
                   value={form.department}
@@ -448,7 +448,7 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Designation</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="text"
                   name="designation"
                   value={form.designation}
@@ -460,7 +460,7 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Joining Date</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="date"
                   name="joining_date"
                   value={form.joining_date}
@@ -477,7 +477,7 @@ export default function NABHCompliance() {
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     name="staff_qualification_verified"
                     checked={form.staff_qualification_verified}
@@ -490,7 +490,7 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Qualification Documents</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="text"
                   name="qualification_documents"
                   value={form.qualification_documents}
@@ -502,7 +502,7 @@ export default function NABHCompliance() {
 
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     name="background_verification"
                     checked={form.background_verification}
@@ -515,7 +515,7 @@ export default function NABHCompliance() {
 
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     name="police_verification"
                     checked={form.police_verification}
@@ -528,7 +528,7 @@ export default function NABHCompliance() {
 
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     name="reference_check"
                     checked={form.reference_check}
@@ -547,7 +547,7 @@ export default function NABHCompliance() {
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     name="medical_fitness_done"
                     checked={form.medical_fitness_done}
@@ -560,7 +560,7 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Medical Fitness Date</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="date"
                   name="medical_fitness_date"
                   value={form.medical_fitness_date}
@@ -571,7 +571,7 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Medical Fitness Validity</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="date"
                   name="medical_fitness_validity"
                   value={form.medical_fitness_validity}
@@ -582,7 +582,7 @@ export default function NABHCompliance() {
 
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     name="credentialing_done"
                     checked={form.credentialing_done}
@@ -595,7 +595,7 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Credentialing Date</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="date"
                   name="credentialing_date"
                   value={form.credentialing_date}
@@ -606,7 +606,7 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Credentialing Validity</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="date"
                   name="credentialing_validity"
                   value={form.credentialing_validity}
@@ -623,7 +623,7 @@ export default function NABHCompliance() {
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     name="orientation_training_done"
                     checked={form.orientation_training_done}
@@ -636,7 +636,7 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Orientation Date</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="date"
                   name="orientation_date"
                   value={form.orientation_date}
@@ -647,7 +647,7 @@ export default function NABHCompliance() {
 
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     name="fire_safety_training_done"
                     checked={form.fire_safety_training_done}
@@ -660,7 +660,7 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Fire Safety Training Date</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="date"
                   name="fire_safety_date"
                   value={form.fire_safety_date}
@@ -671,7 +671,7 @@ export default function NABHCompliance() {
 
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     name="infection_control_training"
                     checked={form.infection_control_training}
@@ -684,7 +684,7 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Infection Control Training Date</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="date"
                   name="infection_control_date"
                   value={form.infection_control_date}
@@ -695,7 +695,7 @@ export default function NABHCompliance() {
 
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     name="patient_safety_training"
                     checked={form.patient_safety_training}
@@ -708,7 +708,7 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Patient Safety Training Date</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="date"
                   name="patient_safety_date"
                   value={form.patient_safety_date}
@@ -725,7 +725,7 @@ export default function NABHCompliance() {
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     name="performance_monitoring_done"
                     checked={form.performance_monitoring_done}
@@ -738,7 +738,7 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Last Appraisal Date</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="date"
                   name="last_appraisal_date"
                   value={form.last_appraisal_date}
@@ -749,7 +749,7 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Next Appraisal Due</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="date"
                   name="next_appraisal_due"
                   value={form.next_appraisal_due}
@@ -760,7 +760,7 @@ export default function NABHCompliance() {
 
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     name="competency_assessment"
                     checked={form.competency_assessment}
@@ -773,7 +773,7 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Competency Assessment Date</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="date"
                   name="competency_date"
                   value={form.competency_date}
@@ -790,7 +790,7 @@ export default function NABHCompliance() {
             <div className="grid grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium mb-1">Overall Compliance Status</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   name="overall_compliance_status"
                   value={form.overall_compliance_status}
                   onChange={handleChange}
@@ -806,7 +806,7 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Last Audit Date</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="date"
                   name="last_audit_date"
                   value={form.last_audit_date}
@@ -817,7 +817,7 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Next Audit Due</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="date"
                   name="next_audit_due"
                   value={form.next_audit_due}
@@ -828,7 +828,7 @@ export default function NABHCompliance() {
 
               <div className="col-span-2">
                 <label className="block text-sm font-medium mb-1">Remarks</label>
-                <textarea
+                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   name="remarks"
                   value={form.remarks}
                   onChange={handleChange}

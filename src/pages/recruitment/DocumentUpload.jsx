@@ -232,7 +232,7 @@ export default function DocumentUpload() {
               onChange={(e) => handleOtherDocuments(e.target.files)}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />
-            <div className="border border-dashed border-gray-300 bg-gray-50 rounded-lg p-4 text-center hover:border-gray-400 transition-colors">
+            <div className=" border-dashed border-gray-300 bg-gray-50 rounded-lg p-4 text-center hover:border-gray-400 transition-colors">
               <div className="text-lg mb-2">📁</div>
               <p className="text-sm font-medium text-gray-700 mb-1">Add More Documents</p>
               <p className="text-xs text-gray-500">Click to upload multiple files or drag & drop</p>

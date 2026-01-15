@@ -568,7 +568,7 @@ export default function Communication() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
                   {isAdmin() ? (
-                    <select 
+                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                       value={formData.employeeId}
                       onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
                       className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -597,7 +597,7 @@ export default function Communication() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Letter Type</label>
-                  <select 
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     value={formData.letterType}
                     onChange={(e) => setFormData({...formData, letterType: e.target.value})}
                     className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -616,7 +616,7 @@ export default function Communication() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
-                  <select 
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     value={formData.priority}
                     onChange={(e) => setFormData({...formData, priority: e.target.value})}
                     className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -630,7 +630,7 @@ export default function Communication() {
                 </div>
                 <div className="sm:col-span-2 lg:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
-                  <input 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     type="text"
                     value={formData.subject}
                     onChange={(e) => setFormData({...formData, subject: e.target.value})}
@@ -640,7 +640,7 @@ export default function Communication() {
                 </div>
                 <div className="sm:col-span-2 lg:col-span-3">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Content</label>
-                  <textarea 
+                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     value={formData.content}
                     onChange={(e) => setFormData({...formData, content: e.target.value})}
                     rows={6}
@@ -956,7 +956,7 @@ export default function Communication() {
                 {modalMode === 'view' ? (
                   <p className="text-sm text-primary">{selectedLetter.letter_type}</p>
                 ) : (
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={selectedLetter.letter_type}
                     onChange={(e) => setSelectedLetter({...selectedLetter, letter_type: e.target.value})}
                     className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -979,7 +979,7 @@ export default function Communication() {
                 {modalMode === 'view' ? (
                   <p className="text-sm text-primary">{selectedLetter.subject}</p>
                 ) : (
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="text"
                     value={selectedLetter.subject}
                     onChange={(e) => setSelectedLetter({...selectedLetter, subject: e.target.value})}
@@ -995,7 +995,7 @@ export default function Communication() {
                     {selectedLetter.content}
                   </div>
                 ) : (
-                  <textarea
+                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={selectedLetter.content}
                     onChange={(e) => setSelectedLetter({...selectedLetter, content: e.target.value})}
                     rows={8}

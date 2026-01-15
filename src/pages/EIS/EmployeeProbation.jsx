@@ -242,7 +242,7 @@ const EmployeeProbation = ({ employeeId, employee }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Date of Joining *</label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="date"
                 required
                 value={formData.date_of_joining}
@@ -252,7 +252,7 @@ const EmployeeProbation = ({ employeeId, employee }) => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Probation Period *</label>
-              <select
+              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 required
                 value={formData.probation_months}
                 onChange={(e) => setFormData({ ...formData, probation_months: parseInt(e.target.value) })}
@@ -266,7 +266,7 @@ const EmployeeProbation = ({ employeeId, employee }) => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Remarks</label>
-            <textarea
+            <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               value={formData.remarks}
               onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
               rows={3}
@@ -323,7 +323,7 @@ const EmployeeProbation = ({ employeeId, employee }) => {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-900 mb-2">Extension Period *</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={extensionMonths}
                     onChange={(e) => setExtensionMonths(parseInt(e.target.value))}
                     className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"

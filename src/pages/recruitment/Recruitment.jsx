@@ -193,8 +193,8 @@ export default function Recruitment() {
 
   // ========================= FILTER JOBS =========================
   const filteredJobs = jobs.filter((job) => {
-    const matchesSearch = job.title.toLowerCase().includes(search.toLowerCase()) ||
-                         job.department.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = (job.title || '').toLowerCase().includes(search.toLowerCase()) ||
+                         (job.department || '').toLowerCase().includes(search.toLowerCase());
     const matchesDepartment = !filters.department || job.department === filters.department;
     const matchesStatus = !filters.status || job.status === filters.status;
     const matchesJobType = !filters.jobType || job.job_type === filters.jobType;
@@ -216,10 +216,19 @@ export default function Recruitment() {
     <Layout>
       <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
         {/* Hero Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
-          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        <div className="rounded-2xl shadow-sm p-4 sm:p-6 relative overflow-hidden border" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
         }}>
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+            transform: 'translate(-30%, 30%)'
+          }}></div>
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 relative z-10">
             <div className="flex items-center gap-3 sm:gap-4">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -254,14 +263,21 @@ export default function Recruitment() {
         </div>
 
         {/* Enhanced Search */}
-        <div className="bg-white rounded-2xl border-0 shadow-sm p-6">
-          <div className="relative max-w-md mx-auto">
+        <div className="bg-white rounded-2xl shadow-sm p-6 relative overflow-hidden border" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="relative max-w-md mx-auto relative z-10">
             <div className="bg-gray-50 border-0 rounded-xl p-1">
               <div className="flex items-center space-x-2 px-3 py-2">
                 <div className="w-6 h-6 bg-white rounded-md flex items-center justify-center shadow-sm">
                   <FiSearch className="w-3 h-3 text-gray-600" />
                 </div>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="text"
                   placeholder="Search jobs..."
                   value={search}
@@ -288,7 +304,10 @@ export default function Recruitment() {
 
         {/* Key Performance Indicators */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Jobs</p>
@@ -305,7 +324,10 @@ export default function Recruitment() {
             </div>
           </div>
           
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Published</p>
@@ -322,7 +344,10 @@ export default function Recruitment() {
             </div>
           </div>
           
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Drafts</p>
@@ -339,7 +364,10 @@ export default function Recruitment() {
             </div>
           </div>
           
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Closed</p>
@@ -359,12 +387,23 @@ export default function Recruitment() {
 
         {/* Filter Options */}
         {showFilters && (
-          <div className="bg-white border-0 rounded-2xl shadow-sm p-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="bg-white rounded-2xl shadow-sm p-6 relative overflow-hidden border" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
+            <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+              transform: 'translate(30%, -30%)'
+            }}></div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 relative z-10">
               <select
                 value={filters.department}
                 onChange={(e) => setFilters({...filters, department: e.target.value})}
-                className="border-0 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                className="rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                }}
               >
                 <option value="">All Departments</option>
                 {departments.map(dept => (
@@ -375,7 +414,11 @@ export default function Recruitment() {
               <select
                 value={filters.status}
                 onChange={(e) => setFilters({...filters, status: e.target.value})}
-                className="border-0 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                className="rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                }}
               >
                 <option value="">All Status</option>
                 <option value="Draft">Draft</option>
@@ -385,7 +428,11 @@ export default function Recruitment() {
               <select
                 value={filters.jobType}
                 onChange={(e) => setFilters({...filters, jobType: e.target.value})}
-                className="border-0 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                className="rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                }}
               >
                 <option value="">All Job Types</option>
                 {jobTypes.map(type => (
@@ -413,9 +460,16 @@ export default function Recruitment() {
         )}
 
         {/* JOB TABLE */}
-        <div className="bg-white rounded-2xl border-0 shadow-sm overflow-hidden">
+        <div className="rounded-2xl shadow-sm overflow-hidden relative border" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
           {loading ? (
-            <div className="p-8 text-center">
+            <div className="p-8 text-center relative z-10">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`
               }}>
@@ -427,7 +481,7 @@ export default function Recruitment() {
               <p className="text-gray-600">Please wait while we fetch the latest job postings</p>
             </div>
           ) : filteredJobs.length === 0 ? (
-            <div className="p-8 text-center">
+            <div className="p-8 text-center relative z-10">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`
               }}>
@@ -456,7 +510,7 @@ export default function Recruitment() {
           ) : (
             <>
               {/* Desktop Table View */}
-            <div className="p-6">
+            <div className="p-6 relative z-10">
               <div className="hidden md:block overflow-x-auto">
                 <table className="min-w-full">
                   <thead className="bg-gray-50 border-b-0">
@@ -555,9 +609,16 @@ export default function Recruitment() {
                                 </button>
 
                                 {openLinkMenu === job.id && (
-                                  <div className="absolute right-0 mt-2 w-64 bg-white border border-black rounded-xl shadow-lg z-50">
+                                  <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-2xl z-50 overflow-hidden" style={{
+                                    border: `2px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
+                                  }}>
+                                    <div className="p-3 text-xs font-semibold text-gray-500 uppercase tracking-wider" style={{
+                                      background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+                                    }}>
+                                      Generate Job Links
+                                    </div>
                                     <button
-                                      className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm border-b-0"
+                                      className="w-full text-left px-4 py-3 hover:bg-blue-50 text-sm transition-all duration-200 flex items-center gap-3 group border-b"
                                       onClick={() => {
                                         const publicLink = `${window.location.origin}/apply/${job.id}`;
                                         setGeneratedLinks(prev => ({
@@ -565,14 +626,26 @@ export default function Recruitment() {
                                           [job.id]: { ...prev[job.id], public: publicLink }
                                         }));
                                         showToast("Public job link generated");
+                                        setOpenLinkMenu(null);
+                                      }}
+                                      style={{
+                                        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`
                                       }}
                                     >
-                                      🌍 Generate Public Link
+                                      <div className="w-8 h-8 rounded-lg flex items-center justify-center text-lg group-hover:scale-110 transition-transform" style={{
+                                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}15`
+                                      }}>
+                                        🌍
+                                      </div>
+                                      <div className="flex-1">
+                                        <div className="font-medium text-gray-900">Public Link</div>
+                                        <div className="text-xs text-gray-500">Share with anyone</div>
+                                      </div>
                                     </button>
 
                                     {employeeCode && (
                                       <button
-                                        className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm"
+                                        className="w-full text-left px-4 py-3 hover:bg-purple-50 text-sm transition-all duration-200 flex items-center gap-3 group"
                                         onClick={() => {
                                           const referralLink = `${window.location.origin}/apply/${job.id}?ref=${employeeCode}`;
                                           setGeneratedLinks(prev => ({
@@ -580,9 +653,18 @@ export default function Recruitment() {
                                             [job.id]: { ...prev[job.id], referral: referralLink }
                                           }));
                                           showToast("Referral link generated");
+                                          setOpenLinkMenu(null);
                                         }}
                                       >
-                                        👤 Generate My Referral Link
+                                        <div className="w-8 h-8 rounded-lg flex items-center justify-center text-lg group-hover:scale-110 transition-transform" style={{
+                                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}15`
+                                        }}>
+                                          👤
+                                        </div>
+                                        <div className="flex-1">
+                                          <div className="font-medium text-gray-900">Referral Link</div>
+                                          <div className="text-xs text-gray-500">Track your referrals</div>
+                                        </div>
                                       </button>
                                     )}
                                   </div>
@@ -624,6 +706,10 @@ export default function Recruitment() {
                                     value={generatedLinks[job.id].public}
                                     readOnly
                                     className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none cursor-pointer"
+                                    style={{
+                                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                                    }}
                                     onClick={(e) => {
                                       e.target.select();
                                       navigator.clipboard.writeText(e.target.value);
@@ -641,6 +727,10 @@ export default function Recruitment() {
                                     value={generatedLinks[job.id].referral}
                                     readOnly
                                     className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none cursor-pointer"
+                                    style={{
+                                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                                    }}
                                     onClick={(e) => {
                                       e.target.select();
                                       navigator.clipboard.writeText(e.target.value);
@@ -751,9 +841,16 @@ export default function Recruitment() {
                             </button>
 
                             {openLinkMenu === job.id && (
-                              <div className="absolute left-0 mt-2 w-64 bg-white border border-black rounded-xl shadow-lg z-50">
+                              <div className="absolute left-0 mt-2 w-72 bg-white rounded-xl shadow-2xl z-50 overflow-hidden" style={{
+                                border: `2px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
+                              }}>
+                                <div className="p-3 text-xs font-semibold text-gray-500 uppercase tracking-wider" style={{
+                                  background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+                                }}>
+                                  Generate Job Links
+                                </div>
                                 <button
-                                  className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm border-b-0"
+                                  className="w-full text-left px-4 py-3 hover:bg-blue-50 text-sm transition-all duration-200 flex items-center gap-3 group border-b"
                                   onClick={() => {
                                     const publicLink = `${window.location.origin}/apply/${job.id}`;
                                     setGeneratedLinks(prev => ({
@@ -761,14 +858,26 @@ export default function Recruitment() {
                                       [job.id]: { ...prev[job.id], public: publicLink }
                                     }));
                                     showToast("Public job link generated");
+                                    setOpenLinkMenu(null);
+                                  }}
+                                  style={{
+                                    borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`
                                   }}
                                 >
-                                  🌍 Generate Public Link
+                                  <div className="w-8 h-8 rounded-lg flex items-center justify-center text-lg group-hover:scale-110 transition-transform" style={{
+                                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}15`
+                                  }}>
+                                    🌍
+                                  </div>
+                                  <div className="flex-1">
+                                    <div className="font-medium text-gray-900">Public Link</div>
+                                    <div className="text-xs text-gray-500">Share with anyone</div>
+                                  </div>
                                 </button>
 
                                 {employeeCode && (
                                   <button
-                                    className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm"
+                                    className="w-full text-left px-4 py-3 hover:bg-purple-50 text-sm transition-all duration-200 flex items-center gap-3 group"
                                     onClick={() => {
                                       const referralLink = `${window.location.origin}/apply/${job.id}?ref=${employeeCode}`;
                                       setGeneratedLinks(prev => ({
@@ -776,9 +885,18 @@ export default function Recruitment() {
                                         [job.id]: { ...prev[job.id], referral: referralLink }
                                       }));
                                       showToast("Referral link generated");
+                                      setOpenLinkMenu(null);
                                     }}
                                   >
-                                    👤 Generate My Referral Link
+                                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-lg group-hover:scale-110 transition-transform" style={{
+                                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}15`
+                                    }}>
+                                      👤
+                                    </div>
+                                    <div className="flex-1">
+                                      <div className="font-medium text-gray-900">Referral Link</div>
+                                      <div className="text-xs text-gray-500">Track your referrals</div>
+                                    </div>
                                   </button>
                                 )}
                               </div>
@@ -820,6 +938,10 @@ export default function Recruitment() {
                                 value={generatedLinks[job.id].public}
                                 readOnly
                                 className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none cursor-pointer mt-1"
+                                style={{
+                                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                                }}
                                 onClick={(e) => {
                                   e.target.select();
                                   navigator.clipboard.writeText(e.target.value);
@@ -837,6 +959,10 @@ export default function Recruitment() {
                                 value={generatedLinks[job.id].referral}
                                 readOnly
                                 className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none cursor-pointer mt-1"
+                                style={{
+                                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                                }}
                                 onClick={(e) => {
                                   e.target.select();
                                   navigator.clipboard.writeText(e.target.value);
@@ -957,23 +1083,25 @@ function JobFormModal({ mode, job, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
-      <div className="bg-white border border-black rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col border" style={{
+        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+      }}>
         {/* Header */}
-        <div className="px-6 py-4 border-b border-black">
+        <div className="px-6 py-4 border-b-0">
           <h2 className="text-xl font-semibold text-black">
-            {mode === "create" && "Create New Job"}
-            {mode === "edit" && "Edit Job"}
-            {mode === "view" && "Job Details"}
+            {mode === "create" && "Create Job Requisition"}
+            {mode === "edit" && "Edit Job Requisition"}
+            {mode === "view" && "View Job Requisition"}
           </h2>
           <p className="text-sm text-gray-600 mt-1">
-            {mode === "create" && "Fill in the details to create a new job posting"}
-            {mode === "edit" && "Update the job information"}
-            {mode === "view" && "View job posting details"}
+            {mode === "create" && "Fill in the details to create a new job requisition"}
+            {mode === "edit" && "Fill in the details to update the job requisition"}
+            {mode === "view" && "Fill in the details to view the job requisition"}
           </p>
         </div>
 
         {/* Tabs */}
-        <div className="px-6 py-3 border-b border-black">
+        <div className="px-6 py-3 border-b-0">
           <div className="flex space-x-6">
             <button
               onClick={() => setActiveTab('basic')}
@@ -1013,7 +1141,15 @@ function JobFormModal({ mode, job, onClose }) {
 
           {/* Basic Info Tab */}
           {activeTab === 'basic' && (
-            <div className="space-y-6">
+            <div className="rounded-xl p-6 relative overflow-hidden border" style={{
+              background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                transform: 'translate(30%, -30%)'
+              }}></div>
+              <div className="space-y-6 relative z-10">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-black mb-2">Job Title *</label>
@@ -1022,7 +1158,11 @@ function JobFormModal({ mode, job, onClose }) {
                       value={form.title}
                       onChange={(e) => setForm({...form, title: e.target.value})}
                       disabled={isView}
-                      className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full bg-white text-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                     >
                       <option value="">Select existing job title</option>
                       {existingJobs.map((title, index) => (
@@ -1036,14 +1176,18 @@ function JobFormModal({ mode, job, onClose }) {
                       value={form.title}
                       onChange={(e) => setForm({...form, title: e.target.value})}
                       disabled={isView}
-                      className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-500"
+                      className="w-full bg-white text-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-500"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                     />
                   </div>
                 </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-black mb-2">Department *</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="text"
                     placeholder="e.g., Engineering, Marketing"
                     value={form.department}
@@ -1055,7 +1199,7 @@ function JobFormModal({ mode, job, onClose }) {
                 
                 <div>
                   <label className="block text-sm font-medium text-black mb-2">Hiring Manager</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="text"
                     placeholder="Manager name"
                     value={form.hiring_manager}
@@ -1067,7 +1211,7 @@ function JobFormModal({ mode, job, onClose }) {
                 
                 <div>
                   <label className="block text-sm font-medium text-black mb-2">Number of Openings</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="number"
                     min="1"
                     value={form.openings}
@@ -1077,16 +1221,25 @@ function JobFormModal({ mode, job, onClose }) {
                   />
                 </div>
               </div>
+              </div>
             </div>
           )}
 
           {/* Job Details Tab */}
           {activeTab === 'details' && (
-            <div className="space-y-6">
+            <div className="rounded-xl p-6 relative overflow-hidden border" style={{
+              background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                transform: 'translate(30%, -30%)'
+              }}></div>
+              <div className="space-y-6 relative z-10">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-black mb-2">Experience Years</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="number"
                     placeholder="e.g., 3"
                     min="0"
@@ -1099,7 +1252,7 @@ function JobFormModal({ mode, job, onClose }) {
                 
                 <div>
                   <label className="block text-sm font-medium text-black mb-2">Salary Range</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="text"
                     placeholder="e.g., $50,000 - $70,000"
                     value={form.salary_range}
@@ -1111,7 +1264,7 @@ function JobFormModal({ mode, job, onClose }) {
                 
                 <div>
                   <label className="block text-sm font-medium text-black mb-2">Job Type</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     value={form.job_type}
                     onChange={(e) => setForm({...form, job_type: e.target.value})}
                     disabled={isView}
@@ -1126,7 +1279,7 @@ function JobFormModal({ mode, job, onClose }) {
                 
                 <div>
                   <label className="block text-sm font-medium text-black mb-2">Work Mode</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     value={form.work_mode}
                     onChange={(e) => setForm({...form, work_mode: e.target.value})}
                     disabled={isView}
@@ -1140,7 +1293,7 @@ function JobFormModal({ mode, job, onClose }) {
                 
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-black mb-2">Location</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="text"
                     placeholder="e.g., New York, NY"
                     value={form.location}
@@ -1152,7 +1305,7 @@ function JobFormModal({ mode, job, onClose }) {
                 
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-black mb-2">Required Skills</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="text"
                     placeholder="e.g., React, Node.js, Python (comma-separated)"
                     value={Array.isArray(form.skills) ? form.skills.join(', ') : (form.skills || '')}
@@ -1165,7 +1318,7 @@ function JobFormModal({ mode, job, onClose }) {
               
               <div>
                 <label className="block text-sm font-medium text-black mb-2">Job Description</label>
-                <textarea
+                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   placeholder="Describe the role, responsibilities, and requirements..."
                   value={form.description}
                   onChange={(e) => setForm({...form, description: e.target.value})}
@@ -1174,12 +1327,21 @@ function JobFormModal({ mode, job, onClose }) {
                   className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none placeholder-gray-500"
                 />
               </div>
+              </div>
             </div>
           )}
 
           {/* Interview Rounds Tab */}
           {activeTab === 'rounds' && (
-            <div className="space-y-6">
+            <div className="rounded-xl p-6 relative overflow-hidden border" style={{
+              background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                transform: 'translate(30%, -30%)'
+              }}></div>
+              <div className="space-y-6 relative z-10">
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="text-lg font-medium text-black">Interview Rounds</h3>
@@ -1202,7 +1364,10 @@ function JobFormModal({ mode, job, onClose }) {
               
               <div className="space-y-4">
                 {(form.round_names || []).map((round, index) => (
-                  <div key={index} className="border border-black rounded-lg p-4 bg-white">
+                  <div key={index} className="rounded-lg p-4 bg-white relative overflow-hidden border" style={{
+                    background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+                    borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
                     <div className="flex justify-between items-center mb-3">
                       <h4 className="font-medium text-black">Round {index + 1}</h4>
                       {!isView && form.round_names.length > 1 && (
@@ -1219,7 +1384,7 @@ function JobFormModal({ mode, job, onClose }) {
                       )}
                     </div>
                     <div className="space-y-3">
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                         type="text"
                         placeholder={`Round ${index + 1} Name (e.g., Technical Interview)`}
                         value={round.name || ""}
@@ -1231,7 +1396,7 @@ function JobFormModal({ mode, job, onClose }) {
                         disabled={isView}
                         className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-500"
                       />
-                      <textarea
+                      <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                         placeholder={`Round ${index + 1} Description (e.g., Technical skills assessment)`}
                         value={round.description || ""}
                         onChange={(e) => {
@@ -1247,22 +1412,41 @@ function JobFormModal({ mode, job, onClose }) {
                   </div>
                 ))}
               </div>
+              </div>
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-black flex justify-between">
+        <div className="px-6 py-4 border-t-0 flex justify-between">
           <button
             onClick={onClose}
-            className="px-6 py-2 bg-white text-black border border-black rounded-lg hover:bg-gray-100 transition-colors"
+            className="px-6 py-2 text-white border-0 rounded-lg transition-colors"
+            style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+            }}
           >
             {isView ? 'Close' : 'Cancel'}
           </button>
           {!isView && (
             <button
               onClick={handleSubmit}
-              className="px-6 py-2 bg-black text-white border border-black rounded-lg transition-colors flex items-center gap-2 hover:bg-gray-800"
+              className="px-6 py-2 text-white border-0 rounded-lg transition-colors flex items-center gap-2"
+              style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+              }}
             >
               {mode === "create" ? (
                 <>

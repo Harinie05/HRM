@@ -436,7 +436,7 @@ export default function LabourRegister() {
             <label className="block text-sm font-medium mb-1">
               Employee ID <span className="text-red-500">*</span>
             </label>
-            <select
+            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               required
               name="employee_id"
               value={form.employee_id}
@@ -477,7 +477,7 @@ export default function LabourRegister() {
             <label className="block text-sm font-medium mb-1">
               Employee Name <span className="text-red-500">*</span>
             </label>
-            <select
+            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               required
               name="employee_name"
               value={form.employee_name}
@@ -518,7 +518,7 @@ export default function LabourRegister() {
             <label className="block text-sm font-medium mb-1">
               Register Type <span className="text-red-500">*</span>
             </label>
-            <select
+            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               required
               name="register_type"
               value={form.register_type}
@@ -550,7 +550,7 @@ export default function LabourRegister() {
               <label className="block text-sm font-medium mb-1">
                 Custom Register Type <span className="text-red-500">*</span>
               </label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                 type="text"
                 required
                 name="custom_register_type"
@@ -565,7 +565,7 @@ export default function LabourRegister() {
           {/* Register Number */}
           <div>
             <label className="block text-sm font-medium mb-1">Register Number</label>
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               type="text"
               name="register_number"
               value={form.register_number}
@@ -578,7 +578,7 @@ export default function LabourRegister() {
           {/* Issue Date */}
           <div>
             <label className="block text-sm font-medium mb-1">Issue Date</label>
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               type="date"
               name="issue_date"
               value={form.issue_date}
@@ -590,7 +590,7 @@ export default function LabourRegister() {
           {/* Expiry Date */}
           <div>
             <label className="block text-sm font-medium mb-1">Expiry Date</label>
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               type="date"
               name="expiry_date"
               value={form.expiry_date}
@@ -602,7 +602,7 @@ export default function LabourRegister() {
           {/* Issuing Authority */}
           <div>
             <label className="block text-sm font-medium mb-1">Issuing Authority</label>
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               type="text"
               name="issuing_authority"
               value={form.issuing_authority}
@@ -615,7 +615,7 @@ export default function LabourRegister() {
           {/* Compliance Status */}
           <div>
             <label className="block text-sm font-medium mb-1">Compliance Status</label>
-            <select
+            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               name="compliance_status"
               value={form.compliance_status}
               onChange={handleChange}
@@ -631,7 +631,7 @@ export default function LabourRegister() {
           {/* Month */}
           <div>
             <label className="block text-sm font-medium mb-1">Month</label>
-            <select
+            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               name="month"
               value={form.month}
               onChange={handleChange}
@@ -656,7 +656,7 @@ export default function LabourRegister() {
           {/* Year */}
           <div>
             <label className="block text-sm font-medium mb-1">Year</label>
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               type="number"
               name="year"
               value={form.year}
@@ -671,7 +671,7 @@ export default function LabourRegister() {
           {/* Remarks */}
           <div className="col-span-2">
             <label className="block text-sm font-medium mb-1">Remarks</label>
-            <textarea
+            <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               name="remarks"
               value={form.remarks}
               onChange={handleChange}

@@ -128,7 +128,7 @@ export default function EmployeeExit() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Resignation Date *</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="date"
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.resignation_date}
@@ -137,7 +137,7 @@ export default function EmployeeExit() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Last Working Date *</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="date"
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.last_working_day}
@@ -146,7 +146,7 @@ export default function EmployeeExit() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Notice Period (Days)</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.notice_period}
@@ -156,7 +156,7 @@ export default function EmployeeExit() {
               </div>
               <div className="mt-4">
                 <label className="block text-sm font-medium text-secondary mb-2">Reason for Leaving</label>
-                <textarea
+                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                   rows="3"
                   placeholder="Reason for resignation..."
@@ -166,7 +166,7 @@ export default function EmployeeExit() {
               </div>
               <div className="mt-4">
                 <label className="block text-sm font-medium text-secondary mb-2">Exit Interview Date</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="date"
                   className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                   value={form.exit_interview_date}
@@ -186,7 +186,7 @@ export default function EmployeeExit() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Handover Status</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.handover_status}
                     onChange={(e) => setForm({ ...form, handover_status: e.target.value })}
@@ -199,8 +199,8 @@ export default function EmployeeExit() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Exit Documents</label>
                   <div className="flex items-center gap-2">
-                    <FiUpload className="" style={{color: 'var(--text-muted, #6b7280)'}} />
-                    <input
+                    <FiUpload  style={{color: 'var(--text-muted, #6b7280)'}} />
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="file"
                       accept=".pdf,.jpg,.jpeg,.png"
                       onChange={(e) => setFile(e.target.files[0])}
@@ -217,19 +217,19 @@ export default function EmployeeExit() {
                 <h4 className="font-semibold text-gray-900 mb-4">Exit Process Status</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Resignation Date:</span>
+                    <span  style={{color: 'var(--text-secondary, #374151)'}}>Resignation Date:</span>
                     <span className="ml-2 font-medium">{form.resignation_date}</span>
                   </div>
                   <div>
-                    <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Last Working Date:</span>
+                    <span  style={{color: 'var(--text-secondary, #374151)'}}>Last Working Date:</span>
                     <span className="ml-2 font-medium">{form.last_working_day}</span>
                   </div>
                   <div>
-                    <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Reason:</span>
+                    <span  style={{color: 'var(--text-secondary, #374151)'}}>Reason:</span>
                     <span className="ml-2 font-medium">{form.reason || 'Not specified'}</span>
                   </div>
                   <div>
-                    <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Handover Status:</span>
+                    <span  style={{color: 'var(--text-secondary, #374151)'}}>Handover Status:</span>
                     <span className={`ml-2 px-2 py-1 rounded text-xs font-medium border-0 ${
                       form.handover_status === 'Completed' ? 'bg-gray-100 text-black' :
                       form.handover_status === 'In Progress' ? 'bg-gray-100 text-black' :
@@ -239,11 +239,11 @@ export default function EmployeeExit() {
                     </span>
                   </div>
                   <div>
-                    <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Exit Interview Date:</span>
+                    <span  style={{color: 'var(--text-secondary, #374151)'}}>Exit Interview Date:</span>
                     <span className="ml-2 font-medium">{form.exit_interview_date || 'Not scheduled'}</span>
                   </div>
                   <div>
-                    <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Notice Period:</span>
+                    <span  style={{color: 'var(--text-secondary, #374151)'}}>Notice Period:</span>
                     <span className="ml-2 font-medium">{form.notice_period} days</span>
                   </div>
                 </div>

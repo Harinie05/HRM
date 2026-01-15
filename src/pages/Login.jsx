@@ -185,7 +185,7 @@ export default function Login() {
                   Tenant Code
                 </label>
                 <div className="relative">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="text"
                     name="tenant_code"
                     required
@@ -218,7 +218,7 @@ export default function Login() {
                   Email Address / Login Code
                 </label>
                 <div className="relative">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="text"
                     name="credential"
                     required
@@ -251,7 +251,7 @@ export default function Login() {
                   Password
                 </label>
                 <div className="relative">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="password"
                     name="password"
                     required
@@ -357,7 +357,7 @@ export default function Login() {
                 </label>
                 <div className="flex justify-center">
                   <div className="relative">
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
                       name="otp_code"
                       required

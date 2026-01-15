@@ -616,7 +616,7 @@ export default function SettlementDocuments() {
                           <span className="text-gray-600">Bonus:</span>
                           <span className="font-semibold text-gray-900">₹{settlement.breakdown.bonus.toLocaleString()}</span>
                         </div>
-                        <div className="border-t border-green-200 mt-2 pt-2">
+                        <div className="-t border-green-200 mt-2 pt-2">
                           <div className="flex justify-between items-center font-semibold text-green-700">
                             <span>Total Earnings:</span>
                             <span className="text-lg">₹{settlement.gross_amount.toLocaleString()}</span>
@@ -656,7 +656,7 @@ export default function SettlementDocuments() {
                             <span className="font-semibold text-gray-900">₹{settlement.breakdown.loan_recovery.toLocaleString()}</span>
                           </div>
                         )}
-                        <div className="border-t border-red-200 mt-2 pt-2">
+                        <div className="-t border-red-200 mt-2 pt-2">
                           <div className="flex justify-between items-center font-semibold text-red-700">
                             <span>Total Deductions:</span>
                             <span className="text-lg">₹{settlement.total_deductions.toLocaleString()}</span>
@@ -771,7 +771,7 @@ export default function SettlementDocuments() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                           <label className="block text-xs font-medium mb-1">Employee Name</label>
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="text"
                             value={experienceLetter.employee_name}
                             onChange={(e) => updateLetterField('employee_name', e.target.value)}
@@ -780,7 +780,7 @@ export default function SettlementDocuments() {
                         </div>
                         <div>
                           <label className="block text-xs font-medium mb-1">Employee Code</label>
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="text"
                             value={experienceLetter.employee_code}
                             onChange={(e) => updateLetterField('employee_code', e.target.value)}
@@ -789,7 +789,7 @@ export default function SettlementDocuments() {
                         </div>
                         <div>
                           <label className="block text-xs font-medium mb-1">Company Name</label>
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="text"
                             value={experienceLetter.company_name}
                             onChange={(e) => updateLetterField('company_name', e.target.value)}
@@ -798,7 +798,7 @@ export default function SettlementDocuments() {
                         </div>
                         <div>
                           <label className="block text-xs font-medium mb-1">Designation</label>
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="text"
                             value={experienceLetter.designation}
                             onChange={(e) => updateLetterField('designation', e.target.value)}
@@ -807,7 +807,7 @@ export default function SettlementDocuments() {
                         </div>
                         <div>
                           <label className="block text-xs font-medium mb-1">Department</label>
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="text"
                             value={experienceLetter.department}
                             onChange={(e) => updateLetterField('department', e.target.value)}
@@ -816,7 +816,7 @@ export default function SettlementDocuments() {
                         </div>
                         <div>
                           <label className="block text-xs font-medium mb-1">Joining Date</label>
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="date"
                             value={experienceLetter.joining_date}
                             onChange={(e) => updateLetterField('joining_date', e.target.value)}
@@ -825,7 +825,7 @@ export default function SettlementDocuments() {
                         </div>
                         <div>
                           <label className="block text-xs font-medium mb-1">Last Working Day</label>
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="date"
                             value={experienceLetter.last_working_day}
                             onChange={(e) => updateLetterField('last_working_day', e.target.value)}
@@ -834,7 +834,7 @@ export default function SettlementDocuments() {
                         </div>
                         <div>
                           <label className="block text-xs font-medium mb-1">Place</label>
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="text"
                             value={experienceLetter.place || 'Bangalore'}
                             onChange={(e) => updateLetterField('place', e.target.value)}
@@ -843,7 +843,7 @@ export default function SettlementDocuments() {
                         </div>
                         <div>
                           <label className="block text-xs font-medium mb-1">Issued By</label>
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="text"
                             value={experienceLetter.issued_by}
                             onChange={(e) => updateLetterField('issued_by', e.target.value)}
@@ -852,7 +852,7 @@ export default function SettlementDocuments() {
                         </div>
                         <div>
                           <label className="block text-xs font-medium mb-1">Authorized Signatory</label>
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="text"
                             value={experienceLetter.authorized_signatory || 'HR Manager'}
                             onChange={(e) => updateLetterField('authorized_signatory', e.target.value)}
@@ -891,7 +891,7 @@ export default function SettlementDocuments() {
                             <div>
                               <p className="font-semibold">For {experienceLetter.company_name}</p>
                               <div className="mt-6 sm:mt-8">
-                                <div className="border-t border-gray-400 w-24 sm:w-32" style={{borderColor: 'var(--border-color, #e2e8f0)'}}></div>
+                                <div className="-t border-gray-400 w-24 sm:w-32" style={{borderColor: 'var(--border-color, #e2e8f0)'}}></div>
                                 <p className="text-xs mt-1">{experienceLetter.authorized_signatory}</p>
                                 <p className="text-xs">{experienceLetter.issued_by}</p>
                               </div>

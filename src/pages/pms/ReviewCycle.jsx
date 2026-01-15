@@ -345,7 +345,7 @@ export default function ReviewCycle() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Cycle Name</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
@@ -356,7 +356,7 @@ export default function ReviewCycle() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Review Type</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.type}
                   onChange={(e) => setFormData({...formData, type: e.target.value})}
                   className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
@@ -369,7 +369,7 @@ export default function ReviewCycle() {
 
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                <textarea
+                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
                   rows={3}
@@ -380,7 +380,7 @@ export default function ReviewCycle() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="date"
                   value={formData.startDate}
                   onChange={(e) => setFormData({...formData, startDate: e.target.value})}
@@ -391,7 +391,7 @@ export default function ReviewCycle() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">End Date</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="date"
                   value={formData.endDate}
                   onChange={(e) => setFormData({...formData, endDate: e.target.value})}
@@ -402,7 +402,7 @@ export default function ReviewCycle() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.status}
                   onChange={(e) => setFormData({...formData, status: e.target.value})}
                   className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"

@@ -178,10 +178,19 @@ export default function Users() {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Hero Header matching Dashboard */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
-          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        <div className="rounded-2xl shadow-sm p-4 sm:p-6 relative overflow-hidden border" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
         }}>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 relative z-10">
             <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -199,7 +208,9 @@ export default function Users() {
               </div>
             </div>
             <div className="flex gap-2 sm:gap-3 flex-shrink-0">
-              <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
+              <div className="bg-white rounded-lg p-2 sm:p-3 shadow-sm border" style={{
+                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
                 <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 616 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
@@ -214,7 +225,10 @@ export default function Users() {
 
         {/* Key Performance Indicators matching Dashboard */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Users</p>
@@ -233,7 +247,10 @@ export default function Users() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Active Users</p>
@@ -252,7 +269,10 @@ export default function Users() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Filtered Results</p>
@@ -271,7 +291,10 @@ export default function Users() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">With Roles</p>
@@ -292,8 +315,15 @@ export default function Users() {
         </div>
 
         {/* User Management Section */}
-        <div className="bg-white rounded-xl border-0 shadow-sm">
-          <div className="p-5 border-b-0">
+        <div className="bg-white rounded-xl shadow-sm relative overflow-hidden border" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="p-5 border-b-0 relative z-10">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg" style={{
@@ -318,9 +348,10 @@ export default function Users() {
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="px-3 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    className="px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                     style={{
-                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                     }}
                   >
                     <option value="active">Active</option>
@@ -423,9 +454,10 @@ export default function Users() {
                     placeholder="Search name or email..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 pr-4 py-2 w-full border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    className="pl-10 pr-4 py-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                     style={{
-                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                     }}
                   />
                 </div>
@@ -456,7 +488,10 @@ export default function Users() {
         </div>
 
         {/* User List */}
-        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden border" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
           {filteredUsers.length === 0 ? (
             <div className="p-16 text-center">
               <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -471,11 +506,18 @@ export default function Users() {
             <div className="p-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {filteredUsers.map((u, index) => (
-                  <div key={u.id} className="bg-white border-0 rounded-xl p-4 hover:shadow-md transition-all duration-300 group">
-                    <div className="flex items-start justify-between mb-4">
+                  <div key={u.id} className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-300 group relative overflow-hidden border" style={{
+                    background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+                    borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
+                    <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                      transform: 'translate(30%, -30%)'
+                    }}></div>
+                    <div className="flex items-start justify-between mb-4 relative z-10">
                       <div className="flex items-center gap-3 min-w-0 flex-1">
-                        <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{
-                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}15`
+                        <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm" style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
                         }}>
                           <span className="font-bold text-sm" style={{
                             color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
@@ -607,7 +649,11 @@ export default function Users() {
                       placeholder="Enter full name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                     />
                   </div>
                   <div>
@@ -617,7 +663,11 @@ export default function Users() {
                       placeholder="Enter email address"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                     />
                   </div>
                 </div>
@@ -630,7 +680,11 @@ export default function Users() {
                       placeholder="••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                     />
                   </div>
                   <div>
@@ -658,7 +712,11 @@ export default function Users() {
                   <select
                     value={department}
                     onChange={(e) => setDepartment(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                   >
                     <option value="">Select department</option>
                     {departments.map((d) => (
@@ -670,7 +728,7 @@ export default function Users() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     id="activeUser"
                     className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 focus:ring-2"
@@ -683,7 +741,7 @@ export default function Users() {
                   <h3 className="text-sm font-medium text-gray-700 mb-3">Authentication Settings</h3>
                   <div className="space-y-3">
                     <div className="flex items-start gap-3">
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="checkbox"
                         id="twoFactor"
                         checked={twoFactorEnabled}
@@ -703,7 +761,7 @@ export default function Users() {
                   <div className="grid grid-cols-2 gap-3 max-h-32 overflow-y-auto">
                     {roles.map((r) => (
                       <div key={r.id} className="flex items-center gap-2">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="radio"
                           id={`role-${r.id}`}
                           name="role"
@@ -778,7 +836,11 @@ export default function Users() {
                       type="text"
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                     />
                   </div>
                   <div>
@@ -787,7 +849,11 @@ export default function Users() {
                       type="email"
                       value={editEmail}
                       onChange={(e) => setEditEmail(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                     />
                   </div>
                 </div>
@@ -800,7 +866,11 @@ export default function Users() {
                       placeholder="Leave blank to keep current password"
                       value={editPassword}
                       onChange={(e) => setEditPassword(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                     />
                   </div>
                   <div>
@@ -828,7 +898,11 @@ export default function Users() {
                   <select
                     value={editDepartment}
                     onChange={(e) => setEditDepartment(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                   >
                     <option value="">Select department</option>
                     {departments.map((d) => (
@@ -840,7 +914,7 @@ export default function Users() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     id="editActiveUser"
                     className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 focus:ring-2"
@@ -853,7 +927,7 @@ export default function Users() {
                   <h3 className="text-sm font-medium text-gray-700 mb-3">Authentication Settings</h3>
                   <div className="space-y-3">
                     <div className="flex items-start gap-3">
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="checkbox"
                         id="editTwoFactor"
                         checked={editTwoFactorEnabled}
@@ -873,7 +947,7 @@ export default function Users() {
                   <div className="grid grid-cols-2 gap-3 max-h-32 overflow-y-auto">
                     {roles.map((r) => (
                       <div key={r.id} className="flex items-center gap-2">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="radio"
                           id={`edit-role-${r.id}`}
                           name="editRole"

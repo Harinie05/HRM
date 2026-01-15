@@ -446,7 +446,7 @@ export default function EmployeeEducation() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Degree *</label>
-                    <select
+                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={form.degree}
                       onChange={(e) => setForm({ ...form, degree: e.target.value })}
@@ -464,7 +464,7 @@ export default function EmployeeEducation() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Specialization/Stream</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="e.g., Computer Science"
                       value={form.specialization}
@@ -476,7 +476,7 @@ export default function EmployeeEducation() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">University/Board *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="University or Board name"
                       value={form.university}
@@ -486,7 +486,7 @@ export default function EmployeeEducation() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Institution Name</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="College/School name"
                       value={form.board_university}
@@ -498,7 +498,7 @@ export default function EmployeeEducation() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Start Year</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="2020"
                       value={form.start_year}
@@ -508,7 +508,7 @@ export default function EmployeeEducation() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">End Year</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="2024"
                       value={form.end_year}
@@ -518,7 +518,7 @@ export default function EmployeeEducation() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Percentage/CGPA</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="85% or 8.5"
                       value={form.percentage_cgpa}
@@ -530,7 +530,7 @@ export default function EmployeeEducation() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Education Type</label>
-                    <select
+                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={form.education_type}
                       onChange={(e) => setForm({ ...form, education_type: e.target.value })}
@@ -544,7 +544,7 @@ export default function EmployeeEducation() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
-                    <select
+                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={form.country}
                       onChange={(e) => setForm({ ...form, country: e.target.value })}
@@ -562,7 +562,7 @@ export default function EmployeeEducation() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">State</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="State name"
                       value={form.state}
@@ -572,7 +572,7 @@ export default function EmployeeEducation() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="City name"
                       value={form.city}
@@ -585,7 +585,7 @@ export default function EmployeeEducation() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Certificate/Document</label>
                   <div className="flex items-center gap-2">
                     <FiUpload className="text-gray-400" />
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="file"
                       accept=".pdf,.jpg,.jpeg,.png"
                       onChange={(e) => setForm({ ...form, file: e.target.files[0] })}

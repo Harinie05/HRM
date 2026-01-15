@@ -442,7 +442,7 @@ export default function ClearanceWorkflow() {
                       );
                       
                       return (
-                        <div key={clearance.id} className="border-0 rounded-xl p-4 hover:shadow-md transition-all duration-200">
+                        <div key={clearance.id} className=" rounded-xl p-4 hover:shadow-md transition-all duration-200">
                           <div className="flex items-center justify-between gap-3">
                             <div className="flex items-center gap-4 flex-1 min-w-0">
                               <div className="p-3 rounded-xl" style={{
@@ -505,7 +505,7 @@ export default function ClearanceWorkflow() {
                       );
                       
                       return (
-                        <div key={index} className="border border-black rounded-xl p-3 sm:p-4 hover:shadow-md transition-all duration-200">
+                        <div key={index} className=" border-black rounded-xl p-3 sm:p-4 hover:shadow-md transition-all duration-200">
                           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                             <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
                               <div className="p-2 sm:p-3 rounded-xl bg-gray-100 border border-black flex-shrink-0">
@@ -612,7 +612,7 @@ export default function ClearanceWorkflow() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Overall Workplace Experience Rating (1-5)
                 </label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   required
                   value={interviewForm.rating}
                   onChange={(e) => setInterviewForm({...interviewForm, rating: e.target.value})}
@@ -634,7 +634,7 @@ export default function ClearanceWorkflow() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Feedback & Comments
                 </label>
-                <textarea
+                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   required
                   value={interviewForm.feedback}
                   onChange={(e) => setInterviewForm({...interviewForm, feedback: e.target.value})}
@@ -647,7 +647,7 @@ export default function ClearanceWorkflow() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Suggestions for Improvement
                 </label>
-                <textarea
+                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={interviewForm.suggestions}
                   onChange={(e) => setInterviewForm({...interviewForm, suggestions: e.target.value})}
                   className="w-full border border-gray-300 rounded-lg p-3 h-24 focus:ring-2 focus:border-transparent transition-all duration-200"

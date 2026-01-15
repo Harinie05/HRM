@@ -345,6 +345,17 @@ const LocumConsultants = () => {
 
   return (
     <Layout>
+      <style>{`
+        .p-6.space-y-6 *::-webkit-scrollbar,
+        .p-6.space-y-6::-webkit-scrollbar {
+          display: none;
+        }
+        .p-6.space-y-6 *,
+        .p-6.space-y-6 {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
       <div className="p-6 space-y-6">
         {/* Header */}
         <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6 mb-6" style={{
@@ -373,8 +384,15 @@ const LocumConsultants = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border-0 overflow-hidden">
-          <div className="p-4 sm:p-6">
+        <div className="bg-white rounded-2xl overflow-hidden relative border" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="p-4 sm:p-6 relative z-10">
             {/* Tab Navigation */}
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-2">
@@ -498,7 +516,7 @@ const LocumConsultants = () => {
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="text"
                         placeholder="Search by name, specialization..."
                         value={filters.search}
@@ -508,7 +526,7 @@ const LocumConsultants = () => {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                      <select
+                      <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         value={filters.status}
                         onChange={(e) => setFilters({ ...filters, status: e.target.value })}
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -520,7 +538,7 @@ const LocumConsultants = () => {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-                      <select
+                      <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         value={filters.consultant_type}
                         onChange={(e) => setFilters({ ...filters, consultant_type: e.target.value })}
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -1070,138 +1088,236 @@ const LocumConsultants = () => {
         {/* Modal */}
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl border border-black shadow-lg w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-2xl shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto border" style={{
+              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
               <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-6 border-b border-black pb-3">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">
                   {editingConsultant ? 'Edit Consultant' : 'Add New Consultant'}
                 </h3>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">Name *</label>
-                      <input
-                        type="text"
-                        required
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                      />
+                <p className="text-sm text-gray-600 mb-6">Fill in the details to {editingConsultant ? 'update' : 'create'} consultant information</p>
+                
+                <form onSubmit={handleSubmit}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Basic Information */}
+                    <div className="rounded-xl p-6 relative overflow-hidden border" style={{
+                      background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+                      borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                    }}>
+                      <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
+                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                        transform: 'translate(30%, -30%)'
+                      }}></div>
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-2 mb-4">
+                          <User className="w-5 h-5" style={{
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }} />
+                          <h4 className="font-semibold text-gray-900">Basic Information</h4>
+                        </div>
+                        
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                            <input
+                              type="text"
+                              required
+                              placeholder="e.g., Dr. John Smith"
+                              value={formData.name}
+                              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                              className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2"
+                              style={{
+                                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                              }}
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Specialization</label>
+                            <input
+                              type="text"
+                              placeholder="e.g., Cardiology"
+                              value={formData.specialization}
+                              onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
+                              className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2"
+                              style={{
+                                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                              }}
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Registration Number</label>
+                            <input
+                              type="text"
+                              placeholder="Medical registration number"
+                              value={formData.registration_number}
+                              onChange={(e) => setFormData({ ...formData, registration_number: e.target.value })}
+                              className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2"
+                              style={{
+                                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                              }}
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Type *</label>
+                            <select
+                              required
+                              value={formData.consultant_type}
+                              onChange={(e) => setFormData({ ...formData, consultant_type: e.target.value })}
+                              className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2"
+                              style={{
+                                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                              }}
+                            >
+                              <option value="Locum">Locum</option>
+                              <option value="Visiting">Visiting</option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                            <select
+                              value={formData.department_id}
+                              onChange={(e) => setFormData({ ...formData, department_id: parseInt(e.target.value) || '' })}
+                              className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2"
+                              style={{
+                                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                              }}
+                            >
+                              <option value="">Select Department</option>
+                              {departments.map((dept) => (
+                                <option key={dept.id} value={dept.id}>{dept.name}</option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                            <select
+                              value={formData.status}
+                              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                              className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2"
+                              style={{
+                                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                              }}
+                            >
+                              <option value="Active">Active</option>
+                              <option value="Inactive">Inactive</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">Specialization</label>
-                      <input
-                        type="text"
-                        value={formData.specialization}
-                        onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
-                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                      />
+                    {/* Contact Details */}
+                    <div className="rounded-xl p-6 relative overflow-hidden border" style={{
+                      background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+                      borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                    }}>
+                      <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
+                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                        transform: 'translate(30%, -30%)'
+                      }}></div>
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-2 mb-4">
+                          <Phone className="w-5 h-5" style={{
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }} />
+                          <h4 className="font-semibold text-gray-900">Contact Details</h4>
+                        </div>
+                        
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                            <input
+                              type="tel"
+                              placeholder="e.g., +1 234 567 8900"
+                              value={formData.contact_details.phone}
+                              onChange={(e) => setFormData({
+                                ...formData,
+                                contact_details: { ...formData.contact_details, phone: e.target.value }
+                              })}
+                              className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2"
+                              style={{
+                                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                              }}
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input
+                              type="email"
+                              placeholder="e.g., doctor@example.com"
+                              value={formData.contact_details.email}
+                              onChange={(e) => setFormData({
+                                ...formData,
+                                contact_details: { ...formData.contact_details, email: e.target.value }
+                              })}
+                              className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2"
+                              style={{
+                                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                              }}
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                            <textarea
+                              placeholder="Full address"
+                              value={formData.contact_details.address}
+                              onChange={(e) => setFormData({
+                                ...formData,
+                                contact_details: { ...formData.contact_details, address: e.target.value }
+                              })}
+                              rows={4}
+                              className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2 resize-none"
+                              style={{
+                                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">Registration Number</label>
-                      <input
-                        type="text"
-                        value={formData.registration_number}
-                        onChange={(e) => setFormData({ ...formData, registration_number: e.target.value })}
-                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">Type *</label>
-                      <select
-                        required
-                        value={formData.consultant_type}
-                        onChange={(e) => setFormData({ ...formData, consultant_type: e.target.value })}
-                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                      >
-                        <option value="Locum">Locum</option>
-                        <option value="Visiting">Visiting</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">Department</label>
-                      <select
-                        value={formData.department_id}
-                        onChange={(e) => setFormData({ ...formData, department_id: parseInt(e.target.value) || '' })}
-                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                      >
-                        <option value="">Select Department</option>
-                        {departments.map((dept) => (
-                          <option key={dept.id} value={dept.id}>{dept.name}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">Status</label>
-                      <select
-                        value={formData.status}
-                        onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                      >
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">Phone</label>
-                      <input
-                        type="tel"
-                        value={formData.contact_details.phone}
-                        onChange={(e) => setFormData({
-                          ...formData,
-                          contact_details: { ...formData.contact_details, phone: e.target.value }
-                        })}
-                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">Email</label>
-                      <input
-                        type="email"
-                        value={formData.contact_details.email}
-                        onChange={(e) => setFormData({
-                          ...formData,
-                          contact_details: { ...formData.contact_details, email: e.target.value }
-                        })}
-                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end space-x-3 pt-4 border-t border-black">
+                  <div className="flex justify-end space-x-3 mt-6">
                     <button
                       type="button"
                       onClick={resetForm}
-                      className="px-4 py-2 border border-black rounded-lg text-gray-900 hover:bg-gray-100 font-semibold"
+                      className="px-6 py-2 border rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
+                      style={{
+                        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}40`
+                      }}
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-2 text-white rounded-lg transition-colors border border-black font-semibold"
+                      className="px-6 py-2 text-white rounded-lg font-medium"
                       style={{
-                        backgroundColor: 'var(--primary-color, #4575b5)'
+                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                       }}
                       onMouseEnter={(e) => {
-                        e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                        e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                       }}
                       onMouseLeave={(e) => {
-                        e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                        e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                       }}
                     >
-                      {editingConsultant ? 'Update' : 'Create'}
+                      {editingConsultant ? 'Update Consultant' : 'Add Consultant'}
                     </button>
                   </div>
                 </form>
@@ -1213,93 +1329,140 @@ const LocumConsultants = () => {
         {/* Availability Modal */}
         {showAvailabilityModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl border border-black shadow-lg w-full max-w-md">
+            <div className="bg-white rounded-2xl shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto border" style={{
+              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
               <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-6 border-b border-black pb-3">Add Availability</h3>
-                <form onSubmit={handleAvailabilitySubmit} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">Consultant *</label>
-                    <select
-                      required
-                      value={availabilityData.consultant_id}
-                      onChange={(e) => setAvailabilityData({ ...availabilityData, consultant_id: parseInt(e.target.value) })}
-                      className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                    >
-                      <option value="">Select Consultant</option>
-                      {consultants.map((consultant) => (
-                        <option key={consultant.id} value={consultant.id}>{consultant.name}</option>
-                      ))}
-                    </select>
-                  </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Add Availability</h3>
+                <p className="text-sm text-gray-600 mb-6">Schedule consultant availability for OPD, Surgery, or On-call</p>
+                
+                <form onSubmit={handleAvailabilitySubmit}>
+                  <div className="rounded-xl p-6 relative overflow-hidden border mb-6" style={{
+                    background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+                    borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
+                    <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                      transform: 'translate(30%, -30%)'
+                    }}></div>
+                    <div className="relative z-10">
+                      <div className="flex items-center gap-2 mb-4">
+                        <Calendar className="w-5 h-5" style={{
+                          color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        }} />
+                        <h4 className="font-semibold text-gray-900">Schedule Details</h4>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Consultant *</label>
+                          <select
+                            required
+                            value={availabilityData.consultant_id}
+                            onChange={(e) => setAvailabilityData({ ...availabilityData, consultant_id: parseInt(e.target.value) })}
+                            className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2"
+                            style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                            }}
+                          >
+                            <option value="">Select Consultant</option>
+                            {consultants.map((consultant) => (
+                              <option key={consultant.id} value={consultant.id}>{consultant.name}</option>
+                            ))}
+                          </select>
+                        </div>
 
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">Date *</label>
-                    <input
-                      type="date"
-                      required
-                      value={availabilityData.date}
-                      onChange={(e) => setAvailabilityData({ ...availabilityData, date: e.target.value })}
-                      className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                    />
-                  </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Date *</label>
+                          <input
+                            type="date"
+                            required
+                            value={availabilityData.date}
+                            onChange={(e) => setAvailabilityData({ ...availabilityData, date: e.target.value })}
+                            className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2"
+                            style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                            }}
+                          />
+                        </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">From Time *</label>
-                      <input
-                        type="time"
-                        required
-                        value={availabilityData.from_time}
-                        onChange={(e) => setAvailabilityData({ ...availabilityData, from_time: e.target.value })}
-                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                      />
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">From Time *</label>
+                            <input
+                              type="time"
+                              required
+                              value={availabilityData.from_time}
+                              onChange={(e) => setAvailabilityData({ ...availabilityData, from_time: e.target.value })}
+                              className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2"
+                              style={{
+                                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                              }}
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">To Time *</label>
+                            <input
+                              type="time"
+                              required
+                              value={availabilityData.to_time}
+                              onChange={(e) => setAvailabilityData({ ...availabilityData, to_time: e.target.value })}
+                              className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2"
+                              style={{
+                                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                              }}
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Type *</label>
+                          <select
+                            required
+                            value={availabilityData.availability_type}
+                            onChange={(e) => setAvailabilityData({ ...availabilityData, availability_type: e.target.value })}
+                            className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2"
+                            style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                            }}
+                          >
+                            <option value="OPD">OPD</option>
+                            <option value="Surgery">Surgery</option>
+                            <option value="On-call">On-call</option>
+                          </select>
+                        </div>
+                      </div>
                     </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">To Time *</label>
-                      <input
-                        type="time"
-                        required
-                        value={availabilityData.to_time}
-                        onChange={(e) => setAvailabilityData({ ...availabilityData, to_time: e.target.value })}
-                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                      />
-                    </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">Type *</label>
-                    <select
-                      required
-                      value={availabilityData.availability_type}
-                      onChange={(e) => setAvailabilityData({ ...availabilityData, availability_type: e.target.value })}
-                      className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                    >
-                      <option value="OPD">OPD</option>
-                      <option value="Surgery">Surgery</option>
-                      <option value="On-call">On-call</option>
-                    </select>
-                  </div>
-
-                  <div className="flex justify-end space-x-3 pt-4 border-t border-black">
+                  <div className="flex justify-end space-x-3">
                     <button
                       type="button"
                       onClick={resetAvailabilityForm}
-                      className="px-4 py-2 border border-black rounded-lg text-gray-900 hover:bg-gray-100 font-semibold"
+                      className="px-6 py-2 border rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
+                      style={{
+                        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}40`
+                      }}
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-2 text-white rounded-lg transition-colors border border-black font-semibold"
+                      className="px-6 py-2 text-white rounded-lg font-medium"
                       style={{
-                        backgroundColor: 'var(--primary-color, #4575b5)'
+                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                       }}
                       onMouseEnter={(e) => {
-                        e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                        e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                       }}
                       onMouseLeave={(e) => {
-                        e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                        e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                       }}
                     >
                       Add Availability
@@ -1314,115 +1477,188 @@ const LocumConsultants = () => {
         {/* Payout Modal */}
         {showPayoutModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl border border-black shadow-lg w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-2xl shadow-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto border" style={{
+              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
               <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-6 border-b border-black pb-3">Add Payout</h3>
-                <form onSubmit={handlePayoutSubmit} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">Consultant *</label>
-                    <select
-                      required
-                      value={payoutData.consultant_id}
-                      onChange={(e) => setPayoutData({ ...payoutData, consultant_id: parseInt(e.target.value) })}
-                      className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                    >
-                      <option value="">Select Consultant</option>
-                      {consultants.map((consultant) => (
-                        <option key={consultant.id} value={consultant.id}>{consultant.name}</option>
-                      ))}
-                    </select>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Add Payout</h3>
+                <p className="text-sm text-gray-600 mb-6">Record consultant payout details for the specified period</p>
+                
+                <form onSubmit={handlePayoutSubmit}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Period & Consultant */}
+                    <div className="rounded-xl p-6 relative overflow-hidden border" style={{
+                      background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+                      borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                    }}>
+                      <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
+                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                        transform: 'translate(30%, -30%)'
+                      }}></div>
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-2 mb-4">
+                          <Calendar className="w-5 h-5" style={{
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }} />
+                          <h4 className="font-semibold text-gray-900">Period Details</h4>
+                        </div>
+                        
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Consultant *</label>
+                            <select
+                              required
+                              value={payoutData.consultant_id}
+                              onChange={(e) => setPayoutData({ ...payoutData, consultant_id: parseInt(e.target.value) })}
+                              className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2"
+                              style={{
+                                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                              }}
+                            >
+                              <option value="">Select Consultant</option>
+                              {consultants.map((consultant) => (
+                                <option key={consultant.id} value={consultant.id}>{consultant.name}</option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Period Start *</label>
+                            <input
+                              type="date"
+                              required
+                              value={payoutData.period_start}
+                              onChange={(e) => setPayoutData({ ...payoutData, period_start: e.target.value })}
+                              className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2"
+                              style={{
+                                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                              }}
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Period End *</label>
+                            <input
+                              type="date"
+                              required
+                              value={payoutData.period_end}
+                              onChange={(e) => setPayoutData({ ...payoutData, period_end: e.target.value })}
+                              className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2"
+                              style={{
+                                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Financial Details */}
+                    <div className="rounded-xl p-6 relative overflow-hidden border" style={{
+                      background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+                      borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                    }}>
+                      <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
+                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                        transform: 'translate(30%, -30%)'
+                      }}></div>
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-2 mb-4">
+                          <DollarSign className="w-5 h-5" style={{
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }} />
+                          <h4 className="font-semibold text-gray-900">Financial Details</h4>
+                        </div>
+                        
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Total Cases</label>
+                            <input
+                              type="number"
+                              value={payoutData.total_cases}
+                              onChange={(e) => setPayoutData({ ...payoutData, total_cases: parseInt(e.target.value) || 0 })}
+                              className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2"
+                              style={{
+                                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                              }}
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Total Revenue</label>
+                            <input
+                              type="number"
+                              step="0.01"
+                              value={payoutData.total_revenue}
+                              onChange={(e) => setPayoutData({ ...payoutData, total_revenue: parseFloat(e.target.value) || 0 })}
+                              className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2"
+                              style={{
+                                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                              }}
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Consultant Share</label>
+                            <input
+                              type="number"
+                              step="0.01"
+                              value={payoutData.consultant_share}
+                              onChange={(e) => setPayoutData({ ...payoutData, consultant_share: parseFloat(e.target.value) || 0 })}
+                              className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2"
+                              style={{
+                                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                              }}
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Hospital Share</label>
+                            <input
+                              type="number"
+                              step="0.01"
+                              value={payoutData.hospital_share}
+                              onChange={(e) => setPayoutData({ ...payoutData, hospital_share: parseFloat(e.target.value) || 0 })}
+                              className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2"
+                              style={{
+                                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">Period Start *</label>
-                      <input
-                        type="date"
-                        required
-                        value={payoutData.period_start}
-                        onChange={(e) => setPayoutData({ ...payoutData, period_start: e.target.value })}
-                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">Period End *</label>
-                      <input
-                        type="date"
-                        required
-                        value={payoutData.period_end}
-                        onChange={(e) => setPayoutData({ ...payoutData, period_end: e.target.value })}
-                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">Total Cases</label>
-                      <input
-                        type="number"
-                        value={payoutData.total_cases}
-                        onChange={(e) => setPayoutData({ ...payoutData, total_cases: parseInt(e.target.value) || 0 })}
-                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">Total Revenue</label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={payoutData.total_revenue}
-                        onChange={(e) => setPayoutData({ ...payoutData, total_revenue: parseFloat(e.target.value) || 0 })}
-                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">Consultant Share</label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={payoutData.consultant_share}
-                        onChange={(e) => setPayoutData({ ...payoutData, consultant_share: parseFloat(e.target.value) || 0 })}
-                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">Hospital Share</label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={payoutData.hospital_share}
-                        onChange={(e) => setPayoutData({ ...payoutData, hospital_share: parseFloat(e.target.value) || 0 })}
-                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end space-x-3 pt-4 border-t border-black">
+                  <div className="flex justify-end space-x-3 mt-6">
                     <button
                       type="button"
                       onClick={resetPayoutForm}
-                      className="px-4 py-2 border border-black rounded-lg text-gray-900 hover:bg-gray-100 font-semibold"
+                      className="px-6 py-2 border rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
+                      style={{
+                        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}40`
+                      }}
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-2 text-white rounded-lg transition-colors border border-black font-semibold"
+                      className="px-6 py-2 text-white rounded-lg font-medium"
                       style={{
-                        backgroundColor: 'var(--primary-color, #4575b5)'
+                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                       }}
                       onMouseEnter={(e) => {
-                        e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                        e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                       }}
                       onMouseLeave={(e) => {
-                        e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                        e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                       }}
                     >
                       Add Payout

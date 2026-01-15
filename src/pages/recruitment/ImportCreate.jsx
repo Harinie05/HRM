@@ -215,9 +215,10 @@ export default function ImportCandidates() {
 
                 {/* Job selection */}
                 <select
-                  className="border-0 p-2 rounded w-full text-sm sm:text-base focus:outline-none focus:ring-2"
+                  className="p-2 rounded w-full text-sm sm:text-base focus:outline-none focus:ring-2"
                   style={{
-                    focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                   }}
                   value={form.job_id}
                   onChange={(e) => setForm({ ...form, job_id: e.target.value })}
@@ -233,9 +234,10 @@ export default function ImportCandidates() {
                 <input
                   type="text"
                   placeholder="Candidate Name"
-                  className="border-0 p-2 rounded w-full text-sm sm:text-base focus:outline-none focus:ring-2"
+                  className="p-2 rounded w-full text-sm sm:text-base focus:outline-none focus:ring-2"
                   style={{
-                    focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                   }}
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -244,7 +246,11 @@ export default function ImportCandidates() {
                 <input
                   type="email"
                   placeholder="Email"
-                  className="border border-black p-2 rounded w-full text-sm sm:text-base"
+                  className="p-2 rounded w-full text-sm sm:text-base focus:outline-none focus:ring-2"
+                  style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                  }}
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                 />
@@ -252,7 +258,11 @@ export default function ImportCandidates() {
                 <input
                   type="text"
                   placeholder="Phone Number"
-                  className="border border-black p-2 rounded w-full text-sm sm:text-base"
+                  className="p-2 rounded w-full text-sm sm:text-base focus:outline-none focus:ring-2"
+                  style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                  }}
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 />
@@ -260,7 +270,11 @@ export default function ImportCandidates() {
                 <input
                   type="text"
                   placeholder="Experience (e.g. 2 years)"
-                  className="border border-black p-2 rounded w-full text-sm sm:text-base"
+                  className="p-2 rounded w-full text-sm sm:text-base focus:outline-none focus:ring-2"
+                  style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                  }}
                   value={form.experience}
                   onChange={(e) =>
                     setForm({ ...form, experience: e.target.value })
@@ -269,7 +283,11 @@ export default function ImportCandidates() {
 
                 <textarea
                   placeholder="Skills"
-                  className="border border-black p-2 rounded w-full h-20 text-sm sm:text-base"
+                  className="p-2 rounded w-full h-20 text-sm sm:text-base focus:outline-none focus:ring-2"
+                  style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                  }}
                   value={form.skills}
                   onChange={(e) => setForm({ ...form, skills: e.target.value })}
                 />
@@ -279,7 +297,11 @@ export default function ImportCandidates() {
                   <label className="text-sm font-medium">Upload Resume</label>
                   <input
                     type="file"
-                    className="border border-black p-2 rounded w-full text-sm"
+                    className="p-2 rounded w-full text-sm focus:outline-none focus:ring-2"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     onChange={(e) => setResumeFile(e.target.files[0])}
                   />
                 </div>

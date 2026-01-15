@@ -709,10 +709,19 @@ export default function Roles() {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Hero Header matching Dashboard */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
-          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        <div className="rounded-2xl shadow-sm p-4 sm:p-6 relative overflow-hidden border" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
         }}>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 relative z-10">
             <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -730,7 +739,9 @@ export default function Roles() {
               </div>
             </div>
             <div className="flex gap-2 sm:gap-3 flex-shrink-0">
-              <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
+              <div className="bg-white rounded-lg p-2 sm:p-3 shadow-sm border" style={{
+                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
                 <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -739,7 +750,9 @@ export default function Roles() {
                 </div>
                 <p className="text-sm font-semibold text-gray-900">{roles.length}</p>
               </div>
-              <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
+              <div className="bg-white rounded-lg p-2 sm:p-3 shadow-sm border" style={{
+                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
                 <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
@@ -754,7 +767,10 @@ export default function Roles() {
 
         {/* Key Performance Indicators matching Dashboard */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Roles</p>
@@ -773,7 +789,10 @@ export default function Roles() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Permissions</p>
@@ -792,7 +811,10 @@ export default function Roles() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Filtered Results</p>
@@ -811,7 +833,10 @@ export default function Roles() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">System Status</p>
@@ -834,8 +859,19 @@ export default function Roles() {
         </div>
 
         {/* Role Management Section */}
-        <div className="bg-white rounded-xl border-0 shadow-sm">
-          <div className="p-5 border-b-0">
+        <div className="bg-white rounded-xl shadow-sm relative overflow-hidden border" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
+          <div className="p-5 border-b-0 relative z-10">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg" style={{
@@ -860,9 +896,10 @@ export default function Roles() {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-3 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                  className="px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                   style={{
-                    focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                   }}
                 >
                   <option value="active">Active</option>
@@ -879,9 +916,10 @@ export default function Roles() {
                   placeholder="Search name or description..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 w-full border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                  className="pl-10 pr-4 py-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                   style={{
-                    focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                   }}
                 />
               </div>
@@ -911,7 +949,18 @@ export default function Roles() {
         </div>
 
         {/* Role List */}
-        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden relative border" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
           {filteredRoles.length === 0 ? (
             <div className="p-16 text-center">
               <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -926,7 +975,14 @@ export default function Roles() {
             <div className="p-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {filteredRoles.map((role, index) => (
-                  <div key={role.id} className="bg-white border-0 rounded-xl p-4 hover:shadow-md transition-all duration-300 group">
+                  <div key={role.id} className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-300 group relative overflow-hidden border" style={{
+                    background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+                    borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
+                    <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                      transform: 'translate(30%, -30%)'
+                    }}></div>
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3 min-w-0 flex-1">
                         <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{
@@ -1066,7 +1122,11 @@ export default function Roles() {
                       placeholder="Enter role name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                     />
                   </div>
 
@@ -1077,7 +1137,11 @@ export default function Roles() {
                       value={desc}
                       onChange={(e) => setDesc(e.target.value)}
                       rows={4}
-                      className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
+                      className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                     />
                   </div>
                 </div>
@@ -1126,14 +1190,22 @@ export default function Roles() {
                         placeholder="Search permissions..."
                         value={permissionSearch}
                         onChange={(e) => setPermissionSearch(e.target.value)}
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                        }}
                       />
                     </div>
                     <div className="w-48">
                       <select
                         value={moduleFilter}
                         onChange={(e) => setModuleFilter(e.target.value)}
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                        }}
                       >
                         <option value="">All Modules</option>
                         <option value="organization_setup">🏢 Organization Setup</option>
@@ -1173,7 +1245,7 @@ export default function Roles() {
                             <div className="space-y-2 mt-3">
                               {getFilteredPermissions(permissionSearch, moduleFilter).map((p) => (
                                 <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                                  <input
+                                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                     type="checkbox"
                                     checked={selectedPerms.includes(p.name)}
                                     onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1191,7 +1263,7 @@ export default function Roles() {
                           <div className="space-y-2">
                             {getFilteredPermissions(permissionSearch, moduleFilter).map((p) => (
                               <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                                <input
+                                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                   type="checkbox"
                                   checked={selectedPerms.includes(p.name)}
                                   onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1213,7 +1285,7 @@ export default function Roles() {
                                   <span>🌐</span> GLOBAL PERMISSIONS
                                 </h4>
                                 <label className="flex items-center gap-2 cursor-pointer">
-                                  <input
+                                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                     type="checkbox"
                                     checked={getGlobalPerms().every(perm => selectedPerms.includes(perm))}
                                     onChange={() => handleSelectAllSection(
@@ -1231,7 +1303,7 @@ export default function Roles() {
                                   p.name === 'view_self'
                                 ).map((p) => (
                                   <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                                    <input
+                                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                       type="checkbox"
                                       checked={selectedPerms.includes(p.name)}
                                       onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1255,7 +1327,7 @@ export default function Roles() {
                               <span>👥</span> USER MANAGEMENT
                             </h4>
                             <label className="flex items-center gap-2 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={getUserManagementPerms().every(perm => selectedPerms.includes(perm))}
                                 onChange={() => handleSelectAllSection(
@@ -1274,7 +1346,7 @@ export default function Roles() {
                               p.name !== 'view_department' && p.name !== 'view_self'
                             ).map((p) => (
                               <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                                <input
+                                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                   type="checkbox"
                                   checked={selectedPerms.includes(p.name)}
                                   onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1296,7 +1368,7 @@ export default function Roles() {
                               <span>👤</span> EMPLOYEE MANAGEMENT
                             </h4>
                             <label className="flex items-center gap-2 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={getEmployeeManagementPerms().every(perm => selectedPerms.includes(perm))}
                                 onChange={() => handleSelectAllSection(
@@ -1315,7 +1387,7 @@ export default function Roles() {
                               p.name === 'create_employee_code' || p.name === 'view_employee_profile' || p.name === 'view_all'
                             ).map((p) => (
                               <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                                <input
+                                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                   type="checkbox"
                                   checked={selectedPerms.includes(p.name)}
                                   onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1337,7 +1409,7 @@ export default function Roles() {
                               <span>🏢</span> ORGANIZATION SETUP
                             </h4>
                             <label className="flex items-center gap-2 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={getOrganizationSetupPerms().every(perm => selectedPerms.includes(perm))}
                                 onChange={() => handleSelectAllSection(
@@ -1357,7 +1429,7 @@ export default function Roles() {
                               p.name.includes('designation')
                             ).map((p) => (
                               <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                                <input
+                                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                   type="checkbox"
                                   checked={selectedPerms.includes(p.name)}
                                   onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1381,7 +1453,7 @@ export default function Roles() {
                           <span>📊</span> REPORTING STRUCTURE
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getReportingStructurePerms().every(perm => selectedPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -1408,7 +1480,7 @@ export default function Roles() {
                           p.name !== 'view_reporting_details'
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
+                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               type="checkbox"
                               checked={selectedPerms.includes(p.name)}
                               onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1430,7 +1502,7 @@ export default function Roles() {
                           <span>📅</span> HOLIDAY CALENDAR
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getHolidayCalendarPerms().every(perm => selectedPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -1448,7 +1520,7 @@ export default function Roles() {
                           p.name.includes('holiday')
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
+                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               type="checkbox"
                               checked={selectedPerms.includes(p.name)}
                               onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1470,7 +1542,7 @@ export default function Roles() {
                           <span>💼</span> JOB REQUISITION
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getJobRequisitionPerms().every(perm => selectedPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -1488,7 +1560,7 @@ export default function Roles() {
                           p.name.includes('job_requisition')
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
+                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               type="checkbox"
                               checked={selectedPerms.includes(p.name)}
                               onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1510,7 +1582,7 @@ export default function Roles() {
                           <span>🎯</span> RECRUITMENT SETUP
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getRecruitmentSetupPerms().every(perm => selectedPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -1528,7 +1600,7 @@ export default function Roles() {
                           p.name.includes('candidates') || p.name.includes('screen_candidates') || p.name === 'publish_job' || p.name === 'generate_job_link'
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
+                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               type="checkbox"
                               checked={selectedPerms.includes(p.name)}
                               onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1549,7 +1621,7 @@ export default function Roles() {
                             p.name === 'view_candidate' || p.name === 'select_candidates' || p.name === 'schedule_interviews' || p.name === 'view_resumes' || p.name === 'view_ats_pipeline'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1571,7 +1643,7 @@ export default function Roles() {
                             p.name === 'move_candidates' || p.name === 'view_active_jobs' || p.name === 'view_ats_candidates'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1594,7 +1666,7 @@ export default function Roles() {
                           <span>📄</span> OFFERS & CONTRACTS
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getOffersContractsPerms().every(perm => selectedPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -1612,7 +1684,7 @@ export default function Roles() {
                           p.name === 'generate_offer_link' || p.name === 'verify_documents' || p.name === 'view_documents' || p.name === 'manage_bgv' || p.name === 'start_onboarding' || p.name === 'mark_onboarded' || p.name === 'view_offers_sent' || p.name === 'view_selected_candidates'
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
+                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               type="checkbox"
                               checked={selectedPerms.includes(p.name)}
                               onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1634,7 +1706,7 @@ export default function Roles() {
                           <span>🎓</span> ONBOARDING
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getOnboardingPerms().every(perm => selectedPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -1652,7 +1724,7 @@ export default function Roles() {
                           p.name === 'view_onboarding_documents' || p.name === 'view_onboarding_candidates' || p.name === 'view_document_collected' || p.name === 'add_document_collected' || p.name === 'start_onboarding' || p.name === 'mark_onboarded'
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
+                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               type="checkbox"
                               checked={selectedPerms.includes(p.name)}
                               onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1674,7 +1746,7 @@ export default function Roles() {
                           <span>🩺</span> CONSULTANTS
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getConsultantsPerms().every(perm => selectedPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -1694,7 +1766,7 @@ export default function Roles() {
                             p.name === 'view_consultants' || p.name === 'add_consultant' || p.name === 'edit_consultant' || p.name === 'delete_consultant'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1716,7 +1788,7 @@ export default function Roles() {
                             p.name === 'view_availability' || p.name === 'add_availability'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1738,7 +1810,7 @@ export default function Roles() {
                             p.name === 'view_payouts' || p.name === 'generate_payslip' || p.name === 'send_payslip_email' || p.name === 'process_payroll'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1761,7 +1833,7 @@ export default function Roles() {
                           <span>🚪</span> EXIT MANAGEMENT
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getExitManagementPerms().every(perm => selectedPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -1780,7 +1852,7 @@ export default function Roles() {
                           p.name === 'manage_handover' || p.name === 'manage_clearance' || p.name === 'manage_assets' || p.name === 'manage_settlement'
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
+                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               type="checkbox"
                               checked={selectedPerms.includes(p.name)}
                               onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1801,7 +1873,7 @@ export default function Roles() {
                             p.name === 'hr_clearance' || p.name === 'it_clearance' || p.name === 'finance_clearance' || p.name === 'admin_clearance'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1823,7 +1895,7 @@ export default function Roles() {
                             p.name === 'conduct_exit_interview' || p.name === 'view_exit_interviews'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1845,7 +1917,7 @@ export default function Roles() {
                             p.name === 'view_kt_plans' || p.name === 'add_kt_plan' || p.name === 'create_kt_plan' || p.name === 'complete_kt_items' || p.name === 'hr_approve_kt' || p.name === 'manager_approve_kt'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1867,7 +1939,7 @@ export default function Roles() {
                             p.name === 'view_settlements' || p.name === 'calculate_settlements' || p.name === 'approve_settlements' || p.name === 'generate_experience_letter' || p.name === 'edit_experience_letter' || p.name === 'download_settlement_pdf'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1890,7 +1962,7 @@ export default function Roles() {
                           <span>💰</span> STATUTORY RULES & COMPLIANCE
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getStatutoryCompliancePerms().every(perm => selectedPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -1910,7 +1982,7 @@ export default function Roles() {
                             p.name === 'view_statutory_calculations' || p.name === 'add_statutory_calculation' || p.name === 'edit_statutory_calculation' || p.name === 'delete_statutory_calculation' || p.name === 'view_deleted_statutory' || p.name === 'restore_statutory_calculation'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1932,7 +2004,7 @@ export default function Roles() {
                             p.name === 'view_labour_register' || p.name === 'add_labour_register' || p.name === 'edit_labour_register' || p.name === 'delete_labour_register' || p.name === 'view_deleted_labour_register' || p.name === 'restore_labour_register'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1954,7 +2026,7 @@ export default function Roles() {
                             p.name === 'view_leave_compliance' || p.name === 'add_leave_compliance' || p.name === 'edit_leave_compliance' || p.name === 'delete_leave_compliance' || p.name === 'view_deleted_leave_compliance' || p.name === 'restore_leave_compliance'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1976,7 +2048,7 @@ export default function Roles() {
                             p.name === 'view_nabh_compliance' || p.name === 'add_nabh_compliance' || p.name === 'edit_nabh_compliance' || p.name === 'delete_nabh_compliance' || p.name === 'view_deleted_nabh_compliance' || p.name === 'restore_nabh_compliance'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -1999,7 +2071,7 @@ export default function Roles() {
                           <span>🎓</span> TRAINING & DEVELOPMENT
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getTrainingDevelopmentPerms().every(perm => selectedPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -2019,7 +2091,7 @@ export default function Roles() {
                             p.name === 'view_training_programs' || p.name === 'add_training_program' || p.name === 'edit_training_program' || p.name === 'delete_training_program' || p.name === 'generate_training_link'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2041,7 +2113,7 @@ export default function Roles() {
                             p.name === 'view_enrolled_trainees' || p.name === 'approve_training_applications' || p.name === 'select_send_training_emails'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2063,7 +2135,7 @@ export default function Roles() {
                             p.name === 'view_training_calendar' || p.name === 'add_training_schedule' || p.name === 'edit_training_schedule' || p.name === 'delete_training_schedule'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2085,7 +2157,7 @@ export default function Roles() {
                             p.name === 'view_training_requests' || p.name === 'add_training_request' || p.name === 'approve_training_request' || p.name === 'reject_training_request'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2107,7 +2179,7 @@ export default function Roles() {
                             p.name === 'view_training_attendance' || p.name === 'mark_training_attendance' || p.name === 'update_attendance_training'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2129,7 +2201,7 @@ export default function Roles() {
                             p.name === 'view_training_certificates' || p.name === 'generate_training_certificate' || p.name === 'download_training_certificate' || p.name === 'email_training_certificate'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2152,7 +2224,7 @@ export default function Roles() {
                           <span>📊</span> PERFORMANCE MANAGEMENT SYSTEM
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getPerformanceManagementPerms().every(perm => selectedPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -2172,7 +2244,7 @@ export default function Roles() {
                             p.name === 'view_work_assignments' || p.name === 'add_work_assignment' || p.name === 'edit_work_assignment' || p.name === 'delete_work_assignment' || p.name === 'view_deleted_work_assignments' || p.name === 'restore_work_assignment' || p.name === 'assign_to_employees'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2194,7 +2266,7 @@ export default function Roles() {
                             p.name === 'view_goals_kpi'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2216,7 +2288,7 @@ export default function Roles() {
                             p.name === 'view_review_cycles' || p.name === 'create_review_cycle' || p.name === 'edit_review_cycle' || p.name === 'delete_review_cycle' || p.name === 'view_deleted_review_cycles' || p.name === 'restore_review_cycle'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2238,7 +2310,7 @@ export default function Roles() {
                             p.name === 'view_feedback' || p.name === 'give_feedback' || p.name === 'view_360_feedback' || p.name === 'edit_feedback' || p.name === 'delete_feedback' || p.name === 'restore_feedback' || p.name === 'show_deleted_feedback'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2260,7 +2332,7 @@ export default function Roles() {
                             p.name === 'view_appraisals' || p.name === 'add_appraisal' || p.name === 'edit_appraisal' || p.name === 'delete_appraisal' || p.name === 'restore_appraisal' || p.name === 'show_deleted_appraisals'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2282,7 +2354,7 @@ export default function Roles() {
                             p.name === 'view_quality_indicators' || p.name === 'add_quality_indicator' || p.name === 'edit_quality_indicator' || p.name === 'delete_quality_indicator' || p.name === 'measure_quality_metrics' || p.name === 'restore_quality_indicator' || p.name === 'show_deleted_quality_indicators'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2305,7 +2377,7 @@ export default function Roles() {
                           <span>🕐</span> SHIFT & ROSTER MANAGEMENT
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getShiftRosterPerms().every(perm => selectedPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -2325,7 +2397,7 @@ export default function Roles() {
                             p.name === 'view_shifts' || p.name === 'add_shift' || p.name === 'edit_shift' || p.name === 'delete_shift'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2348,7 +2420,7 @@ export default function Roles() {
                             p.name === 'manage_on_call_duty' || p.name === 'view_weekly_roster' || p.name === 'manage_weekly_roster'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2371,7 +2443,7 @@ export default function Roles() {
                           <span>🕐</span> ATTENDANCE MANAGEMENT
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getAttendanceManagementPerms().every(perm => selectedPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -2391,7 +2463,7 @@ export default function Roles() {
                             p.name === 'view_attendance' || p.name === 'mark_attendance' || p.name === 'approve_attendance' || p.name === 'view_attendance_reports' || p.name === 'generate_attendance_reports' || p.name === 'export_attendance_data'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2413,7 +2485,7 @@ export default function Roles() {
                             p.name === 'view_punch_logs' || p.name === 'punch_in' || p.name === 'punch_out'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2436,7 +2508,7 @@ export default function Roles() {
                             p.name === 'view_od_applications' || p.name === 'apply_od' || p.name === 'approve_od' || p.name === 'reject_od' || p.name === 'edit_od_applications'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2459,7 +2531,7 @@ export default function Roles() {
                             p.name === 'view_attendance_rules' || p.name === 'add_attendance_rule' || p.name === 'edit_attendance_rule' || p.name === 'delete_attendance_rule' || p.name === 'view_attendance_locations' || p.name === 'add_attendance_location' || p.name === 'edit_attendance_location' || p.name === 'delete_attendance_location'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2481,7 +2553,7 @@ export default function Roles() {
                             p.name === 'apply_attendance_permission' || p.name === 'view_attendance_permission' || p.name === 'approve_attendance_permission' || p.name === 'reject_attendance_permission'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2503,7 +2575,7 @@ export default function Roles() {
                             p.name === 'view_daily_updates' || p.name === 'add_daily_update' || p.name === 'edit_daily_update' || p.name === 'delete_daily_update'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2531,7 +2603,7 @@ export default function Roles() {
                             p.name === 'view_lifecycle_actions' || p.name === 'add_lifecycle_action' || p.name === 'edit_lifecycle_action' || p.name === 'delete_lifecycle_action' || p.name === 'approve_lifecycle_action' || p.name === 'restore_lifecycle_action' || p.name === 'show_deleted_lifecycle_actions'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2553,7 +2625,7 @@ export default function Roles() {
                             p.name === 'view_hr_letters' || p.name === 'add_hr_letter' || p.name === 'edit_hr_letter' || p.name === 'delete_hr_letter' || p.name === 'print_hr_letter' || p.name === 'restore_hr_letter' || p.name === 'show_deleted_hr_letters'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2575,7 +2647,7 @@ export default function Roles() {
                             p.name === 'view_grievances' || p.name === 'add_grievance' || p.name === 'edit_grievance' || p.name === 'delete_grievance' || p.name === 'assign_grievance' || p.name === 'resolve_grievance' || p.name === 'escalate_grievance' || p.name === 'restore_grievance' || p.name === 'show_deleted_grievances'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2597,7 +2669,7 @@ export default function Roles() {
                             p.name === 'view_assets' || p.name === 'add_asset' || p.name === 'edit_asset' || p.name === 'delete_asset' || p.name === 'assign_asset' || p.name === 'return_asset' || p.name === 'track_asset' || p.name === 'restore_asset' || p.name === 'show_deleted_assets' || p.name === 'approve_asset' || p.name === 'reject_asset'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2619,7 +2691,7 @@ export default function Roles() {
                             p.name === 'view_insurance_benefits' || p.name === 'add_insurance_benefit' || p.name === 'edit_insurance_benefit' || p.name === 'delete_insurance_benefit' || p.name === 'enroll_employee_benefits' || p.name === 'process_claims' || p.name === 'manage_beneficiaries' || p.name === 'add_insurance_policy' || p.name === 'delete_insurance_policy' || p.name === 'restore_insurance_benefit' || p.name === 'show_deleted_insurance_benefits'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2641,7 +2713,7 @@ export default function Roles() {
                             p.name === 'view_staff_schedules' || p.name === 'add_staff_schedule' || p.name === 'edit_staff_schedule' || p.name === 'delete_staff_schedule' || p.name === 'assign_shifts' || p.name === 'manage_shift_swaps' || p.name === 'approve_schedule_changes' || p.name === 'restore_staff_schedule' || p.name === 'show_deleted_staff_schedules'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2664,7 +2736,7 @@ export default function Roles() {
                           <span>📊</span> DASHBOARD PERMISSIONS
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getDashboardPerms().every(perm => selectedPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -2682,7 +2754,7 @@ export default function Roles() {
                           p.name === 'view_documents_alerts' || p.name === 'view_audit_log'
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
+                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               type="checkbox"
                               checked={selectedPerms.includes(p.name)}
                               onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2704,7 +2776,7 @@ export default function Roles() {
                           <span>💰</span> PAYROLL MANAGEMENT
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getPayrollManagementPerms().every(perm => selectedPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -2724,7 +2796,7 @@ export default function Roles() {
                             p.name === 'view_salary_structure' || p.name === 'add_salary_structure' || p.name === 'edit_salary_structure' || p.name === 'delete_salary_structure' || p.name === 'view_salary_structure_details' || p.name === 'link_employees_salary_structure'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2746,7 +2818,7 @@ export default function Roles() {
                             p.name === 'view_statutory_rules' || p.name === 'add_statutory_rule' || p.name === 'edit_statutory_rule' || p.name === 'delete_statutory_rule'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2768,7 +2840,7 @@ export default function Roles() {
                             p.name === 'view_payroll_run' || p.name === 'create_payroll_run' || p.name === 'process_payroll_run' || p.name === 'approve_payroll_run' || p.name === 'delete_payroll_run'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2790,7 +2862,7 @@ export default function Roles() {
                             p.name === 'view_payroll_adjustments' || p.name === 'add_payroll_adjustment' || p.name === 'edit_payroll_adjustment' || p.name === 'delete_payroll_adjustment' || p.name === 'approve_payroll_adjustment'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2812,7 +2884,7 @@ export default function Roles() {
                             p.name === 'view_salary_slips' || p.name === 'generate_salary_slips' || p.name === 'download_salary_slips' || p.name === 'email_salary_slips' || p.name === 'process_payments' || p.name === 'view_payment_status'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2834,7 +2906,7 @@ export default function Roles() {
                             p.name === 'view_payroll_reports' || p.name === 'generate_payroll_reports' || p.name === 'export_payroll_data' || p.name === 'view_compliance_reports' || p.name === 'generate_compliance_reports'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2857,7 +2929,7 @@ export default function Roles() {
                           <span>📅</span> LEAVE MANAGEMENT
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getLeaveManagementPerms().every(perm => selectedPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -2877,7 +2949,7 @@ export default function Roles() {
                             p.name === 'view_leave_types' || p.name === 'add_leave_type' || p.name === 'edit_leave_type' || p.name === 'delete_leave_type'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2899,7 +2971,7 @@ export default function Roles() {
                             p.name === 'view_leave_policies' || p.name === 'add_leave_policy' || p.name === 'edit_leave_policy' || p.name === 'delete_leave_policy' || p.name === 'assign_leave_policy'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2921,7 +2993,7 @@ export default function Roles() {
                             p.name === 'view_leave_rules' || p.name === 'add_leave_rule' || p.name === 'edit_leave_rule' || p.name === 'delete_leave_rule'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2943,7 +3015,7 @@ export default function Roles() {
                             p.name === 'view_leave_applications' || p.name === 'apply_leave' || p.name === 'edit_leave_application' || p.name === 'cancel_leave_application' || p.name === 'approve_leave' || p.name === 'reject_leave'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2965,7 +3037,7 @@ export default function Roles() {
                             p.name === 'view_leave_calendar' || p.name === 'export_leave_calendar'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -2987,7 +3059,7 @@ export default function Roles() {
                             p.name === 'view_leave_reports' || p.name === 'generate_leave_reports' || p.name === 'export_leave_reports' || p.name === 'view_leave_balance' || p.name === 'view_leave_trends'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -3086,7 +3158,11 @@ export default function Roles() {
                       type="text"
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
-                      className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                     />
                   </div>
 
@@ -3096,7 +3172,11 @@ export default function Roles() {
                       value={editDesc}
                       onChange={(e) => setEditDesc(e.target.value)}
                       rows={4}
-                      className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
+                      className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                     />
                   </div>
                 </div>
@@ -3145,14 +3225,22 @@ export default function Roles() {
                         placeholder="Search permissions..."
                         value={editPermissionSearch}
                         onChange={(e) => setEditPermissionSearch(e.target.value)}
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                        }}
                       />
                     </div>
                     <div className="w-48">
                       <select
                         value={editModuleFilter}
                         onChange={(e) => setEditModuleFilter(e.target.value)}
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                        }}
                       >
                         <option value="">All Modules</option>
                         <option value="organization_setup">🏢 Organization Setup</option>
@@ -3187,7 +3275,7 @@ export default function Roles() {
                     )}
                     {getFilteredPermissions(editPermissionSearch, editModuleFilter).map((p) => (
                       <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           checked={editPerms.includes(p.name)}
                           onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3207,7 +3295,7 @@ export default function Roles() {
                           <span>🌐</span> GLOBAL PERMISSIONS
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getGlobalPerms().every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -3225,7 +3313,7 @@ export default function Roles() {
                           p.name === 'view_self'
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
+                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               type="checkbox"
                               checked={editPerms.includes(p.name)}
                               onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3247,7 +3335,7 @@ export default function Roles() {
                           <span>👤</span> EMPLOYEE MANAGEMENT
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getEmployeeManagementPerms().every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -3265,7 +3353,7 @@ export default function Roles() {
                           p.name === 'view_employees' || p.name === 'edit_employee' || p.name === 'delete_employee' || p.name === 'create_employee_code' || p.name === 'view_employee_profile'
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
+                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               type="checkbox"
                               checked={editPerms.includes(p.name)}
                               onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3286,7 +3374,7 @@ export default function Roles() {
                             p.name === 'view_employee_directory' || p.name === 'search_employees' || p.name === 'export_directory'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3309,7 +3397,7 @@ export default function Roles() {
                           <span>👤</span> EMPLOYEE INFORMATION SYSTEM (EIS)
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getProfileDocumentsPerms().concat(getEmploymentProbationPerms()).every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -3329,7 +3417,7 @@ export default function Roles() {
                             p.name === 'edit_employee_profile' || p.name === 'view_employee_documents' || p.name === 'upload_employee_documents' || p.name === 'delete_employee_documents' || p.name === 'edit_profile' || p.name === 'view_documents' || p.name === 'verify_employee_documents' || p.name === 'verify_bank_details'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3351,7 +3439,7 @@ export default function Roles() {
                             p.name === 'view_probation_details' || p.name === 'add_probation' || p.name === 'extend_probation' || p.name === 'end_probation'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3376,7 +3464,7 @@ export default function Roles() {
                           <span>🏢</span> ORGANIZATION SETUP
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getOrganizationSetupPerms().every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -3396,7 +3484,7 @@ export default function Roles() {
                           p.name.includes('designation')
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
+                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               type="checkbox"
                               checked={editPerms.includes(p.name)}
                               onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3418,7 +3506,7 @@ export default function Roles() {
                           <span>📊</span> REPORTING STRUCTURE
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getReportingStructurePerms().every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -3445,7 +3533,7 @@ export default function Roles() {
                           p.name !== 'view_reporting_details'
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
+                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               type="checkbox"
                               checked={editPerms.includes(p.name)}
                               onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3467,7 +3555,7 @@ export default function Roles() {
                           <span>📅</span> HOLIDAY CALENDAR
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getHolidayCalendarPerms().every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -3485,7 +3573,7 @@ export default function Roles() {
                           p.name.includes('holiday')
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
+                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               type="checkbox"
                               checked={editPerms.includes(p.name)}
                               onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3507,7 +3595,7 @@ export default function Roles() {
                           <span>💼</span> JOB REQUISITION
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getJobRequisitionPerms().every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -3525,7 +3613,7 @@ export default function Roles() {
                           p.name.includes('job_requisition')
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
+                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               type="checkbox"
                               checked={editPerms.includes(p.name)}
                               onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3547,7 +3635,7 @@ export default function Roles() {
                           <span>🎯</span> RECRUITMENT SETUP
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getRecruitmentSetupPerms().every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -3565,7 +3653,7 @@ export default function Roles() {
                           p.name.includes('candidates') || p.name.includes('screen_candidates') || p.name === 'publish_job' || p.name === 'generate_job_link'
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
+                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               type="checkbox"
                               checked={editPerms.includes(p.name)}
                               onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3586,7 +3674,7 @@ export default function Roles() {
                             p.name === 'view_candidate' || p.name === 'select_candidates' || p.name === 'schedule_interviews' || p.name === 'view_resumes' || p.name === 'view_ats_pipeline'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3608,7 +3696,7 @@ export default function Roles() {
                             p.name === 'move_candidates' || p.name === 'view_active_jobs' || p.name === 'view_ats_candidates'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3631,7 +3719,7 @@ export default function Roles() {
                           <span>📄</span> OFFERS & CONTRACTS
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getOffersContractsPerms().every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -3649,7 +3737,7 @@ export default function Roles() {
                           p.name === 'generate_offer_link' || p.name === 'verify_documents' || p.name === 'view_documents' || p.name === 'manage_bgv' || p.name === 'start_onboarding' || p.name === 'mark_onboarded' || p.name === 'view_offers_sent' || p.name === 'view_selected_candidates'
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
+                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               type="checkbox"
                               checked={editPerms.includes(p.name)}
                               onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3671,7 +3759,7 @@ export default function Roles() {
                           <span>🎓</span> ONBOARDING
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getOnboardingPerms().every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -3689,7 +3777,7 @@ export default function Roles() {
                           p.name === 'view_onboarding_documents' || p.name === 'view_onboarding_candidates' || p.name === 'view_document_collected' || p.name === 'add_document_collected' || p.name === 'start_onboarding' || p.name === 'mark_onboarded'
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
+                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               type="checkbox"
                               checked={editPerms.includes(p.name)}
                               onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3711,7 +3799,7 @@ export default function Roles() {
                           <span>🩺</span> CONSULTANTS
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getConsultantsPerms().every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -3731,7 +3819,7 @@ export default function Roles() {
                             p.name === 'view_consultants' || p.name === 'add_consultant' || p.name === 'edit_consultant' || p.name === 'delete_consultant'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3753,7 +3841,7 @@ export default function Roles() {
                             p.name === 'view_availability' || p.name === 'add_availability'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3775,7 +3863,7 @@ export default function Roles() {
                             p.name === 'view_payouts' || p.name === 'generate_payslip' || p.name === 'send_payslip_email' || p.name === 'process_payroll'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3798,7 +3886,7 @@ export default function Roles() {
                           <span>🚪</span> EXIT MANAGEMENT
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getExitManagementPerms().every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -3817,7 +3905,7 @@ export default function Roles() {
                           p.name === 'manage_handover' || p.name === 'manage_clearance' || p.name === 'manage_assets' || p.name === 'manage_settlement'
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
+                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               type="checkbox"
                               checked={editPerms.includes(p.name)}
                               onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3838,7 +3926,7 @@ export default function Roles() {
                             p.name === 'hr_clearance' || p.name === 'it_clearance' || p.name === 'finance_clearance' || p.name === 'admin_clearance'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3860,7 +3948,7 @@ export default function Roles() {
                             p.name === 'conduct_exit_interview' || p.name === 'view_exit_interviews'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3882,7 +3970,7 @@ export default function Roles() {
                             p.name === 'view_kt_plans' || p.name === 'add_kt_plan' || p.name === 'create_kt_plan' || p.name === 'complete_kt_items' || p.name === 'hr_approve_kt' || p.name === 'manager_approve_kt'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3904,7 +3992,7 @@ export default function Roles() {
                             p.name === 'view_settlements' || p.name === 'calculate_settlements' || p.name === 'approve_settlements' || p.name === 'generate_experience_letter' || p.name === 'edit_experience_letter' || p.name === 'download_settlement_pdf'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3927,7 +4015,7 @@ export default function Roles() {
                           <span>📊</span> DASHBOARD PERMISSIONS
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getDashboardPerms().every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -3945,7 +4033,7 @@ export default function Roles() {
                           p.name === 'view_documents_alerts' || p.name === 'view_audit_log'
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
+                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               type="checkbox"
                               checked={editPerms.includes(p.name)}
                               onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -3967,7 +4055,7 @@ export default function Roles() {
                           <span>💰</span> STATUTORY RULES & COMPLIANCE
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getStatutoryCompliancePerms().every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -3987,7 +4075,7 @@ export default function Roles() {
                             p.name === 'view_statutory_calculations' || p.name === 'add_statutory_calculation' || p.name === 'edit_statutory_calculation' || p.name === 'delete_statutory_calculation' || p.name === 'view_deleted_statutory' || p.name === 'restore_statutory_calculation'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4009,7 +4097,7 @@ export default function Roles() {
                             p.name === 'view_labour_register' || p.name === 'add_labour_register' || p.name === 'edit_labour_register' || p.name === 'delete_labour_register' || p.name === 'view_deleted_labour_register' || p.name === 'restore_labour_register'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4031,7 +4119,7 @@ export default function Roles() {
                             p.name === 'view_leave_compliance' || p.name === 'add_leave_compliance' || p.name === 'edit_leave_compliance' || p.name === 'delete_leave_compliance' || p.name === 'view_deleted_leave_compliance' || p.name === 'restore_leave_compliance'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4053,7 +4141,7 @@ export default function Roles() {
                             p.name === 'view_nabh_compliance' || p.name === 'add_nabh_compliance' || p.name === 'edit_nabh_compliance' || p.name === 'delete_nabh_compliance' || p.name === 'view_deleted_nabh_compliance' || p.name === 'restore_nabh_compliance'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4076,7 +4164,7 @@ export default function Roles() {
                           <span>🕐</span> ATTENDANCE MANAGEMENT
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getAttendanceManagementPerms().every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -4096,7 +4184,7 @@ export default function Roles() {
                             p.name === 'view_attendance' || p.name === 'mark_attendance' || p.name === 'approve_attendance' || p.name === 'view_attendance_reports' || p.name === 'generate_attendance_reports' || p.name === 'export_attendance_data'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4118,7 +4206,7 @@ export default function Roles() {
                             p.name === 'view_punch_logs' || p.name === 'punch_in' || p.name === 'punch_out'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4141,7 +4229,7 @@ export default function Roles() {
                             p.name === 'view_od_applications' || p.name === 'apply_od' || p.name === 'approve_od' || p.name === 'reject_od' || p.name === 'edit_od_applications'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4162,7 +4250,7 @@ export default function Roles() {
                             p.name === 'view_attendance_rules' || p.name === 'add_attendance_rule' || p.name === 'edit_attendance_rule' || p.name === 'delete_attendance_rule' || p.name === 'view_attendance_locations' || p.name === 'add_attendance_location' || p.name === 'edit_attendance_location' || p.name === 'delete_attendance_location'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4184,7 +4272,7 @@ export default function Roles() {
                             p.name === 'view_daily_updates' || p.name === 'add_daily_update' || p.name === 'edit_daily_update' || p.name === 'delete_daily_update'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={selectedPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
@@ -4207,7 +4295,7 @@ export default function Roles() {
                           <span>🎓</span> TRAINING & DEVELOPMENT
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getTrainingDevelopmentPerms().every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -4227,7 +4315,7 @@ export default function Roles() {
                             p.name === 'view_training_programs' || p.name === 'add_training_program' || p.name === 'edit_training_program' || p.name === 'delete_training_program' || p.name === 'generate_training_link'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4249,7 +4337,7 @@ export default function Roles() {
                             p.name === 'view_enrolled_trainees' || p.name === 'approve_training_applications' || p.name === 'select_send_training_emails'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4271,7 +4359,7 @@ export default function Roles() {
                             p.name === 'view_training_calendar'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4293,7 +4381,7 @@ export default function Roles() {
                             p.name === 'view_training_requests' || p.name === 'add_training_request' || p.name === 'approve_training_request' || p.name === 'reject_training_request'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4315,7 +4403,7 @@ export default function Roles() {
                             p.name === 'view_training_attendance' || p.name === 'mark_training_attendance' || p.name === 'update_attendance_training'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4337,7 +4425,7 @@ export default function Roles() {
                             p.name === 'view_training_certificates' || p.name === 'generate_training_certificate' || p.name === 'download_training_certificate' || p.name === 'email_training_certificate'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4360,7 +4448,7 @@ export default function Roles() {
                           <span>📊</span> PERFORMANCE MANAGEMENT SYSTEM
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getPerformanceManagementPerms().every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -4380,7 +4468,7 @@ export default function Roles() {
                             p.name === 'view_work_assignments' || p.name === 'add_work_assignment' || p.name === 'edit_work_assignment' || p.name === 'delete_work_assignment' || p.name === 'view_deleted_work_assignments' || p.name === 'restore_work_assignment' || p.name === 'view_my_assignments' || p.name === 'assign_to_employees'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4402,7 +4490,7 @@ export default function Roles() {
                             p.name === 'view_goals_kpi'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4424,7 +4512,7 @@ export default function Roles() {
                             p.name === 'view_review_cycles' || p.name === 'create_review_cycle' || p.name === 'edit_review_cycle' || p.name === 'delete_review_cycle' || p.name === 'view_deleted_review_cycles' || p.name === 'restore_review_cycle'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4446,7 +4534,7 @@ export default function Roles() {
                             p.name === 'view_feedback' || p.name === 'give_feedback' || p.name === 'view_360_feedback' || p.name === 'edit_feedback' || p.name === 'delete_feedback' || p.name === 'restore_feedback' || p.name === 'show_deleted_feedback'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4468,7 +4556,7 @@ export default function Roles() {
                             p.name === 'view_appraisals' || p.name === 'add_appraisal' || p.name === 'edit_appraisal' || p.name === 'delete_appraisal' || p.name === 'restore_appraisal' || p.name === 'show_deleted_appraisals'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4490,7 +4578,7 @@ export default function Roles() {
                             p.name === 'view_quality_indicators' || p.name === 'add_quality_indicator' || p.name === 'edit_quality_indicator' || p.name === 'delete_quality_indicator' || p.name === 'measure_quality_metrics' || p.name === 'restore_quality_indicator' || p.name === 'show_deleted_quality_indicators'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4513,7 +4601,7 @@ export default function Roles() {
                           <span>🏢</span> HR OPERATIONS & WORKFORCE MANAGEMENT
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getHROperationsPerms().every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -4533,7 +4621,7 @@ export default function Roles() {
                             p.name === 'view_lifecycle_actions' || p.name === 'add_lifecycle_action' || p.name === 'edit_lifecycle_action' || p.name === 'delete_lifecycle_action' || p.name === 'approve_lifecycle_action' || p.name === 'restore_lifecycle_action' || p.name === 'show_deleted_lifecycle_actions'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4555,7 +4643,7 @@ export default function Roles() {
                             p.name === 'view_hr_letters' || p.name === 'add_hr_letter' || p.name === 'edit_hr_letter' || p.name === 'delete_hr_letter' || p.name === 'print_hr_letter' || p.name === 'restore_hr_letter' || p.name === 'show_deleted_hr_letters'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4577,7 +4665,7 @@ export default function Roles() {
                             p.name === 'view_grievances' || p.name === 'add_grievance' || p.name === 'edit_grievance' || p.name === 'delete_grievance' || p.name === 'assign_grievance' || p.name === 'resolve_grievance' || p.name === 'escalate_grievance' || p.name === 'restore_grievance' || p.name === 'show_deleted_grievances'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4599,7 +4687,7 @@ export default function Roles() {
                             p.name === 'view_assets' || p.name === 'add_asset' || p.name === 'edit_asset' || p.name === 'delete_asset' || p.name === 'assign_asset' || p.name === 'return_asset' || p.name === 'track_asset' || p.name === 'restore_asset' || p.name === 'show_deleted_assets' || p.name === 'approve_asset' || p.name === 'reject_asset'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4621,7 +4709,7 @@ export default function Roles() {
                             p.name === 'view_insurance_benefits' || p.name === 'add_insurance_benefit' || p.name === 'edit_insurance_benefit' || p.name === 'delete_insurance_benefit' || p.name === 'enroll_employee_benefits' || p.name === 'process_claims' || p.name === 'manage_beneficiaries' || p.name === 'add_insurance_policy' || p.name === 'delete_insurance_policy' || p.name === 'restore_insurance_benefit' || p.name === 'show_deleted_insurance_benefits'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4643,7 +4731,7 @@ export default function Roles() {
                             p.name === 'view_staff_schedules' || p.name === 'add_staff_schedule' || p.name === 'edit_staff_schedule' || p.name === 'delete_staff_schedule' || p.name === 'assign_shifts' || p.name === 'manage_shift_swaps' || p.name === 'approve_schedule_changes' || p.name === 'restore_staff_schedule' || p.name === 'show_deleted_staff_schedules'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4666,7 +4754,7 @@ export default function Roles() {
                           <span>💰</span> PAYROLL MANAGEMENT
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getPayrollManagementPerms().every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -4686,7 +4774,7 @@ export default function Roles() {
                             p.name === 'view_salary_structure' || p.name === 'add_salary_structure' || p.name === 'edit_salary_structure' || p.name === 'delete_salary_structure' || p.name === 'view_salary_structure_details' || p.name === 'link_employees_salary_structure'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4708,7 +4796,7 @@ export default function Roles() {
                             p.name === 'view_statutory_rules' || p.name === 'add_statutory_rule' || p.name === 'edit_statutory_rule' || p.name === 'delete_statutory_rule'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4730,7 +4818,7 @@ export default function Roles() {
                             p.name === 'view_payroll_run' || p.name === 'create_payroll_run' || p.name === 'process_payroll_run' || p.name === 'approve_payroll_run' || p.name === 'delete_payroll_run'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4752,7 +4840,7 @@ export default function Roles() {
                             p.name === 'view_payroll_adjustments' || p.name === 'add_payroll_adjustment' || p.name === 'edit_payroll_adjustment' || p.name === 'delete_payroll_adjustment' || p.name === 'approve_payroll_adjustment'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4774,7 +4862,7 @@ export default function Roles() {
                             p.name === 'view_salary_slips' || p.name === 'generate_salary_slips' || p.name === 'download_salary_slips' || p.name === 'email_salary_slips' || p.name === 'process_payments' || p.name === 'view_payment_status'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4796,7 +4884,7 @@ export default function Roles() {
                             p.name === 'view_payroll_reports' || p.name === 'generate_payroll_reports' || p.name === 'export_payroll_data' || p.name === 'view_compliance_reports' || p.name === 'generate_compliance_reports'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4819,7 +4907,7 @@ export default function Roles() {
                           <span>🕐</span> SHIFT & ROSTER MANAGEMENT
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getShiftRosterPerms().every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -4839,7 +4927,7 @@ export default function Roles() {
                             p.name.toLowerCase() === 'view_shifts' || p.name.toLowerCase() === 'create_shifts' || p.name.toLowerCase() === 'edit_shifts' || p.name.toLowerCase() === 'delete_shifts'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4861,7 +4949,7 @@ export default function Roles() {
                             p.name.toLowerCase() === 'view_roster' || p.name.toLowerCase() === 'manage_roster' || p.name.toLowerCase() === 'manage_night_shift_rules' || p.name.toLowerCase() === 'manage_on_call_duty' || p.name.toLowerCase() === 'view_weekly_roster' || p.name.toLowerCase() === 'manage_weekly_roster'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4884,7 +4972,7 @@ export default function Roles() {
                           <span>🕐</span> ATTENDANCE MANAGEMENT
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getAttendanceManagementPerms().every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -4904,7 +4992,7 @@ export default function Roles() {
                             p.name === 'view_attendance' || p.name === 'mark_attendance' || p.name === 'approve_attendance' || p.name === 'view_attendance_reports' || p.name === 'generate_attendance_reports' || p.name === 'export_attendance_data'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4926,7 +5014,7 @@ export default function Roles() {
                             p.name === 'view_punch_logs' || p.name === 'punch_in' || p.name === 'punch_out'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4948,7 +5036,7 @@ export default function Roles() {
                             p.name === 'view_od_applications' || p.name === 'apply_od' || p.name === 'approve_od' || p.name === 'reject_od' || p.name === 'edit_od_applications'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4970,7 +5058,7 @@ export default function Roles() {
                             p.name === 'view_attendance_rules' || p.name === 'add_attendance_rule' || p.name === 'edit_attendance_rule' || p.name === 'delete_attendance_rule' || p.name === 'view_attendance_locations' || p.name === 'add_attendance_location' || p.name === 'edit_attendance_location' || p.name === 'delete_attendance_location'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -4992,7 +5080,7 @@ export default function Roles() {
                             p.name === 'apply_attendance_permission' || p.name === 'view_attendance_permission' || p.name === 'approve_attendance_permission' || p.name === 'reject_attendance_permission'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -5014,7 +5102,7 @@ export default function Roles() {
                             p.name === 'view_daily_updates' || p.name === 'add_daily_update' || p.name === 'edit_daily_update' || p.name === 'delete_daily_update'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -5037,7 +5125,7 @@ export default function Roles() {
                           <span>📅</span> LEAVE MANAGEMENT
                         </h4>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={getLeaveManagementPerms().every(perm => editPerms.includes(perm))}
                             onChange={() => handleSelectAllSection(
@@ -5057,7 +5145,7 @@ export default function Roles() {
                             p.name === 'view_leave_types' || p.name === 'add_leave_type' || p.name === 'edit_leave_type' || p.name === 'delete_leave_type'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -5079,7 +5167,7 @@ export default function Roles() {
                             p.name === 'view_leave_policies' || p.name === 'add_leave_policy' || p.name === 'edit_leave_policy' || p.name === 'delete_leave_policy' || p.name === 'assign_leave_policy'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -5101,7 +5189,7 @@ export default function Roles() {
                             p.name === 'view_leave_rules' || p.name === 'add_leave_rule' || p.name === 'edit_leave_rule' || p.name === 'delete_leave_rule'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -5123,7 +5211,7 @@ export default function Roles() {
                             p.name === 'view_leave_applications' || p.name === 'apply_leave' || p.name === 'edit_leave_application' || p.name === 'cancel_leave_application' || p.name === 'approve_leave' || p.name === 'reject_leave'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -5145,7 +5233,7 @@ export default function Roles() {
                             p.name === 'view_leave_calendar' || p.name === 'export_leave_calendar'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
@@ -5167,7 +5255,7 @@ export default function Roles() {
                             p.name === 'view_leave_reports' || p.name === 'generate_leave_reports' || p.name === 'export_leave_reports' || p.name === 'view_leave_balance' || p.name === 'view_leave_trends'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 type="checkbox"
                                 checked={editPerms.includes(p.name)}
                                 onChange={() => togglePerm(p.name, setEditPerms, editPerms)}

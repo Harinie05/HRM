@@ -18,6 +18,18 @@ export default function CandidateScreening() {
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [interviewSchedules, setInterviewSchedules] = useState({});
 
+  // Add style to hide scrollbar
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
+
   // Check permissions
   const canViewCandidates = hasPermission('view_candidates');
   const canScreenCandidates = hasPermission('screen_candidates');
@@ -219,21 +231,28 @@ export default function CandidateScreening() {
         </div>
 
         {/* APPLICATIONS TABLE */}
-        <div className="bg-white rounded-2xl border-0 overflow-hidden">
+        <div className="bg-white rounded-2xl overflow-hidden relative border" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
           {applications.length === 0 ? (
-            <div className="p-8 text-center text-gray-500">
+            <div className="p-8 text-center text-gray-500 relative z-10">
               No applications found for this job
             </div>
           ) : (
             <>
               {/* Desktop Table View */}
-              <div className="hidden md:block overflow-x-auto">
+              <div className="hidden md:block overflow-x-auto relative z-10">
                 <table className="min-w-full">
                   <thead className="bg-gray-100 text-gray-600 text-sm border-b-0">
                     <tr>
                       <th className="p-3 text-left">
                         {canSelectCandidates && (
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={selectedCandidates.length === applications.length && applications.length > 0}
                             onChange={selectAll}
@@ -252,10 +271,10 @@ export default function CandidateScreening() {
 
                   <tbody>
                     {applications.map((app) => (
-                      <tr key={app.id} className="border-t hover:bg-gray-50 border-gray-200">
+                      <tr key={app.id} className="-t hover:bg-gray-50 border-gray-200">
                         <td className="p-3">
                           {canSelectCandidates && (
-                            <input
+                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               type="checkbox"
                               checked={selectedCandidates.includes(app.id)}
                               onChange={() => toggleSelection(app.id)}
@@ -325,13 +344,13 @@ export default function CandidateScreening() {
               </div>
 
               {/* Mobile Card View */}
-              <div className="md:hidden">
+              <div className="md:hidden relative z-10">
                 {applications.map((app) => (
                   <div key={app.id} className="p-4 border-b-0 hover:bg-gray-50">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-start gap-3 flex-1">
                         {canSelectCandidates && (
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="checkbox"
                             checked={selectedCandidates.includes(app.id)}
                             onChange={() => toggleSelection(app.id)}
@@ -417,7 +436,16 @@ export default function CandidateScreening() {
       {/* INTERVIEW SCHEDULING MODAL */}
       {showScheduleModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
-          <div className="bg-white p-4 sm:p-6 rounded-lg w-full max-w-lg sm:max-w-2xl max-h-[80vh] overflow-y-auto">
+          <div className="bg-white p-4 sm:p-6 rounded-lg w-full max-w-lg sm:max-w-2xl max-h-[80vh] overflow-y-auto relative border hide-scrollbar" style={{
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`,
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none'
+          }}>
+            <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+              transform: 'translate(30%, -30%)'
+            }}></div>
+            <div className="relative z-10">
             <h2 className="text-lg sm:text-xl font-bold mb-4">Schedule Round 1 Interviews</h2>
             <p className="text-gray-600 mb-2 text-sm sm:text-base">
               <strong>Job:</strong> {job?.title} - {job?.department}
@@ -433,7 +461,10 @@ export default function CandidateScreening() {
               {selectedCandidates.map(candidateId => {
                 const candidate = applications.find(app => app.id === candidateId);
                 return (
-                  <div key={candidateId} className="border p-3 sm:p-4 rounded bg-gray-50 border-black">
+                  <div key={candidateId} className="p-3 sm:p-4 rounded bg-gray-50 relative overflow-hidden border" style={{
+                    background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+                    borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
                     <div className="font-medium mb-2 text-sm sm:text-base">{candidate?.name}</div>
                     <div className="text-xs sm:text-sm text-gray-600 mb-2 truncate">{candidate?.email}</div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
@@ -443,7 +474,11 @@ export default function CandidateScreening() {
                           type="date"
                           value={interviewSchedules[candidateId]?.interview_date || ''}
                           onChange={(e) => updateSchedule(candidateId, 'interview_date', e.target.value)}
-                          className="w-full border border-black p-2 rounded text-sm"
+                          className="w-full p-2 rounded text-sm focus:ring-2 focus:outline-none"
+                          style={{
+                            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                          }}
                         />
                       </div>
                       <div>
@@ -452,7 +487,11 @@ export default function CandidateScreening() {
                           type="time"
                           value={interviewSchedules[candidateId]?.interview_time || ''}
                           onChange={(e) => updateSchedule(candidateId, 'interview_time', e.target.value)}
-                          className="w-full border border-black p-2 rounded text-sm"
+                          className="w-full p-2 rounded text-sm focus:ring-2 focus:outline-none"
+                          style={{
+                            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                          }}
                         />
                       </div>
                     </div>
@@ -464,19 +503,27 @@ export default function CandidateScreening() {
             <div className="flex flex-col sm:flex-row justify-end gap-2 mt-6">
               <button
                 onClick={() => setShowScheduleModal(false)}
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 text-sm"
+                className="px-4 py-2 text-white rounded transition-colors text-sm"
+                style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
               >
                 Cancel
               </button>
               <button
                 onClick={shortlistWithInterviews}
-                style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                className="px-4 py-2 text-white rounded hover:opacity-90 text-sm"
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                className="px-4 py-2 text-white rounded transition-colors text-sm"
+                style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
               >
                 Schedule Round 1 & Send Invitations
               </button>
+            </div>
             </div>
           </div>
         </div>

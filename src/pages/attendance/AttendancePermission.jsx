@@ -280,7 +280,7 @@ export default function AttendancePermission() {
           {canSelectEmployee ? (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
-              <select
+              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 value={form.employee_id}
                 onChange={e => setForm({ ...form, employee_id: e.target.value })}
                 className="w-full px-4 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
@@ -308,7 +308,7 @@ export default function AttendancePermission() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="date"
               value={form.date}
               onChange={e => setForm({ ...form, date: e.target.value })}
@@ -321,7 +321,7 @@ export default function AttendancePermission() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Request Type</label>
-            <select
+            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               value={form.request_type}
               onChange={e => setForm({ ...form, request_type: e.target.value })}
               className="w-full px-4 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
@@ -341,7 +341,7 @@ export default function AttendancePermission() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">From Time</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="time"
                   value={form.from_time}
                   onChange={e => setForm({ ...form, from_time: e.target.value })}
@@ -353,7 +353,7 @@ export default function AttendancePermission() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">To Time</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="time"
                   value={form.to_time}
                   onChange={e => setForm({ ...form, to_time: e.target.value })}
@@ -368,7 +368,7 @@ export default function AttendancePermission() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Reason</label>
-            <textarea
+            <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               placeholder="Reason for permission request..."
               value={form.reason}
               onChange={e => setForm({ ...form, reason: e.target.value })}

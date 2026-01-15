@@ -302,7 +302,7 @@ const QualityIndicators = () => {
         <h3 className="text-lg font-semibold text-blue-900 mb-4">Department Filter</h3>
         <div className="flex items-center gap-4">
           <label className="text-sm font-medium text-blue-700">Select Department:</label>
-          <select
+          <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
             value={selectedDepartment}
             onChange={(e) => setSelectedDepartment(e.target.value)}
             className="px-4 py-3 border-2 border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-lg min-w-[200px]"
@@ -332,7 +332,7 @@ const QualityIndicators = () => {
       </div>
 
       {/* Tab Navigation */}
-      <div className="border-b-0 mb-6">
+      <div className="-b-0 mb-6">
         <nav className="-mb-px flex space-x-8">
           <button
             onClick={() => setActiveTab('manage')}
@@ -421,7 +421,7 @@ const QualityIndicators = () => {
               <form onSubmit={handleIndicatorSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">KPI Name *</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="text"
                     value={indicatorForm.kpi_name}
                     onChange={(e) => setIndicatorForm({...indicatorForm, kpi_name: e.target.value})}
@@ -431,7 +431,7 @@ const QualityIndicators = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={indicatorForm.kpi_category}
                     onChange={(e) => setIndicatorForm({...indicatorForm, kpi_category: e.target.value})}
                     className="w-full p-2 border border-black rounded-md"
@@ -444,7 +444,7 @@ const QualityIndicators = () => {
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                  <textarea
+                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={indicatorForm.description}
                     onChange={(e) => setIndicatorForm({...indicatorForm, description: e.target.value})}
                     className="w-full p-2 border border-black rounded-md"
@@ -453,7 +453,7 @@ const QualityIndicators = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Target Value *</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     step="0.01"
                     value={indicatorForm.target_value}
@@ -464,7 +464,7 @@ const QualityIndicators = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Unit of Measure *</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={indicatorForm.unit_of_measure}
                     onChange={(e) => setIndicatorForm({...indicatorForm, unit_of_measure: e.target.value})}
                     className="w-full p-2 border border-black rounded-md"
@@ -477,7 +477,7 @@ const QualityIndicators = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Frequency *</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={indicatorForm.frequency}
                     onChange={(e) => setIndicatorForm({...indicatorForm, frequency: e.target.value})}
                     className="w-full p-2 border border-black rounded-md"
@@ -490,7 +490,7 @@ const QualityIndicators = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={indicatorForm.department_id}
                     onChange={(e) => setIndicatorForm({...indicatorForm, department_id: e.target.value})}
                     className="w-full p-2 border border-black rounded-md"
@@ -625,7 +625,7 @@ const QualityIndicators = () => {
               <form onSubmit={handleRecordSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Quality Indicator *</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={recordForm.quality_indicator_id}
                     onChange={(e) => setRecordForm({...recordForm, quality_indicator_id: e.target.value})}
                     className="w-full p-2 border border-black rounded-md"
@@ -641,7 +641,7 @@ const QualityIndicators = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Recorded Date *</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="date"
                     value={recordForm.recorded_date}
                     onChange={(e) => setRecordForm({...recordForm, recorded_date: e.target.value})}
@@ -651,7 +651,7 @@ const QualityIndicators = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Actual Value *</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     step="0.01"
                     value={recordForm.actual_value}
@@ -662,7 +662,7 @@ const QualityIndicators = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Recorded By *</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="text"
                     value={recordForm.recorded_by}
                     onChange={(e) => setRecordForm({...recordForm, recorded_by: e.target.value})}
@@ -672,7 +672,7 @@ const QualityIndicators = () => {
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Remarks</label>
-                  <textarea
+                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={recordForm.remarks}
                     onChange={(e) => setRecordForm({...recordForm, remarks: e.target.value})}
                     className="w-full p-2 border border-black rounded-md"

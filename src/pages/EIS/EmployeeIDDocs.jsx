@@ -162,7 +162,7 @@ export default function EmployeeIDDocs() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Document Type</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                   value={type}
                   onChange={(e) => setType(e.target.value)}
@@ -184,7 +184,7 @@ export default function EmployeeIDDocs() {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Select File</label>
-                <input 
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                   type="file" 
                   accept=".pdf,.jpg,.jpeg,.png"
                   className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
@@ -194,7 +194,7 @@ export default function EmployeeIDDocs() {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Expiry Date (Optional)</label>
-                <input 
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                   type="date"
                   className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                   value={expiryDate}

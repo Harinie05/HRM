@@ -149,7 +149,7 @@ export default function TrainingProgramApplication() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
@@ -160,7 +160,7 @@ export default function TrainingProgramApplication() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
@@ -174,7 +174,7 @@ export default function TrainingProgramApplication() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="tel"
                   value={formData.phone}
                   onChange={(e) => setFormData({...formData, phone: e.target.value})}
@@ -184,7 +184,7 @@ export default function TrainingProgramApplication() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID (if applicable)</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="text"
                   value={formData.employee_id}
                   onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
@@ -196,7 +196,7 @@ export default function TrainingProgramApplication() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Department/Organization</label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="text"
                 value={formData.department}
                 onChange={(e) => setFormData({...formData, department: e.target.value})}
@@ -207,7 +207,7 @@ export default function TrainingProgramApplication() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Relevant Experience</label>
-              <textarea
+              <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 value={formData.experience}
                 onChange={(e) => setFormData({...formData, experience: e.target.value})}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -218,7 +218,7 @@ export default function TrainingProgramApplication() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Why do you want to join this program? *</label>
-              <textarea
+              <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 value={formData.motivation}
                 onChange={(e) => setFormData({...formData, motivation: e.target.value})}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"

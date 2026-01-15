@@ -314,7 +314,7 @@ export default function TrainingRequests() {
           <div className="flex gap-4">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="text"
                 placeholder="Search requests..."
                 value={searchTerm}
@@ -322,10 +322,10 @@ export default function TrainingRequests() {
                 className="pl-10 pr-4 py-2 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
               />
             </div>
-            <select
+            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className=" rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">All Status</option>
               {statuses.map(status => (
@@ -550,7 +550,7 @@ export default function TrainingRequests() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
                   {isAdmin() ? (
-                    <select
+                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       value={formData.employee_id}
                       onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
                       className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
@@ -579,7 +579,7 @@ export default function TrainingRequests() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Training Program (Optional)</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={formData.training_program_id}
                     onChange={(e) => {
                       const programId = e.target.value;
@@ -602,7 +602,7 @@ export default function TrainingRequests() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Training Requested</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="text"
                     value={formData.requested_training}
                     onChange={(e) => setFormData({...formData, requested_training: e.target.value})}
@@ -613,7 +613,7 @@ export default function TrainingRequests() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Justification</label>
-                  <textarea
+                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={formData.justification}
                     onChange={(e) => setFormData({...formData, justification: e.target.value})}
                     className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white resize-none"
@@ -623,7 +623,7 @@ export default function TrainingRequests() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={formData.priority}
                     onChange={(e) => setFormData({...formData, priority: e.target.value})}
                     className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
@@ -735,7 +735,7 @@ export default function TrainingRequests() {
             <form onSubmit={handleApproval} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">Action</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={approvalData.action}
                   onChange={(e) => setApprovalData({...approvalData, action: e.target.value})}
                   className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -748,7 +748,7 @@ export default function TrainingRequests() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">Comment</label>
-                <textarea
+                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={approvalData.comment}
                   onChange={(e) => setApprovalData({...approvalData, comment: e.target.value})}
                   className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"

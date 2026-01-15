@@ -226,36 +226,46 @@ export default function ReportingStructure() {
   };
 
   return (
-    <div className="bg-white rounded-2xl border-0 overflow-hidden">
+    <div className="bg-white rounded-xl p-5 shadow-sm overflow-hidden relative border" style={{
+      background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+      borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+    }}>
+      <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+        transform: 'translate(40%, -40%)'
+      }}></div>
+      <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+        transform: 'translate(-40%, 40%)'
+      }}></div>
       {/* Header */}
-      <div className="p-6 border-b-0">
+      <div className="p-5 border-b-0 relative z-10">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+          <div className="p-2 rounded-lg" style={{
             backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
-            <svg className="w-5 h-5" style={{
+            <svg className="h-5 w-5" style={{
               color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
             }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16l2.879-2.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <div>
-            <h2 className="text-lg font-medium text-gray-900">Reporting Structure</h2>
-            <p className="text-sm text-gray-600">Define organizational hierarchy and reporting levels</p>
-          </div>
+          <h2 className="text-lg font-semibold text-gray-900">Reporting Structure</h2>
         </div>
+        <p className="text-sm text-gray-600 mt-2">Define organizational hierarchy and reporting levels</p>
       </div>
 
-      <div className="p-6 space-y-8">
+      <div className="p-5 space-y-8">
         {/* Status Filter */}
         <div className="flex items-center gap-4">
           <label className="text-sm font-medium text-gray-700">Filter by Status:</label>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+            className="px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
             style={{
-              focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
             }}
           >
             <option value="active">Active</option>
@@ -276,7 +286,7 @@ export default function ReportingStructure() {
                   setShowCreateLevel(!showCreateLevel);
                   setEditingLevel(null);
                 }}
-                className="inline-flex items-center gap-2 text-white px-4 py-2 rounded-xl transition-colors text-sm font-medium border-0"
+                className="inline-flex items-center gap-2 text-white px-4 py-2 rounded-xl transition-colors text-sm font-medium"
                 style={{
                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
@@ -296,7 +306,7 @@ export default function ReportingStructure() {
           </div>
 
           {(showCreateLevel || editingLevel) && (
-            <div className="bg-gray-50 rounded-xl p-6 border border-black mb-6">
+            <div className="bg-gray-50 rounded-xl p-6 mb-6">
               <h4 className="text-lg font-medium text-gray-900 mb-4">
                 {editingLevel ? 'Edit Level' : 'Create New Level'}
               </h4>
@@ -310,7 +320,11 @@ export default function ReportingStructure() {
                       ? setEditingLevel({...editingLevel, level_name: e.target.value})
                       : setNewLevel({...newLevel, level_name: e.target.value})
                     }
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     placeholder="e.g., CEO, Manager, Team Lead"
                   />
                 </div>
@@ -323,7 +337,11 @@ export default function ReportingStructure() {
                       ? setEditingLevel({...editingLevel, level_order: e.target.value})
                       : setNewLevel({...newLevel, level_order: e.target.value})
                     }
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     placeholder="1=highest, 2=next level"
                   />
                 </div>
@@ -336,7 +354,11 @@ export default function ReportingStructure() {
                       ? setEditingLevel({...editingLevel, description: e.target.value})
                       : setNewLevel({...newLevel, description: e.target.value})
                     }
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     placeholder="Optional description"
                   />
                 </div>
@@ -344,7 +366,7 @@ export default function ReportingStructure() {
               <div className="flex gap-3 mt-6">
                 <button
                   onClick={editingLevel ? updateLevel : createLevel}
-                  className="px-4 py-2 text-white text-sm font-medium rounded-xl transition-colors border border-black"
+                  className="px-4 py-2 text-white text-sm font-medium rounded-xl transition-colors"
                   style={{
                     backgroundColor: 'var(--primary-color, #4575b5)',
                   }}
@@ -362,7 +384,7 @@ export default function ReportingStructure() {
                     setShowCreateLevel(false);
                     setEditingLevel(null);
                   }}
-                  className="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-200 transition-colors border border-black"
+                  className="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-200 transition-colors"
                 >
                   Cancel
                 </button>
@@ -388,10 +410,17 @@ export default function ReportingStructure() {
               </div>
             ) : (
               levels.map((level) => (
-                <div key={level.id} className="bg-white rounded-xl border-0 p-6 hover:shadow-md transition-all duration-200">
-                  <div className="flex items-start justify-between mb-4">
+                <div key={level.id} className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+                  background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+                  borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                    transform: 'translate(30%, -30%)'
+                  }}></div>
+                  <div className="flex items-start justify-between mb-4 relative z-10">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                      <div className="w-12 h-12 rounded-lg flex items-center justify-center shadow-sm" style={{
                         backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
                       }}>
                         <span className="font-bold text-lg" style={{
@@ -466,7 +495,7 @@ export default function ReportingStructure() {
                   setShowCreateHierarchy(!showCreateHierarchy);
                   setEditingHierarchy(null);
                 }}
-                className="inline-flex items-center gap-2 text-white px-4 py-2 rounded-xl transition-colors text-sm font-medium border border-black"
+                className="inline-flex items-center gap-2 text-white px-4 py-2 rounded-xl transition-colors text-sm font-medium"
                 style={{
                   backgroundColor: 'var(--primary-color, #4575b5)',
                 }}
@@ -486,7 +515,7 @@ export default function ReportingStructure() {
           </div>
 
           {(showCreateHierarchy || editingHierarchy) && (
-            <div className="bg-gray-50 rounded-xl p-6 border border-black mb-6">
+            <div className="bg-gray-50 rounded-xl p-6 mb-6">
               <h4 className="text-lg font-medium text-gray-900 mb-4">
                 {editingHierarchy ? 'Edit Hierarchy Rule' : 'Create Hierarchy Rule'}
               </h4>
@@ -499,7 +528,11 @@ export default function ReportingStructure() {
                       ? setEditingHierarchy({...editingHierarchy, parent_level_id: e.target.value})
                       : setNewHierarchy({...newHierarchy, parent_level_id: e.target.value})
                     }
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                   >
                     <option value="">Select Supervisor Level</option>
                     {levels.map((level) => (
@@ -515,7 +548,11 @@ export default function ReportingStructure() {
                       ? setEditingHierarchy({...editingHierarchy, child_level_id: e.target.value})
                       : setNewHierarchy({...newHierarchy, child_level_id: e.target.value})
                     }
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                   >
                     <option value="">Select Subordinate Level</option>
                     {levels.map((level) => (
@@ -531,7 +568,11 @@ export default function ReportingStructure() {
                       ? setEditingHierarchy({...editingHierarchy, department_id: e.target.value})
                       : setNewHierarchy({...newHierarchy, department_id: e.target.value})
                     }
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                   >
                     <option value="">All Departments</option>
                     {departments.map((dept) => (
@@ -543,7 +584,7 @@ export default function ReportingStructure() {
               <div className="flex gap-3 mt-6">
                 <button
                   onClick={editingHierarchy ? updateHierarchy : createHierarchy}
-                  className="px-4 py-2 text-white text-sm font-medium rounded-xl transition-colors border border-black"
+                  className="px-4 py-2 text-white text-sm font-medium rounded-xl transition-colors"
                   style={{
                     backgroundColor: 'var(--primary-color, #4575b5)',
                   }}
@@ -561,7 +602,7 @@ export default function ReportingStructure() {
                     setShowCreateHierarchy(false);
                     setEditingHierarchy(null);
                   }}
-                  className="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-200 transition-colors border border-black"
+                  className="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-200 transition-colors"
                 >
                   Cancel
                 </button>
@@ -587,9 +628,16 @@ export default function ReportingStructure() {
               </div>
             ) : (
               hierarchy.map((rule) => (
-                <div key={rule.id} className="bg-white rounded-xl border-0 p-6 hover:shadow-md transition-all duration-200">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                <div key={rule.id} className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+                  background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+                  borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                    transform: 'translate(30%, -30%)'
+                  }}></div>
+                  <div className="flex items-start justify-between mb-4 relative z-10">
+                    <div className="w-12 h-12 rounded-lg flex items-center justify-center shadow-sm" style={{
                       backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
                     }}>
                       <svg className="w-6 h-6" style={{

@@ -354,7 +354,7 @@ export default function EmployeeSkills() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Skill Name *</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     placeholder="e.g., JavaScript, Project Management"
                     value={form.skill}
@@ -364,7 +364,7 @@ export default function EmployeeSkills() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Proficiency Level *</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     value={form.rating}
                     onChange={(e) => setForm({ ...form, rating: e.target.value })}

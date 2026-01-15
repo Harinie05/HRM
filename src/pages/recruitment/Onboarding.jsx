@@ -454,10 +454,19 @@ export default function Onboarding() {
       <Layout>
         <div className="p-6">
         {/* Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6 mb-6" style={{
-          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        <div className="rounded-2xl shadow-sm p-4 sm:p-6 mb-6 relative overflow-hidden border" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
         }}>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+            transform: 'translate(-30%, 30%)'
+          }}></div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 relative z-10">
             <div className="flex items-center gap-3 sm:gap-4">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -481,22 +490,31 @@ export default function Onboarding() {
             <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-            <input
-              type="text"
-              placeholder="Search candidates..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 w-full border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
-              style={{
-                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-              }}
-            />
+              <input
+                type="text"
+                placeholder="Search candidates..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`,
+                  focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
+              />
           </div>
         </div>
 
         {/* Onboarded Candidates Cards */}
-        <div className="bg-white rounded-xl border-0 p-6">
-          <div className="flex items-center justify-between mb-6">
+        <div className="bg-white rounded-xl p-6 relative overflow-hidden border" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="flex items-center justify-between mb-6 relative z-10">
             <h2 className="text-xl font-semibold text-gray-900">Onboarded Candidates</h2>
             <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full">
               {candidates.filter(c => 
@@ -522,7 +540,7 @@ export default function Onboarding() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
               {candidates
                 .filter(c => 
                   searchTerm === "" || 
@@ -530,8 +548,15 @@ export default function Onboarding() {
                   c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
                 )
                 .map((c) => (
-                <div key={c.id} className="bg-white rounded-xl border-0 p-4 hover:shadow-md transition-all duration-200">
-                  <div className="flex items-start space-x-3">
+                <div key={c.id} className="bg-white rounded-xl p-4 hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+                  background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+                  borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                    transform: 'translate(30%, -30%)'
+                  }}></div>
+                  <div className="flex items-start space-x-3 relative z-10">
                     {/* Avatar */}
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center font-semibold text-lg flex-shrink-0" style={{
                       backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`,
@@ -620,7 +645,7 @@ export default function Onboarding() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Full Name *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
                       className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.full_name}
@@ -631,7 +656,7 @@ export default function Onboarding() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Date of Birth *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="date"
                       className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.date_of_birth}
@@ -642,7 +667,7 @@ export default function Onboarding() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Gender *</label>
-                    <select
+                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.gender}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, gender: e.target.value})}
@@ -657,7 +682,7 @@ export default function Onboarding() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Personal Email *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="email"
                       className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.personal_email}
@@ -673,7 +698,7 @@ export default function Onboarding() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Phone Number *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="tel"
                       className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.phone_number}
@@ -684,7 +709,7 @@ export default function Onboarding() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Emergency Contact Name *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
                       className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.emergency_contact_name}
@@ -695,7 +720,7 @@ export default function Onboarding() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Emergency Contact Phone *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="tel"
                       className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.emergency_contact_phone}
@@ -712,7 +737,7 @@ export default function Onboarding() {
                   <div>
                     <label className="block text-sm font-medium mb-1">Employee ID *</label>
                     <div className="flex gap-2">
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="text"
                         className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 flex-1"
                         value={newOnboardingForm.employee_id}
@@ -733,7 +758,7 @@ export default function Onboarding() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Joining Date *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="date"
                       className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.joining_date}
@@ -744,7 +769,7 @@ export default function Onboarding() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Department *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
                       className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 bg-gray-100"
                       value={newOnboardingForm.department}
@@ -754,7 +779,7 @@ export default function Onboarding() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Designation *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
                       className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 bg-gray-100"
                       value={newOnboardingForm.designation}
@@ -764,7 +789,7 @@ export default function Onboarding() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Work Location</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
                       className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.work_location || ""}
@@ -775,7 +800,7 @@ export default function Onboarding() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Reporting Manager</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
                       className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.reporting_manager || ""}
@@ -791,7 +816,7 @@ export default function Onboarding() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Bank Name *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
                       className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.bank_name}
@@ -802,7 +827,7 @@ export default function Onboarding() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Account Number *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
                       className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.account_number}
@@ -813,7 +838,7 @@ export default function Onboarding() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">IFSC Code *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
                       className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.ifsc_code}
@@ -829,7 +854,7 @@ export default function Onboarding() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Aadhaar Number *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
                       className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.aadhar_number}
@@ -840,7 +865,7 @@ export default function Onboarding() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">PAN Number *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
                       className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.pan_number}
@@ -856,7 +881,7 @@ export default function Onboarding() {
                   
                   <div className="col-span-2">
                     <label className="block text-sm font-medium mb-1">Current Address *</label>
-                    <textarea
+                    <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 resize-none h-20"
                       value={newOnboardingForm.current_address}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, current_address: e.target.value})}
@@ -866,7 +891,7 @@ export default function Onboarding() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">City *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
                       className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.city}
@@ -877,7 +902,7 @@ export default function Onboarding() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">State *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
                       className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.state}
@@ -916,9 +941,9 @@ export default function Onboarding() {
 
                 <div className="space-y-3">
                   <label>Joining Date</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="date"
-                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                    className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     value={onboardingForm.joining_date}
                     onChange={(e) =>
                       setOnboardingForm({
@@ -929,8 +954,8 @@ export default function Onboarding() {
                   />
 
                   <label>Work Location</label>
-                  <select
-                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     value={onboardingForm.work_location}
                     onChange={(e) =>
                       setOnboardingForm({
@@ -948,8 +973,8 @@ export default function Onboarding() {
                   </select>
 
                   <label>Reporting Manager</label>
-                  <select
-                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     value={onboardingForm.reporting_manager}
                     onChange={(e) =>
                       setOnboardingForm({
@@ -967,8 +992,8 @@ export default function Onboarding() {
                   </select>
 
                   <label>Work Shift</label>
-                  <select
-                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     value={onboardingForm.work_shift}
                     onChange={(e) =>
                       setOnboardingForm({
@@ -1010,7 +1035,7 @@ export default function Onboarding() {
                 </h2>
 
                 <div className="space-y-3">
-                  <input type="file" className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}} multiple />
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  type="file" className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}} multiple />
                 </div>
 
                 <div className="flex justify-between mt-6">
@@ -1069,8 +1094,8 @@ export default function Onboarding() {
                 <h2 className="text-xl font-semibold mb-4">Generate Appointment Letter</h2>
 
                 <label>Grade</label>
-                <select
-                  className="border p-2 rounded w-full mb-3" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  className=" p-2 rounded w-full mb-3" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                   value={appointmentForm.grade}
                   onChange={(e) =>
                     setAppointmentForm({
@@ -1087,8 +1112,8 @@ export default function Onboarding() {
                 </select>
 
                 <label>Terms</label>
-                <textarea
-                  className="border p-2 rounded w-full h-32" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  className=" p-2 rounded w-full h-32" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                   value={appointmentForm.terms}
                   onChange={(e) =>
                     setAppointmentForm({
@@ -1124,8 +1149,8 @@ export default function Onboarding() {
                 <h2 className="text-xl font-semibold mb-4">Create Employee</h2>
 
                 <div className="space-y-3">
-                  <input
-                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     placeholder="Employee Code"
                     value={employeeForm.employee_code}
                     onChange={(e) =>
@@ -1136,8 +1161,8 @@ export default function Onboarding() {
                     }
                   />
 
-                  <input
-                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     placeholder="Official Email"
                     value={employeeForm.official_email}
                     onChange={(e) =>
@@ -1148,8 +1173,8 @@ export default function Onboarding() {
                     }
                   />
 
-                  <select
-                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     value={employeeForm.employee_type}
                     onChange={(e) =>
                       setEmployeeForm({
@@ -1203,7 +1228,7 @@ export default function Onboarding() {
                   {candidateDocuments.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {candidateDocuments.map((doc) => (
-                        <div key={doc.id} className="border rounded-xl p-4 bg-content hover:shadow-md transition-shadow" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
+                        <div key={doc.id} className=" rounded-xl p-4 bg-content hover:shadow-md transition-shadow" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                           <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center">
                               <FiFileText className="text-blue-600 mr-2" size={20} />
@@ -1248,7 +1273,7 @@ export default function Onboarding() {
                   ) : (
                     <div className="text-center py-12">
                       <FiFileText className="mx-auto text-muted mb-4" size={48} />
-                      <p className="" style={{color: 'var(--text-secondary, #374151)'}}>No documents uploaded yet</p>
+                      <p  style={{color: 'var(--text-secondary, #374151)'}}>No documents uploaded yet</p>
                     </div>
                   )}
                 </div>

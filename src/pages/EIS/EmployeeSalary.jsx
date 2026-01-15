@@ -155,7 +155,7 @@ export default function EmployeeSalary() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-secondary mb-2">Annual CTC (₹)</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                   placeholder="e.g., 1200000"
@@ -178,7 +178,7 @@ export default function EmployeeSalary() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Basic Salary (%)</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     min="0"
                     max="100"
@@ -189,7 +189,7 @@ export default function EmployeeSalary() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">HRA (%)</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     min="0"
                     max="100"
@@ -200,7 +200,7 @@ export default function EmployeeSalary() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Allowances (%)</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     min="0"
                     max="100"
@@ -211,7 +211,7 @@ export default function EmployeeSalary() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Special Allowances (%)</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     min="0"
                     max="100"
@@ -235,7 +235,7 @@ export default function EmployeeSalary() {
               </div>
               <div className="space-y-3">
                 <label className="flex items-center gap-3">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     checked={form.pf_eligible}
                     onChange={(e) => setForm({ ...form, pf_eligible: e.target.checked })}
@@ -244,7 +244,7 @@ export default function EmployeeSalary() {
                   <span className="text-sm text-secondary">Provident Fund (PF) Eligible</span>
                 </label>
                 <label className="flex items-center gap-3">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     checked={form.esi_eligible}
                     onChange={(e) => setForm({ ...form, esi_eligible: e.target.checked })}
@@ -262,19 +262,19 @@ export default function EmployeeSalary() {
                 <div className="bg-gray-50 rounded-lg p-6 border-0">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div className="flex justify-between">
-                      <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Basic Salary:</span>
+                      <span  style={{color: 'var(--text-secondary, #374151)'}}>Basic Salary:</span>
                       <span className="font-medium">₹{Math.round((form.ctc * form.basic_percent) / 100).toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="" style={{color: 'var(--text-secondary, #374151)'}}>HRA:</span>
+                      <span  style={{color: 'var(--text-secondary, #374151)'}}>HRA:</span>
                       <span className="font-medium">₹{Math.round((form.ctc * form.hra_percent) / 100).toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Allowances:</span>
+                      <span  style={{color: 'var(--text-secondary, #374151)'}}>Allowances:</span>
                       <span className="font-medium">₹{Math.round((form.ctc * form.allowances_percent) / 100).toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Special Allowances:</span>
+                      <span  style={{color: 'var(--text-secondary, #374151)'}}>Special Allowances:</span>
                       <span className="font-medium">₹{Math.round((form.ctc * form.special_percent) / 100).toLocaleString()}</span>
                     </div>
                   </div>

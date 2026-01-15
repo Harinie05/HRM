@@ -268,7 +268,7 @@ export default function Assets() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
                   {isAdmin() ? (
-                    <select 
+                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                       value={formData.employeeId}
                       onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
                       className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -297,7 +297,7 @@ export default function Assets() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Asset Type</label>
-                  <select 
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     value={formData.assetType}
                     onChange={(e) => setFormData({...formData, assetType: e.target.value})}
                     className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -319,7 +319,7 @@ export default function Assets() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Asset Name</label>
-                  <input 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     type="text"
                     value={formData.assetName}
                     onChange={(e) => setFormData({...formData, assetName: e.target.value})}
@@ -329,7 +329,7 @@ export default function Assets() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Asset ID</label>
-                  <input 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     type="text"
                     value={formData.assetId}
                     onChange={(e) => setFormData({...formData, assetId: e.target.value})}
@@ -339,7 +339,7 @@ export default function Assets() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Brand</label>
-                  <input 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     type="text"
                     value={formData.brand}
                     onChange={(e) => setFormData({...formData, brand: e.target.value})}
@@ -349,7 +349,7 @@ export default function Assets() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Model</label>
-                  <input 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     type="text"
                     value={formData.model}
                     onChange={(e) => setFormData({...formData, model: e.target.value})}
@@ -359,7 +359,7 @@ export default function Assets() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Serial Number</label>
-                  <input 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     type="text"
                     value={formData.serialNumber}
                     onChange={(e) => setFormData({...formData, serialNumber: e.target.value})}
@@ -369,7 +369,7 @@ export default function Assets() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Assigned Date</label>
-                  <input 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     type="date"
                     value={formData.assignedDate}
                     onChange={(e) => setFormData({...formData, assignedDate: e.target.value})}
@@ -378,7 +378,7 @@ export default function Assets() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Condition</label>
-                  <select 
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     value={formData.condition}
                     onChange={(e) => setFormData({...formData, condition: e.target.value})}
                     className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -394,7 +394,7 @@ export default function Assets() {
                 </div>
                 <div className="sm:col-span-2 lg:col-span-3">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Remarks</label>
-                  <textarea 
+                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     value={formData.remarks}
                     onChange={(e) => setFormData({...formData, remarks: e.target.value})}
                     rows={3}

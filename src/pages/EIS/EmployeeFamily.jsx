@@ -373,7 +373,7 @@ export default function EmployeeFamily() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     placeholder="Enter full name"
                     value={form.name}
@@ -383,7 +383,7 @@ export default function EmployeeFamily() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Relationship *</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-2 border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     value={form.relationship}
                     onChange={(e) => setForm({ ...form, relationship: e.target.value })}
@@ -402,7 +402,7 @@ export default function EmployeeFamily() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Age</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     className="w-full px-4 py-3 bg-white border-2 border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     placeholder="Age"
@@ -413,7 +413,7 @@ export default function EmployeeFamily() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Contact Number</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-2 border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     placeholder="Phone number"
                     value={form.contact}
@@ -422,7 +422,7 @@ export default function EmployeeFamily() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     id="dependent"
                     checked={form.dependent}

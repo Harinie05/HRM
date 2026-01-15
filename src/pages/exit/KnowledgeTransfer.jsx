@@ -326,7 +326,7 @@ export default function KnowledgeTransfer() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div>
                       <label className="block text-sm font-medium mb-2">KT Start Date</label>
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="date"
                         value={formData.start_date}
                         onChange={(e) => setFormData({...formData, start_date: e.target.value})}
@@ -336,7 +336,7 @@ export default function KnowledgeTransfer() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-2">KT End Date</label>
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="date"
                         value={formData.end_date}
                         onChange={(e) => setFormData({...formData, end_date: e.target.value})}
@@ -361,7 +361,7 @@ export default function KnowledgeTransfer() {
                     </div>
 
                     {formData.kt_items.map((item, index) => (
-                      <div key={index} className="border-0 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4">
+                      <div key={index} className=" rounded-lg p-3 sm:p-4 mb-3 sm:mb-4">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-0 mb-3">
                           <h5 className="font-medium text-sm sm:text-base">KT Item {index + 1}</h5>
                           {formData.kt_items.length > 1 && (
@@ -378,7 +378,7 @@ export default function KnowledgeTransfer() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-3">
                           <div>
                             <label className="block text-sm font-medium mb-1">Knowledge Area</label>
-                            <select
+                            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               value={item.knowledge_area}
                               onChange={(e) => updateKTItem(index, 'knowledge_area', e.target.value)}
                               className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
@@ -392,7 +392,7 @@ export default function KnowledgeTransfer() {
                           </div>
                           <div>
                             <label className="block text-sm font-medium mb-1">Transfer To</label>
-                            <select
+                            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               value={item.to_employee_id}
                               onChange={(e) => updateKTItem(index, 'to_employee_id', e.target.value)}
                               className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
@@ -408,7 +408,7 @@ export default function KnowledgeTransfer() {
 
                         <div>
                           <label className="block text-sm font-medium mb-1">Description</label>
-                          <textarea
+                          <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             value={item.description}
                             onChange={(e) => updateKTItem(index, 'description', e.target.value)}
                             className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
@@ -422,7 +422,7 @@ export default function KnowledgeTransfer() {
 
                   <div>
                     <label className="block text-sm font-medium mb-2">Remarks</label>
-                    <textarea
+                    <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       value={formData.remarks}
                       onChange={(e) => setFormData({...formData, remarks: e.target.value})}
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
@@ -467,7 +467,7 @@ export default function KnowledgeTransfer() {
                     {ktData.kt_items && ktData.kt_items.length > 0 ? (
                       <div className="space-y-2 sm:space-y-3">
                         {ktData.kt_items.map(item => (
-                          <div key={item.id} className="border-0 rounded-lg p-3 sm:p-4">
+                          <div key={item.id} className=" rounded-lg p-3 sm:p-4">
                             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-0 mb-2">
                               <div className="flex items-center gap-2">
                                 {getStatusIcon(item.status)}

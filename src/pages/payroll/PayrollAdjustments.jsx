@@ -311,7 +311,7 @@ export default function PayrollAdjustments() {
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
           <div className="relative max-w-md w-full sm:w-auto">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="text"
               placeholder="Search adjustments..."
               value={searchTerm}
@@ -492,7 +492,7 @@ export default function PayrollAdjustments() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.employee_id}
                   onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
                   className="w-full border border-black rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
@@ -508,7 +508,7 @@ export default function PayrollAdjustments() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Month</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.month}
                   onChange={(e) => setFormData({...formData, month: e.target.value})}
                   className="w-full border border-black rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
@@ -523,7 +523,7 @@ export default function PayrollAdjustments() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Adjustment Type</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.adjustment_type}
                   onChange={(e) => setFormData({...formData, adjustment_type: e.target.value})}
                   className="w-full border border-black rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
@@ -537,7 +537,7 @@ export default function PayrollAdjustments() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   value={formData.amount}
                   onChange={(e) => setFormData({...formData, amount: parseFloat(e.target.value) || 0})}
@@ -547,7 +547,7 @@ export default function PayrollAdjustments() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea
+                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
                   className="w-full border border-black rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"

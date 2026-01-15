@@ -11,7 +11,7 @@ export default function LeaveCalendar() {
   // Check if user has permission to view leave calendar
   if (!hasPermission("view_leave_calendar")) {
     return (
-      <div className="">
+      <div >
         {/* Header */}
         <div className="p-8 border-b-0">
           <div className="flex justify-between items-center">
@@ -308,7 +308,7 @@ export default function LeaveCalendar() {
   };
 
   return (
-    <div className="">
+    <div >
       {/* Header */}
       <div className="p-8 border-b-0">
         <div className="flex justify-between items-center">
@@ -326,10 +326,10 @@ export default function LeaveCalendar() {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <Filter size={18} className="text-gray-400" />
-              <select 
+              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                 value={selectedDepartment}
                 onChange={(e) => setSelectedDepartment(e.target.value)}
-                className="border border-black rounded-2xl px-4 py-3 text-sm bg-gray-50 hover:bg-white transition-colors"
+                className=" border-black rounded-2xl px-4 py-3 text-sm bg-gray-50 hover:bg-white transition-colors"
               >
                 <option value="All Departments">All Departments</option>
                 {departments.map(dept => (

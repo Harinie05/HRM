@@ -371,7 +371,7 @@ export default function EmployeeListPage() {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="flex items-center gap-4">
               <label className="text-sm font-medium text-gray-700">Status:</label>
-              <select
+              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="px-3 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
@@ -387,7 +387,7 @@ export default function EmployeeListPage() {
             </div>
             <div className="relative flex-1 max-w-md w-full">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="text"
                 placeholder="Search employees..."
                 className="w-full pl-10 pr-4 py-2 bg-white border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
@@ -615,7 +615,7 @@ export default function EmployeeListPage() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Department</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.selectedDepartment}
                   onChange={(e) => setFormData(prev => ({ ...prev, selectedDepartment: e.target.value, selectedRole: '', selectedUser: '' }))}
                   className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -629,7 +629,7 @@ export default function EmployeeListPage() {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.selectedRole}
                   onChange={(e) => setFormData(prev => ({ ...prev, selectedRole: e.target.value, selectedUser: '' }))}
                   className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -643,7 +643,7 @@ export default function EmployeeListPage() {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">User</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.selectedUser}
                   onChange={(e) => setFormData(prev => ({ ...prev, selectedUser: e.target.value }))}
                   className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -658,7 +658,7 @@ export default function EmployeeListPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Employee Code</label>
                 <div className="flex gap-2">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="text"
                     value={formData.employeeCode}
                     onChange={(e) => setFormData(prev => ({ ...prev, employeeCode: e.target.value }))}
@@ -677,7 +677,7 @@ export default function EmployeeListPage() {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Designation</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="text"
                   value={formData.designation}
                   onChange={(e) => setFormData(prev => ({ ...prev, designation: e.target.value }))}
@@ -688,7 +688,7 @@ export default function EmployeeListPage() {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Joining Date</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="date"
                   value={formData.joiningDate}
                   onChange={(e) => setFormData(prev => ({ ...prev, joiningDate: e.target.value }))}

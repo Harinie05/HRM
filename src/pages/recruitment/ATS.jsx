@@ -164,8 +164,15 @@ export default function ATS() {
         </div>
 
         {/* Jobs List */}
-        <div className="bg-white rounded-xl border-0 shadow-sm mb-6">
-          <div className="p-5 border-b-0">
+        <div className="bg-white rounded-xl shadow-sm mb-6 relative overflow-hidden border" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="p-5 border-b-0 relative z-10">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg" style={{
@@ -183,7 +190,7 @@ export default function ATS() {
               </div>
             </div>
           </div>
-          <div className="p-5">
+          <div className="p-5 relative z-10">
             {jobs.length === 0 ? (
               <div className="text-center py-12">
                 <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -198,16 +205,23 @@ export default function ATS() {
                   <div
                     key={job.id}
                     onClick={() => handleJobSelect(job)}
-                    className={`group p-5 border rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
+                    className={`group p-5 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md relative overflow-hidden ${
                       selectedJob?.id === job.id 
-                        ? "border-gray-300 bg-gray-50 shadow-sm" 
-                        : "border-gray-200 hover:border-gray-300 bg-white"
+                        ? "shadow-sm" 
+                        : "hover:border-gray-300"
                     }`}
                     style={{
-                      borderColor: selectedJob?.id === job.id ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : ''
+                      background: selectedJob?.id === job.id 
+                        ? `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}08, white)` 
+                        : `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+                      border: `2px solid ${selectedJob?.id === job.id ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`}`
                     }}
                   >
-                    <div className="flex items-start justify-between mb-3">
+                    <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-10" style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                      transform: 'translate(30%, -30%)'
+                    }}></div>
+                    <div className="flex items-start justify-between mb-3 relative z-10">
                       <div className="flex-1">
                         <h3 className="font-semibold text-lg text-gray-900 mb-2 group-hover:text-gray-700 transition-colors">
                           {job.title}
@@ -223,7 +237,7 @@ export default function ATS() {
                       }`} size={18} />
                     </div>
                     
-                    <div className="space-y-2">
+                    <div className="space-y-2 relative z-10">
                       <div className="flex items-center text-sm text-gray-600">
                         <FiUsers className="mr-2" size={14} />
                         <span>Rounds: {getRoundNames(job).join(", ") || "Not specified"}</span>
@@ -244,8 +258,15 @@ export default function ATS() {
 
         {/* Candidates Section */}
         {selectedJob && (
-          <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-            <div className="px-6 py-4 border-b ">
+          <div className="rounded-xl shadow-sm relative overflow-hidden border" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
+            <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+              transform: 'translate(30%, -30%)'
+            }}></div>
+            <div className="px-6 py-4 border-b relative z-10">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                   <h2 className="text-xl font-semibold text-primary">
@@ -265,7 +286,11 @@ export default function ATS() {
                     <input
                       type="text"
                       placeholder="Search candidates..."
-                      className="pl-11 pr-4 py-2.5 bg-gray-50 border-0 rounded-xl text-gray-900 placeholder-gray-500 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all text-sm"
+                      className="pl-11 pr-4 py-2.5 rounded-xl text-gray-900 placeholder-gray-500 focus:ring-2 focus:outline-none transition-all text-sm"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -274,7 +299,11 @@ export default function ATS() {
                   <select
                     value={stageFilter}
                     onChange={(e) => setStageFilter(e.target.value)}
-                    className="px-4 py-2.5 bg-gray-50 border-0 rounded-xl text-gray-900 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all text-sm"
+                    className="px-4 py-2.5 rounded-xl text-gray-900 focus:ring-2 focus:outline-none transition-all text-sm"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                   >
                     <option value="">All Stages</option>
                     {stages.map(stage => (
@@ -286,7 +315,7 @@ export default function ATS() {
             </div>
 
             {filteredCandidates.length === 0 ? (
-            <div className="text-center py-12">
+            <div className="text-center py-12 relative z-10">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FiUsers className="w-8 h-8 text-gray-400" />
               </div>
@@ -295,7 +324,7 @@ export default function ATS() {
           ) : (
             <>
               {/* Desktop Table View */}
-              <div className="hidden md:block overflow-x-auto">
+              <div className="hidden md:block overflow-x-auto relative z-10">
                 <table className="min-w-full">
                   <thead className="bg-gray-50/80 border-b-0">
                     <tr>
@@ -367,7 +396,7 @@ export default function ATS() {
               </div>
 
               {/* Mobile Card View */}
-              <div className="md:hidden">
+              <div className="md:hidden relative z-10">
                 {filteredCandidates.map((candidate) => (
                   <div key={candidate.id} className="p-4 border-b-0 hover:bg-gray-50">
                     <div className="flex items-center justify-between mb-3">
@@ -444,11 +473,23 @@ export default function ATS() {
               </div>
 
               <div className="p-6">
-                <div className="border-0 rounded-xl p-4 space-y-6">
+                <div className="rounded-xl p-6 space-y-6 relative overflow-hidden border" style={{
+                  background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+                  borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-10" style={{
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                    transform: 'translate(30%, -30%)'
+                  }}></div>
+                  <div className="relative z-10">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Action *</label>
                     <select
-                      className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full rounded-lg px-3 py-2 focus:ring-2 focus:outline-none"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={moveForm.action}
                       onChange={(e) => setMoveForm({ ...moveForm, action: e.target.value })}
                     >
@@ -475,7 +516,11 @@ export default function ATS() {
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Next Round</label>
                         <select
-                          className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="w-full rounded-lg px-3 py-2 focus:ring-2 focus:outline-none"
+                          style={{
+                            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                          }}
                           value={moveForm.next_round}
                           onChange={(e) => setMoveForm({ ...moveForm, next_round: parseInt(e.target.value) })}
                         >
@@ -503,7 +548,11 @@ export default function ATS() {
                           <label className="block text-sm font-medium text-gray-700 mb-2">Round Name</label>
                           <input
                             type="text"
-                            className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full rounded-lg px-3 py-2 focus:ring-2 focus:outline-none"
+                            style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                            }}
                             placeholder="Enter round name (e.g., Final Interview, CEO Round)"
                             value={moveForm.custom_round_name}
                             onChange={(e) => setMoveForm({ ...moveForm, custom_round_name: e.target.value })}
@@ -519,7 +568,11 @@ export default function ATS() {
                           </label>
                           <input
                             type="date"
-                            className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full rounded-lg px-3 py-2 focus:ring-2 focus:outline-none"
+                            style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                            }}
                             value={moveForm.interview_date}
                             onChange={(e) => setMoveForm({ ...moveForm, interview_date: e.target.value })}
                           />
@@ -532,7 +585,11 @@ export default function ATS() {
                           </label>
                           <input
                             type="time"
-                            className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full rounded-lg px-3 py-2 focus:ring-2 focus:outline-none"
+                            style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                            }}
                             value={moveForm.interview_time}
                             onChange={(e) => setMoveForm({ ...moveForm, interview_time: e.target.value })}
                           />
@@ -540,6 +597,7 @@ export default function ATS() {
                       </div>
                     </div>
                   )}
+                  </div>
                 </div>
               </div>
 

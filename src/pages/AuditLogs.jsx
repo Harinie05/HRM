@@ -154,7 +154,7 @@ export default function AuditLogs() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Action</label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="text"
                 placeholder="e.g., CREATE_USER"
                 value={filters.action}
@@ -165,7 +165,7 @@ export default function AuditLogs() {
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Table</label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="text"
                 placeholder="e.g., users"
                 value={filters.table_name}
@@ -176,7 +176,7 @@ export default function AuditLogs() {
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="text"
                 placeholder="Employee name"
                 value={filters.employee_name}
@@ -187,7 +187,7 @@ export default function AuditLogs() {
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="date"
                 value={filters.start_date}
                 onChange={(e) => handleFilterChange("start_date", e.target.value)}
@@ -197,7 +197,7 @@ export default function AuditLogs() {
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="date"
                 value={filters.end_date}
                 onChange={(e) => handleFilterChange("end_date", e.target.value)}
@@ -434,7 +434,7 @@ export default function AuditLogs() {
                   </div>
                 </div>
                 
-                <div className="border-t-0 pt-4">
+                <div className="-t-0 pt-4">
                   {selectedLog.action.includes('CREATE') && selectedLog.new_values && 
                     renderDataDetails(selectedLog.new_values, 'Created Data')
                   }

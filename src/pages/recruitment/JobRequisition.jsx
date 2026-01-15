@@ -124,10 +124,19 @@ export default function JobRequisition() {
     <Layout>
       <div className="p-6">
         {/* Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6 mb-6" style={{
-          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        <div className="rounded-2xl shadow-sm p-4 sm:p-6 mb-6 relative overflow-hidden border" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
         }}>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+            transform: 'translate(-30%, 30%)'
+          }}></div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 relative z-10">
             <div className="flex items-center gap-3 sm:gap-4">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -174,9 +183,10 @@ export default function JobRequisition() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                className="px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                 style={{
-                  focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                 }}
               >
                 <option value="active">Active</option>
@@ -194,9 +204,10 @@ export default function JobRequisition() {
                 placeholder="Search jobs..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                className="pl-10 pr-4 py-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                 style={{
-                  focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                 }}
               />
             </div>
@@ -206,9 +217,16 @@ export default function JobRequisition() {
         {/* Job Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredRequisitions.map((req) => (
-            <div key={req.id} className="bg-white rounded-xl border-0 p-4 hover:shadow-md transition-all duration-200">
+            <div key={req.id} className="bg-white rounded-xl p-4 hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+              background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                transform: 'translate(30%, -30%)'
+              }}></div>
               {/* Header */}
-              <div className="flex items-start justify-between mb-3">
+              <div className="flex items-start justify-between mb-3 relative z-10">
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-gray-900 mb-1">{req.title}</h3>
                   <div className="flex items-center space-x-2 text-gray-500 mb-2">
@@ -445,9 +463,19 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-      <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl border-0">
+      <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl relative overflow-hidden border" style={{
+        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+      }}>
+        <div className="absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+          transform: 'translate(30%, -30%)'
+        }}></div>
+        <div className="absolute bottom-0 left-0 w-40 h-40 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+          transform: 'translate(-30%, 30%)'
+        }}></div>
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b-0 px-8 py-6 rounded-t-2xl">
+        <div className="bg-white border-b-0 px-8 py-6 rounded-t-2xl relative z-10">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold text-black">
@@ -472,26 +500,34 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
         </div>
 
         {/* Form Content */}
-        <div className="px-8 py-6">
+        <div className="px-8 py-6 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Left Column */}
             <div className="space-y-6">
               {/* Basic Information */}
-              <div className="bg-gray-50 border-0 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <div className="rounded-xl p-6 relative overflow-hidden border" style={{
+                background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center relative z-10">
                   <Briefcase className="w-5 h-5 mr-2" style={{
                     color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }} />
                   Basic Information
                 </h3>
                 
-                <div className="space-y-4">
+                <div className="space-y-4 relative z-10">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Job Title *</label>
                     <input
-                      className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                       style={{
-                        focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                       }}
                       placeholder="e.g., Senior Software Engineer"
                       disabled={isView}
@@ -504,9 +540,10 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Department</label>
                       <input
-                        className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                        className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                         style={{
-                          focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                         }}
                         placeholder="e.g., Engineering"
                         disabled={isView}
@@ -518,9 +555,10 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Hiring Manager</label>
                       <input
-                        className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                        className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                         style={{
-                          focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                         }}
                         placeholder="Manager name"
                         disabled={isView}
@@ -534,9 +572,10 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Openings</label>
                       <input
-                        className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                        className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                         style={{
-                          focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                         }}
                         type="number"
                         min="1"
@@ -549,9 +588,10 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Experience</label>
                       <input
-                        className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                        className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                         style={{
-                          focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                         }}
                         placeholder="e.g., 3-5 years"
                         disabled={isView}
@@ -564,21 +604,29 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
               </div>
               
               {/* Job Details */}
-              <div className="bg-gray-50 border-0 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <div className="rounded-xl p-6 relative overflow-hidden border" style={{
+                background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center relative z-10">
                   <Building2 className="w-5 h-5 mr-2" style={{
                     color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }} />
                   Job Details
                 </h3>
                 
-                <div className="space-y-4">
+                <div className="space-y-4 relative z-10">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Salary Range</label>
                     <input
-                      className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                       style={{
-                        focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                       }}
                       placeholder="e.g., 5-8 LPA"
                       disabled={isView}
@@ -591,9 +639,10 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Job Type</label>
                       <select
-                        className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                        className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                         style={{
-                          focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                         }}
                         disabled={isView}
                         value={form.job_type}
@@ -609,9 +658,10 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Work Mode</label>
                       <select
-                        className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                        className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                         style={{
-                          focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                         }}
                         disabled={isView}
                         value={form.work_mode}
@@ -627,9 +677,10 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Work Location</label>
                     <input
-                      className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                       style={{
-                        focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                       }}
                       placeholder="e.g., Bangalore, India"
                       disabled={isView}
@@ -644,8 +695,15 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
             {/* Right Column */}
             <div className="space-y-6">
               {/* Job Description */}
-              <div className="bg-gray-50 border-0 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <div className="rounded-xl p-6 relative overflow-hidden border" style={{
+                background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05 100%)`,
+                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}20`
+              }}>
+                <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center relative z-10">
                   <svg className="w-5 h-5 mr-2" style={{
                     color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -654,13 +712,14 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                   Job Description
                 </h3>
                 
-                <div className="space-y-4">
+                <div className="space-y-4 relative z-10">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Brief Description</label>
                     <textarea
-                      className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
                       style={{
-                        focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                       }}
                       rows="3"
                       placeholder="Brief overview of the role..."
@@ -673,9 +732,10 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Detailed Job Description</label>
                     <textarea
-                      className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
                       style={{
-                        focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                       }}
                       rows="6"
                       placeholder="Detailed job description, responsibilities, requirements..."
@@ -688,9 +748,10 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Required Skills</label>
                     <input
-                      className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                       style={{
-                        focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                       }}
                       placeholder="e.g., React, Node.js, Python (comma-separated)"
                       disabled={isView}
@@ -702,21 +763,29 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
               </div>
               
               {/* Interview Process */}
-              <div className="bg-gray-50 border-0 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <div className="rounded-xl p-6 relative overflow-hidden border" style={{
+                background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05 100%)`,
+                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}20`
+              }}>
+                <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center relative z-10">
                   <Users className="w-5 h-5 mr-2" style={{
                     color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }} />
                   Interview Process
                 </h3>
                 
-                <div className="space-y-4">
+                <div className="space-y-4 relative z-10">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Application Deadline</label>
                     <input
-                      className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                       style={{
-                        focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                       }}
                       type="date"
                       disabled={isView}
@@ -731,7 +800,7 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
         </div>
         
         {/* Footer */}
-        <div className="sticky bottom-0 bg-white border-t-0 px-8 py-6 rounded-b-2xl">
+        <div className="bg-white border-t-0 px-8 py-6 rounded-b-2xl relative z-10">
           <div className="flex items-center justify-between">
             <button
               className="px-6 py-3 bg-white text-gray-700 border-0 rounded-lg font-medium transition-colors hover:bg-gray-50"
@@ -744,13 +813,16 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
               <button
                 className="px-8 py-3 text-white rounded-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                 style={{
-                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                 }}
                 onMouseEnter={(e) => {
                   e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                  e.target.style.border = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}`;
                 }}
                 onMouseLeave={(e) => {
                   e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                  e.target.style.border = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`;
                 }}
                 onClick={submitForm}
               >

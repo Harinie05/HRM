@@ -204,7 +204,7 @@ export default function Insurance() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
-                  <select 
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     value={formData.employeeId}
                     onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
                     className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -220,7 +220,7 @@ export default function Insurance() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Policy Type</label>
-                  <input 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     type="text"
                     value={formData.policyType}
                     onChange={(e) => setFormData({...formData, policyType: e.target.value})}
@@ -231,7 +231,7 @@ export default function Insurance() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Policy Number</label>
-                  <input 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     type="text"
                     value={formData.policyNumber}
                     onChange={(e) => setFormData({...formData, policyNumber: e.target.value})}
@@ -242,7 +242,7 @@ export default function Insurance() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Provider</label>
-                  <input 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     type="text"
                     value={formData.provider}
                     onChange={(e) => setFormData({...formData, provider: e.target.value})}
@@ -253,7 +253,7 @@ export default function Insurance() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Coverage Amount</label>
-                  <input 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     type="number"
                     value={formData.coverageAmount}
                     onChange={(e) => setFormData({...formData, coverageAmount: e.target.value})}
@@ -264,7 +264,7 @@ export default function Insurance() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
-                  <input 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     type="date"
                     value={formData.startDate}
                     onChange={(e) => setFormData({...formData, startDate: e.target.value})}
@@ -274,7 +274,7 @@ export default function Insurance() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Expiry Date</label>
-                  <input 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     type="date"
                     value={formData.expiryDate}
                     onChange={(e) => setFormData({...formData, expiryDate: e.target.value})}

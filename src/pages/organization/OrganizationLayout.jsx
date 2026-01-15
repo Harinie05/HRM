@@ -114,8 +114,15 @@ export default function OrganizationLayout() {
         </div>
 
         {/* Organization Management Section */}
-        <div className="bg-white rounded-xl border-0 shadow-sm">
-          <div className="p-5 border-b-0">
+        <div className="bg-white rounded-xl shadow-sm relative overflow-hidden border" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="p-5 border-b-0 relative z-10">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg" style={{

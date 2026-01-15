@@ -248,10 +248,10 @@ export default function TrainingApplications() {
       <div className="bg-white rounded-lg border-0 p-6">
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-medium text-gray-900">Applications</h3>
-          <select
+          <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            className=" rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
           >
             <option value="">All Status</option>
             <option value="Pending">Pending</option>
@@ -272,7 +272,7 @@ export default function TrainingApplications() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left border-0">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     checked={selectedApplications.length === filteredApplications.length && filteredApplications.length > 0}
                     onChange={handleSelectAll}
@@ -301,7 +301,7 @@ export default function TrainingApplications() {
                 filteredApplications.map((application) => (
                   <tr key={application.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 border-0">
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="checkbox"
                         checked={selectedApplications.includes(application.id)}
                         onChange={() => handleSelectApplication(application.id)}
@@ -389,7 +389,7 @@ export default function TrainingApplications() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="text"
                     value={emailTemplate.subject}
                     onChange={(e) => setEmailTemplate({...emailTemplate, subject: e.target.value})}
@@ -399,7 +399,7 @@ export default function TrainingApplications() {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Message</label>
-                  <textarea
+                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={emailTemplate.message}
                     onChange={(e) => setEmailTemplate({...emailTemplate, message: e.target.value})}
                     rows={12}

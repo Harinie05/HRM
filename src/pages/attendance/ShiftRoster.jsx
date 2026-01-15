@@ -1041,7 +1041,7 @@ export default function ShiftRoster() {
               </div>
               <div className="flex gap-3">
                 <label className="flex items-center space-x-2 text-sm">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     checked={showInactiveShifts}
                     onChange={(e) => setShowInactiveShifts(e.target.checked)}
@@ -1050,7 +1050,7 @@ export default function ShiftRoster() {
                   <span className="text-gray-700">Show inactive shifts</span>
                 </label>
                 <label className="flex items-center space-x-2 text-sm">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     checked={showDeleted}
                     onChange={(e) => setShowDeleted(e.target.checked)}
@@ -1200,7 +1200,7 @@ export default function ShiftRoster() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={selectedUser}
                     onChange={(e) => setSelectedUser(e.target.value)}
                     className="w-full px-4 py-2 bg-white border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -1246,7 +1246,7 @@ export default function ShiftRoster() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">From Date</label>
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="date"
                         value={bulkDateRange.start}
                         onChange={(e) => setBulkDateRange({...bulkDateRange, start: e.target.value})}
@@ -1256,7 +1256,7 @@ export default function ShiftRoster() {
                     
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">To Date</label>
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="date"
                         value={bulkDateRange.end}
                         onChange={(e) => setBulkDateRange({...bulkDateRange, end: e.target.value})}
@@ -1266,7 +1266,7 @@ export default function ShiftRoster() {
                     
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Shift</label>
-                      <select
+                      <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         value={bulkShift}
                         onChange={(e) => setBulkShift(e.target.value)}
                         className="w-full px-4 py-2 bg-white border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -1375,7 +1375,7 @@ export default function ShiftRoster() {
                   <thead>
                     <tr className="bg-gray-50">
                       <th className="px-2 py-4 text-center font-semibold text-gray-900 w-12 border-r-0">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           checked={selectedUsersForBulk.length === allocatedUsers.length && allocatedUsers.length > 0}
                           onChange={(e) => {
@@ -1437,7 +1437,7 @@ export default function ShiftRoster() {
                       user.is_deleted ? 'bg-red-50 border-l-4 border-red-400' : ''
                     }`}>
                       <td className="px-2 py-4 text-center border-r-0">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           checked={selectedUsersForBulk.includes(user.id)}
                           onChange={(e) => {
@@ -1476,7 +1476,7 @@ export default function ShiftRoster() {
                             isWeekend ? 'bg-gray-100' : ''
                           }`}>
                             {editingCell === `${user.id}-${date}` ? (
-                              <select
+                              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 value={shiftValue}
                                 onChange={async (e) => {
                                   const shiftId = e.target.value ? parseInt(e.target.value) : null;
@@ -1689,28 +1689,28 @@ export default function ShiftRoster() {
                 <table className="w-full border-collapse border-0">
                   <thead>
                     <tr className="bg-gray-100">
-                      <th className="border-0 px-4 py-2 text-left">ID</th>
-                      <th className="border-0 px-4 py-2 text-left">Applicable Shifts</th>
-                      <th className="border-0 px-4 py-2 text-left">Punch Out Rule</th>
-                      <th className="border-0 px-4 py-2 text-left">Min Hours</th>
-                      <th className="border-0 px-4 py-2 text-left">OT Rate</th>
-                      <th className="border-0 px-4 py-2 text-center">Actions</th>
+                      <th className=" px-4 py-2 text-left">ID</th>
+                      <th className=" px-4 py-2 text-left">Applicable Shifts</th>
+                      <th className=" px-4 py-2 text-left">Punch Out Rule</th>
+                      <th className=" px-4 py-2 text-left">Min Hours</th>
+                      <th className=" px-4 py-2 text-left">OT Rate</th>
+                      <th className=" px-4 py-2 text-center">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {allNightShiftRules.map((rule) => (
                       <tr key={rule.id}>
-                        <td className="border-0 px-4 py-2">{rule.id}</td>
-                        <td className="border-0 px-4 py-2">
+                        <td className=" px-4 py-2">{rule.id}</td>
+                        <td className=" px-4 py-2">
                           {rule.applicable_shifts?.map(shiftId => {
                             const shift = shifts.find(s => s.id === shiftId);
                             return shift ? shift.name : `Shift ${shiftId}`;
                           }).join(', ') || 'None'}
                         </td>
-                        <td className="border-0 px-4 py-2">{rule.punch_out_rule}</td>
-                        <td className="border-0 px-4 py-2">{rule.minimum_hours} hrs</td>
-                        <td className="border-0 px-4 py-2">{rule.night_ot_rate}</td>
-                        <td className="border-0 px-4 py-2">
+                        <td className=" px-4 py-2">{rule.punch_out_rule}</td>
+                        <td className=" px-4 py-2">{rule.minimum_hours} hrs</td>
+                        <td className=" px-4 py-2">{rule.night_ot_rate}</td>
+                        <td className=" px-4 py-2">
                           <div className="flex gap-2 justify-center">
                             {(isAdmin() || hasPermission("MANAGE_NIGHT_SHIFT_RULES")) && (
                               <>
@@ -1752,7 +1752,7 @@ export default function ShiftRoster() {
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Night shift applicable for Shifts:
               </label>
-              <select
+              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 value={(nightShiftRules.applicable_shifts && nightShiftRules.applicable_shifts[0]) || ""}
                 onChange={(e) => {
                   const value = e.target.value ? [parseInt(e.target.value)] : [];
@@ -1771,7 +1771,7 @@ export default function ShiftRoster() {
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Punch Out after midnight counts as:
               </label>
-              <select
+              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 value={nightShiftRules.punch_out_rule}
                 onChange={(e) => setNightShiftRules({...nightShiftRules, punch_out_rule: e.target.value})}
                 className="w-full px-4 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 bg-white"
@@ -1785,7 +1785,7 @@ export default function ShiftRoster() {
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Minimum hours for night shift credit:
               </label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="number"
                 value={nightShiftRules.minimum_hours}
                 onChange={(e) => setNightShiftRules({...nightShiftRules, minimum_hours: parseInt(e.target.value)})}
@@ -1799,7 +1799,7 @@ export default function ShiftRoster() {
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Night OT bonus rate:
               </label>
-              <select
+              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 value={nightShiftRules.night_ot_rate}
                 onChange={(e) => setNightShiftRules({...nightShiftRules, night_ot_rate: e.target.value})}
                 className="w-full px-4 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 bg-white"
@@ -1814,7 +1814,7 @@ export default function ShiftRoster() {
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Grace time for night login (minutes):
               </label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="number"
                 value={nightShiftRules.grace_minutes}
                 onChange={(e) => setNightShiftRules({...nightShiftRules, grace_minutes: parseInt(e.target.value)})}
@@ -1888,7 +1888,7 @@ export default function ShiftRoster() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Shift Name</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
                       value={newShift.name}
                       onChange={(e) => setNewShift({...newShift, name: e.target.value})}
@@ -1898,7 +1898,7 @@ export default function ShiftRoster() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Start Time</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="time"
                       value={newShift.start_time}
                       onChange={(e) => setNewShift({...newShift, start_time: e.target.value})}
@@ -1907,7 +1907,7 @@ export default function ShiftRoster() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">End Time</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="time"
                       value={newShift.end_time}
                       onChange={(e) => setNewShift({...newShift, end_time: e.target.value})}
@@ -1967,7 +1967,7 @@ export default function ShiftRoster() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
-                    <select
+                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       value={onCallForm.employee_id}
                       onChange={(e) => setOnCallForm({...onCallForm, employee_id: e.target.value})}
                       className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -1982,7 +1982,7 @@ export default function ShiftRoster() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="date"
                       value={onCallForm.date}
                       onChange={(e) => setOnCallForm({...onCallForm, date: e.target.value})}
@@ -1991,7 +1991,7 @@ export default function ShiftRoster() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">From Time</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="time"
                       value={onCallForm.from_time}
                       onChange={(e) => setOnCallForm({...onCallForm, from_time: e.target.value})}
@@ -2000,7 +2000,7 @@ export default function ShiftRoster() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">To Time</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="time"
                       value={onCallForm.to_time}
                       onChange={(e) => setOnCallForm({...onCallForm, to_time: e.target.value})}
@@ -2009,7 +2009,7 @@ export default function ShiftRoster() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Duty Type</label>
-                    <select
+                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       value={onCallForm.duty_type}
                       onChange={(e) => setOnCallForm({...onCallForm, duty_type: e.target.value})}
                       className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -2021,7 +2021,7 @@ export default function ShiftRoster() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Priority Level</label>
-                    <select
+                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       value={onCallForm.priority_level}
                       onChange={(e) => setOnCallForm({...onCallForm, priority_level: e.target.value})}
                       className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -2033,7 +2033,7 @@ export default function ShiftRoster() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Contact Number</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="tel"
                       value={onCallForm.contact_number}
                       onChange={(e) => setOnCallForm({...onCallForm, contact_number: e.target.value})}
@@ -2043,7 +2043,7 @@ export default function ShiftRoster() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Remarks</label>
-                    <textarea
+                    <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       value={onCallForm.remarks}
                       onChange={(e) => setOnCallForm({...onCallForm, remarks: e.target.value})}
                       className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"

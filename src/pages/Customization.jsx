@@ -279,7 +279,7 @@ export default function Customization() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Organisation name</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
                       value={orgDetails.name}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, name: e.target.value }))}
@@ -290,7 +290,7 @@ export default function Customization() {
 
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Tagline</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
                       value={orgDetails.tagline}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, tagline: e.target.value }))}
@@ -300,7 +300,7 @@ export default function Customization() {
 
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-secondary mb-2">Address</label>
-                    <textarea
+                    <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       value={orgDetails.address}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, address: e.target.value }))}
                       rows={3}
@@ -310,7 +310,7 @@ export default function Customization() {
 
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Phone</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
                       value={orgDetails.phone}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, phone: e.target.value }))}
@@ -320,7 +320,7 @@ export default function Customization() {
 
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Email</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="email"
                       value={orgDetails.email}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, email: e.target.value }))}
@@ -330,7 +330,7 @@ export default function Customization() {
 
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Website</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="url"
                       value={orgDetails.website}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, website: e.target.value }))}
@@ -340,7 +340,7 @@ export default function Customization() {
 
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">GSTIN</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
                       value={orgDetails.gstin}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, gstin: e.target.value }))}
@@ -351,7 +351,7 @@ export default function Customization() {
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-secondary mb-2">Logo</label>
                     <div className="flex items-center space-x-4">
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="file"
                         accept="image/*"
                         onChange={handleLogoUpload}
@@ -391,13 +391,13 @@ export default function Customization() {
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Primary color (buttons, highlights)</label>
                     <div className="flex items-center space-x-3">
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="color"
                         value={colors.primaryColor}
                         onChange={(e) => updateColor('primaryColor', e.target.value)}
                         className="w-12 h-10 rounded border border-black cursor-pointer"
                       />
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="text"
                         value={colors.primaryColor}
                         onChange={(e) => updateColor('primaryColor', e.target.value)}
@@ -409,13 +409,13 @@ export default function Customization() {
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Secondary color</label>
                     <div className="flex items-center space-x-3">
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="color"
                         value={colors.secondaryColor}
                         onChange={(e) => updateColor('secondaryColor', e.target.value)}
                         className="w-12 h-10 rounded border border-black cursor-pointer"
                       />
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="text"
                         value={colors.secondaryColor}
                         onChange={(e) => updateColor('secondaryColor', e.target.value)}
@@ -427,13 +427,13 @@ export default function Customization() {
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Sidebar background color</label>
                     <div className="flex items-center space-x-3">
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="color"
                         value={colors.sidebarBg}
                         onChange={(e) => updateColor('sidebarBg', e.target.value)}
                         className="w-12 h-10 rounded border border-black cursor-pointer"
                       />
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="text"
                         value={colors.sidebarBg}
                         onChange={(e) => updateColor('sidebarBg', e.target.value)}
@@ -445,13 +445,13 @@ export default function Customization() {
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Header & footer background</label>
                     <div className="flex items-center space-x-3">
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="color"
                         value={colors.headerFooterBg}
                         onChange={(e) => updateColor('headerFooterBg', e.target.value)}
                         className="w-12 h-10 rounded border border-black cursor-pointer"
                       />
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="text"
                         value={colors.headerFooterBg}
                         onChange={(e) => updateColor('headerFooterBg', e.target.value)}
@@ -463,13 +463,13 @@ export default function Customization() {
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Sidebar text color</label>
                     <div className="flex items-center space-x-3">
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="color"
                         value={colors.sidebarTextColor}
                         onChange={(e) => updateColor('sidebarTextColor', e.target.value)}
                         className="w-12 h-10 rounded border border-black cursor-pointer"
                       />
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="text"
                         value={colors.sidebarTextColor}
                         onChange={(e) => updateColor('sidebarTextColor', e.target.value)}
@@ -481,13 +481,13 @@ export default function Customization() {
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Header text color</label>
                     <div className="flex items-center space-x-3">
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="color"
                         value={colors.headerTextColor}
                         onChange={(e) => updateColor('headerTextColor', e.target.value)}
                         className="w-12 h-10 rounded border border-black cursor-pointer"
                       />
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="text"
                         value={colors.headerTextColor}
                         onChange={(e) => updateColor('headerTextColor', e.target.value)}

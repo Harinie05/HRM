@@ -235,7 +235,7 @@ export default function EmployeeReporting() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Select Organizational Level *</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.employee_level_id}
                     onChange={(e) => handleLevelChange(e.target.value)}
@@ -251,7 +251,7 @@ export default function EmployeeReporting() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Assignment Date</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="date"
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.reporting_start_date}
@@ -281,7 +281,7 @@ export default function EmployeeReporting() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Assigned to *</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.reporting_manager_id}
                     onChange={(e) => setForm({ ...form, reporting_manager_id: e.target.value })}
@@ -309,7 +309,7 @@ export default function EmployeeReporting() {
                       ? `Alternative ${parentLevelName} (Optional)` 
                       : 'Alternative Manager (Optional)'}
                   </label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.alternative_manager_id}
                     onChange={(e) => setForm({ ...form, alternative_manager_id: e.target.value })}

@@ -362,7 +362,7 @@ const DailyUpdates = () => {
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
             {isAdmin() ? (
-              <select
+              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 value={selectedEmployee}
                 onChange={(e) => {
                   setSelectedEmployee(e.target.value);
@@ -424,7 +424,7 @@ const DailyUpdates = () => {
                 {isAdmin() && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
-                    <select
+                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       value={formData.employee_id}
                       onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
                       className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -444,7 +444,7 @@ const DailyUpdates = () => {
                 )}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="date"
                     value={formData.date}
                     onChange={(e) => setFormData({...formData, date: e.target.value})}
@@ -456,7 +456,7 @@ const DailyUpdates = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Work Done Today *</label>
-                  <textarea
+                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={formData.work_done}
                     onChange={(e) => setFormData({...formData, work_done: e.target.value})}
                     placeholder="Describe what you accomplished today..."
@@ -468,7 +468,7 @@ const DailyUpdates = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Blockers (Optional)</label>
-                  <textarea
+                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={formData.blockers}
                     onChange={(e) => setFormData({...formData, blockers: e.target.value})}
                     placeholder="Any challenges or blockers you faced..."
@@ -479,7 +479,7 @@ const DailyUpdates = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Plan for Tomorrow (Optional)</label>
-                  <textarea
+                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={formData.plan_for_tomorrow}
                     onChange={(e) => setFormData({...formData, plan_for_tomorrow: e.target.value})}
                     placeholder="What do you plan to work on tomorrow..."
@@ -491,7 +491,7 @@ const DailyUpdates = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Hours Spent (Optional)</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="number"
                       step="0.5"
                       min="0"
@@ -505,7 +505,7 @@ const DailyUpdates = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                    <select
+                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       value={formData.status}
                       onChange={(e) => setFormData({...formData, status: e.target.value})}
                       className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -679,7 +679,7 @@ const DailyUpdates = () => {
                   });
                   
                   return (
-                    <div key={update.id} className="border-0 rounded-xl p-4 hover:shadow-sm transition-shadow">
+                    <div key={update.id} className=" rounded-xl p-4 hover:shadow-sm transition-shadow">
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex items-center gap-3">
                           <div className="flex items-center gap-2 text-sm text-gray-600">

@@ -349,7 +349,7 @@ export default function Feedback() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Feedback Type</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.type}
                   onChange={(e) => setFormData({...formData, type: e.target.value, customType: e.target.value === "Other" ? formData.customType : ""})}
                   className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
@@ -359,7 +359,7 @@ export default function Feedback() {
                   ))}
                 </select>
                 {formData.type === "Other" && (
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="text"
                     value={formData.customType}
                     onChange={(e) => setFormData({...formData, customType: e.target.value})}
@@ -372,7 +372,7 @@ export default function Feedback() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.category}
                   onChange={(e) => setFormData({...formData, category: e.target.value})}
                   className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
@@ -385,7 +385,7 @@ export default function Feedback() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">From Employee</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.fromEmployee}
                   onChange={(e) => setFormData({...formData, fromEmployee: e.target.value})}
                   className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
@@ -400,7 +400,7 @@ export default function Feedback() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">To Employee</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.toEmployee}
                   onChange={(e) => setFormData({...formData, toEmployee: e.target.value})}
                   className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
@@ -415,7 +415,7 @@ export default function Feedback() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Overall Rating</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.rating}
                   onChange={(e) => setFormData({...formData, rating: parseInt(e.target.value)})}
                   className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
@@ -428,7 +428,7 @@ export default function Feedback() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.status}
                   onChange={(e) => setFormData({...formData, status: e.target.value})}
                   className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
@@ -441,7 +441,7 @@ export default function Feedback() {
 
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Feedback</label>
-                <textarea
+                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.feedback}
                   onChange={(e) => setFormData({...formData, feedback: e.target.value})}
                   rows={4}
@@ -453,7 +453,7 @@ export default function Feedback() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Strengths</label>
-                <textarea
+                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.strengths}
                   onChange={(e) => setFormData({...formData, strengths: e.target.value})}
                   rows={3}
@@ -464,7 +464,7 @@ export default function Feedback() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Areas for Improvement</label>
-                <textarea
+                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.improvements}
                   onChange={(e) => setFormData({...formData, improvements: e.target.value})}
                   rows={3}
@@ -475,7 +475,7 @@ export default function Feedback() {
 
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Future Goals</label>
-                <textarea
+                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.goals}
                   onChange={(e) => setFormData({...formData, goals: e.target.value})}
                   rows={2}
@@ -486,7 +486,7 @@ export default function Feedback() {
 
               <div className="sm:col-span-2">
                 <label className="flex items-center">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     checked={formData.isAnonymous}
                     onChange={(e) => setFormData({...formData, isAnonymous: e.target.checked})}

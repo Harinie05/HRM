@@ -414,7 +414,7 @@ export default function Lifecycle() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
                   {isAdmin() ? (
-                    <select 
+                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                       value={formData.employeeId}
                       onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
                       className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -443,7 +443,7 @@ export default function Lifecycle() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Action Type</label>
-                  <select 
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     value={formData.actionType}
                     onChange={(e) => setFormData({...formData, actionType: e.target.value})}
                     className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -458,7 +458,7 @@ export default function Lifecycle() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Effective Date</label>
-                  <input 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     type="date"
                     value={formData.effectiveDate}
                     onChange={(e) => setFormData({...formData, effectiveDate: e.target.value})}
@@ -467,7 +467,7 @@ export default function Lifecycle() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Current Role</label>
-                  <input 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     type="text"
                     value={formData.currentRole}
                     onChange={(e) => setFormData({...formData, currentRole: e.target.value})}
@@ -477,7 +477,7 @@ export default function Lifecycle() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">New Role</label>
-                  <input 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     type="text"
                     value={formData.newRole}
                     onChange={(e) => setFormData({...formData, newRole: e.target.value})}
@@ -487,7 +487,7 @@ export default function Lifecycle() {
                 </div>
                 <div className="sm:col-span-2 lg:col-span-3">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Reason</label>
-                  <textarea 
+                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     value={formData.reason}
                     onChange={(e) => setFormData({...formData, reason: e.target.value})}
                     rows={3}
@@ -762,7 +762,7 @@ export default function Lifecycle() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">Employee Email</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="email"
                   value={emailData.email}
                   onChange={(e) => setEmailData({...emailData, email: e.target.value})}

@@ -333,7 +333,7 @@ export default function SalaryStructure() {
           <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
             <div className="flex items-center gap-4">
               <label className="text-sm font-medium text-gray-700">Status:</label>
-              <select
+              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
@@ -345,7 +345,7 @@ export default function SalaryStructure() {
             </div>
             <div className="relative max-w-md w-full sm:w-auto">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="text"
                 placeholder="Search salary structures..."
                 value={searchTerm}
@@ -573,7 +573,7 @@ export default function SalaryStructure() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Structure Name</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
@@ -584,7 +584,7 @@ export default function SalaryStructure() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Cost to Company (CTC) - Annually</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   value={formData.ctc}
                   onChange={(e) => setFormData({...formData, ctc: parseFloat(e.target.value) || 0})}
@@ -596,7 +596,7 @@ export default function SalaryStructure() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Basic %</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     value={formData.basic_percent}
                     onChange={(e) => setFormData({...formData, basic_percent: parseFloat(e.target.value) || 0})}
@@ -606,7 +606,7 @@ export default function SalaryStructure() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">HRA %</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     value={formData.hra_percent}
                     onChange={(e) => setFormData({...formData, hra_percent: parseFloat(e.target.value) || 0})}
@@ -617,7 +617,7 @@ export default function SalaryStructure() {
               </div>
               <div>
                 <label className="flex items-center">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     checked={formData.is_active}
                     onChange={(e) => setFormData({...formData, is_active: e.target.checked})}
@@ -677,7 +677,7 @@ export default function SalaryStructure() {
                   
                   return (
                     <div key={employee.id} className="flex items-center p-3 border border-black rounded-lg hover:bg-gray-50">
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="checkbox"
                         checked={isCurrentlySelected}
                         onChange={() => toggleEmployeeSelection(employee.id)}

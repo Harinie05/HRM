@@ -448,7 +448,7 @@ export default function Statutory() {
             <label className="block text-sm font-medium mb-1">
               Employee ID <span className="text-red-500">*</span>
             </label>
-            <select
+            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               required
               name="employee_id"
               value={form.employee_id}
@@ -489,7 +489,7 @@ export default function Statutory() {
             <label className="block text-sm font-medium mb-1">
               Employee Name <span className="text-red-500">*</span>
             </label>
-            <select
+            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               required
               name="employee_name"
               value={form.employee_name}
@@ -530,7 +530,7 @@ export default function Statutory() {
             <label className="block text-sm font-medium mb-1">
               Basic Salary <span className="text-red-500">*</span>
             </label>
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="number"
               required
               name="basic_salary"
@@ -548,7 +548,7 @@ export default function Statutory() {
             <label className="block text-sm font-medium mb-1">
               Gross Salary <span className="text-red-500">*</span>
             </label>
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="number"
               required
               name="gross_salary"
@@ -565,7 +565,7 @@ export default function Statutory() {
           <div className="col-span-2">
             <div className="flex items-center space-x-4 mb-2">
               <label className="flex items-center">
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="checkbox"
                   name="pf_enabled"
                   checked={form.pf_enabled}
@@ -577,7 +577,7 @@ export default function Statutory() {
               {form.pf_enabled && (
                 <div className="flex items-center space-x-2">
                   <label className="text-sm">Percentage:</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     name="pf_percentage"
                     value={form.pf_percentage}
@@ -597,7 +597,7 @@ export default function Statutory() {
           <div className="col-span-2">
             <div className="flex items-center space-x-4 mb-2">
               <label className="flex items-center">
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="checkbox"
                   name="esi_enabled"
                   checked={form.esi_enabled}
@@ -609,7 +609,7 @@ export default function Statutory() {
               {form.esi_enabled && (
                 <div className="flex items-center space-x-2">
                   <label className="text-sm">Percentage:</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     name="esi_percentage"
                     value={form.esi_percentage}
@@ -629,7 +629,7 @@ export default function Statutory() {
           <div className="col-span-2">
             <div className="flex items-center space-x-4 mb-2">
               <label className="flex items-center">
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="checkbox"
                   name="pt_enabled"
                   checked={form.pt_enabled}
@@ -641,7 +641,7 @@ export default function Statutory() {
               {form.pt_enabled && (
                 <div className="flex items-center space-x-2">
                   <label className="text-sm">Amount:</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     name="pt_amount"
                     value={form.pt_amount}
@@ -660,7 +660,7 @@ export default function Statutory() {
           <div className="col-span-2">
             <div className="flex items-center space-x-4 mb-2">
               <label className="flex items-center">
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="checkbox"
                   name="tds_enabled"
                   checked={form.tds_enabled}
@@ -672,7 +672,7 @@ export default function Statutory() {
               {form.tds_enabled && (
                 <div className="flex items-center space-x-2">
                   <label className="text-sm">Percentage:</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     name="tds_percentage"
                     value={form.tds_percentage}
@@ -691,7 +691,7 @@ export default function Statutory() {
           {/* Month */}
           <div>
             <label className="block text-sm font-medium mb-1">Month</label>
-            <select
+            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               name="month"
               value={form.month}
               onChange={handleChange}
@@ -716,7 +716,7 @@ export default function Statutory() {
           {/* Year */}
           <div>
             <label className="block text-sm font-medium mb-1">Year</label>
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="number"
               name="year"
               value={form.year}

@@ -87,9 +87,20 @@ export default function CompanyProfile() {
   }
 
   return (
-    <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-xl p-5 shadow-sm overflow-hidden relative border" style={{
+      background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+      borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+    }}>
+      <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+        transform: 'translate(40%, -40%)'
+      }}></div>
+      <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+        transform: 'translate(-40%, 40%)'
+      }}></div>
       {/* Header */}
-      <div className="p-5 border-b-0">
+      <div className="p-5 border-b-0 relative z-10">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg" style={{
             backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -108,7 +119,7 @@ export default function CompanyProfile() {
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="p-6">
+      <form onSubmit={handleSubmit} className="p-5">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Company Name */}
           <div>
@@ -121,9 +132,10 @@ export default function CompanyProfile() {
               name="name"
               value={form.name}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
               style={{
-                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
               }}
               placeholder="Enter company name"
             />
@@ -137,9 +149,10 @@ export default function CompanyProfile() {
               name="website"
               value={form.website}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
               style={{
-                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
               }}
               placeholder="https://www.company.com"
             />
@@ -152,9 +165,10 @@ export default function CompanyProfile() {
               name="organization_type"
               value={form.organization_type}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
               style={{
-                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
               }}
             >
               <option value="">Select organization type</option>
@@ -176,9 +190,10 @@ export default function CompanyProfile() {
               name="contact_person"
               value={form.contact_person}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
               style={{
-                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
               }}
               placeholder="Primary contact person"
             />
@@ -192,9 +207,10 @@ export default function CompanyProfile() {
               name="contact_number"
               value={form.contact_number}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
               style={{
-                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
               }}
               placeholder="Phone number"
             />
@@ -208,9 +224,10 @@ export default function CompanyProfile() {
               name="contact_email"
               value={form.contact_email}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
               style={{
-                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
               }}
               placeholder="contact@company.com"
             />
@@ -225,9 +242,10 @@ export default function CompanyProfile() {
             value={form.address}
             onChange={handleChange}
             rows={4}
-            className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
+            className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
             style={{
-              focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
             }}
             placeholder="Complete business address"
           />

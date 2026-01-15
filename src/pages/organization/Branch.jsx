@@ -74,26 +74,35 @@ export default function Branch() {
   }
 
   return (
-    <div className="bg-white rounded-2xl border-0 overflow-hidden">
-      <div className="p-6 border-b-0">
+    <div className="bg-white rounded-xl p-5 shadow-sm overflow-hidden relative border" style={{
+      background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+      borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+    }}>
+      <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+        transform: 'translate(40%, -40%)'
+      }}></div>
+      <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+        transform: 'translate(-40%, 40%)'
+      }}></div>
+      <div className="p-5 border-b-0 relative z-10">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+          <div className="p-2 rounded-lg" style={{
             backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
-            <svg className="w-5 h-5" style={{
+            <svg className="h-5 w-5" style={{
               color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
             }} fill="currentColor" viewBox="0 0 20 20">
               <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
             </svg>
           </div>
-          <div>
-            <h2 className="text-lg font-medium text-gray-900">Branch / Unit Setup</h2>
-            <p className="text-sm text-gray-600">Configure branch locations and contact details</p>
-          </div>
+          <h2 className="text-lg font-semibold text-gray-900">Branch / Unit Setup</h2>
         </div>
+        <p className="text-sm text-gray-600 mt-2">Configure branch locations and contact details</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="p-6">
+      <form onSubmit={handleSubmit} className="p-5">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -105,9 +114,10 @@ export default function Branch() {
               name="branch_name"
               value={form.branch_name}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
               style={{
-                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
               }}
               placeholder="e.g., Coimbatore Unit"
             />
@@ -123,9 +133,10 @@ export default function Branch() {
               name="branch_code"
               value={form.branch_code}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
               style={{
-                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
               }}
               placeholder="e.g., CBE01"
             />
@@ -138,9 +149,10 @@ export default function Branch() {
               name="contact_person"
               value={form.contact_person}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
               style={{
-                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
               }}
               placeholder="Branch manager name"
             />
@@ -153,9 +165,10 @@ export default function Branch() {
               name="contact_number"
               value={form.contact_number}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
               style={{
-                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
               }}
               placeholder="Phone number"
             />
@@ -168,9 +181,10 @@ export default function Branch() {
               name="email"
               value={form.email}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
               style={{
-                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
               }}
               placeholder="branch@company.com"
             />
@@ -183,9 +197,10 @@ export default function Branch() {
               name="city"
               value={form.city}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
               style={{
-                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
               }}
               placeholder="City name"
             />
@@ -198,9 +213,10 @@ export default function Branch() {
               name="state"
               value={form.state}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
               style={{
-                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
               }}
               placeholder="State name"
             />
@@ -213,9 +229,10 @@ export default function Branch() {
               name="pincode"
               value={form.pincode}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
               style={{
-                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
               }}
               placeholder="Postal code"
             />
@@ -229,9 +246,10 @@ export default function Branch() {
             value={form.address}
             onChange={handleChange}
             rows={4}
-            className="w-full px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
+            className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
             style={{
-              focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
             }}
             placeholder="Complete branch address"
           />

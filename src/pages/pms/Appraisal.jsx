@@ -350,7 +350,7 @@ export default function Appraisal() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.employee}
                   onChange={(e) => {
                     const selectedEmp = employees.find(emp => emp.name === e.target.value);
@@ -373,7 +373,7 @@ export default function Appraisal() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Review Period</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="text"
                   value={formData.reviewPeriod}
                   onChange={(e) => setFormData({...formData, reviewPeriod: e.target.value})}
@@ -385,7 +385,7 @@ export default function Appraisal() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Appraiser</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.appraiser}
                   onChange={(e) => setFormData({...formData, appraiser: e.target.value})}
                   className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
@@ -400,7 +400,7 @@ export default function Appraisal() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Review Type</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.reviewType}
                   onChange={(e) => setFormData({...formData, reviewType: e.target.value})}
                   className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
@@ -413,7 +413,7 @@ export default function Appraisal() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Overall Rating</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.overallRating}
                   onChange={(e) => setFormData({...formData, overallRating: parseInt(e.target.value)})}
                   className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
@@ -426,7 +426,7 @@ export default function Appraisal() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Performance Score (%)</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   min="0"
                   max="100"
@@ -438,7 +438,7 @@ export default function Appraisal() {
 
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Key Strengths</label>
-                <textarea
+                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.strengths}
                   onChange={(e) => setFormData({...formData, strengths: e.target.value})}
                   rows={3}
@@ -449,7 +449,7 @@ export default function Appraisal() {
 
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Areas for Improvement</label>
-                <textarea
+                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.improvements}
                   onChange={(e) => setFormData({...formData, improvements: e.target.value})}
                   rows={3}
@@ -460,7 +460,7 @@ export default function Appraisal() {
 
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Development Plan</label>
-                <textarea
+                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.developmentPlan}
                   onChange={(e) => setFormData({...formData, developmentPlan: e.target.value})}
                   rows={3}
@@ -471,7 +471,7 @@ export default function Appraisal() {
 
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Comments</label>
-                <textarea
+                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.comments}
                   onChange={(e) => setFormData({...formData, comments: e.target.value})}
                   rows={4}
@@ -482,7 +482,7 @@ export default function Appraisal() {
 
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Recommendations</label>
-                <textarea
+                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.recommendations}
                   onChange={(e) => setFormData({...formData, recommendations: e.target.value})}
                   rows={2}
@@ -493,7 +493,7 @@ export default function Appraisal() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.status}
                   onChange={(e) => setFormData({...formData, status: e.target.value})}
                   className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"

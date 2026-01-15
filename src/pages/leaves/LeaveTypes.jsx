@@ -267,7 +267,7 @@ export default function LeaveTypes({ activeView = "types" }) {
   );
 
   return (
-    <div className="">
+    <div >
       {/* Header */}
       <div className="p-8 border-b-0">
         <div className="flex justify-between items-center">
@@ -309,7 +309,7 @@ export default function LeaveTypes({ activeView = "types" }) {
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">Status</span>
-              <select
+              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
@@ -369,7 +369,7 @@ export default function LeaveTypes({ activeView = "types" }) {
             <div className="flex items-center gap-3 sm:ml-auto">
               <div className="relative flex-1 max-w-md">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="text"
                   placeholder={`Search ${activeView === "types" ? "leave types" : "leave policies"}...`}
                   value={searchTerm}
@@ -857,7 +857,7 @@ export default function LeaveTypes({ activeView = "types" }) {
             <form onSubmit={handleSubmit} className="p-8 space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Name</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
@@ -868,7 +868,7 @@ export default function LeaveTypes({ activeView = "types" }) {
               </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Code</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="text"
                   value={formData.code}
                   onChange={(e) => setFormData({...formData, code: e.target.value})}
@@ -879,7 +879,7 @@ export default function LeaveTypes({ activeView = "types" }) {
               </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Category</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="text"
                   value={formData.category}
                   onChange={(e) => setFormData({...formData, category: e.target.value})}
@@ -899,7 +899,7 @@ export default function LeaveTypes({ activeView = "types" }) {
                     return (isFixedPolicyType || isDynamicPolicyType) ? 'Default Limit (for non-policy leaves)' : 'Annual Limit (days)';
                   })()} 
                 </label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   value={formData.annual_limit}
                   onChange={(e) => setFormData({...formData, annual_limit: parseInt(e.target.value) || 0})}
@@ -947,7 +947,7 @@ export default function LeaveTypes({ activeView = "types" }) {
               </div>
               <div className="flex items-center gap-6">
                 <label className="flex items-center">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     checked={formData.is_paid}
                     onChange={(e) => setFormData({...formData, is_paid: e.target.checked})}
@@ -956,7 +956,7 @@ export default function LeaveTypes({ activeView = "types" }) {
                   <span className="text-sm font-medium text-gray-700">Paid Leave</span>
                 </label>
                 <label className="flex items-center">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     checked={formData.carry_forward}
                     onChange={(e) => setFormData({...formData, carry_forward: e.target.checked})}
@@ -1001,7 +1001,7 @@ export default function LeaveTypes({ activeView = "types" }) {
               <div className="grid grid-cols-2 gap-6">
                 <div className="col-span-2">
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Policy Name</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="text"
                     value={policyFormData.name}
                     onChange={(e) => setPolicyFormData({...policyFormData, name: e.target.value})}
@@ -1011,7 +1011,7 @@ export default function LeaveTypes({ activeView = "types" }) {
                 </div>
                 <div className="col-span-2">
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Policy Rule</label>
-                  <textarea
+                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={policyFormData.rule}
                     onChange={(e) => setPolicyFormData({...policyFormData, rule: e.target.value})}
                     className="w-full border border-black rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
@@ -1020,7 +1020,7 @@ export default function LeaveTypes({ activeView = "types" }) {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Annual Leave (days)</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     value={policyFormData.annual}
                     onChange={(e) => setPolicyFormData({...policyFormData, annual: parseInt(e.target.value) || 0})}
@@ -1029,7 +1029,7 @@ export default function LeaveTypes({ activeView = "types" }) {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Sick Leave (days)</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     value={policyFormData.sick}
                     onChange={(e) => setPolicyFormData({...policyFormData, sick: parseInt(e.target.value) || 0})}
@@ -1038,7 +1038,7 @@ export default function LeaveTypes({ activeView = "types" }) {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Casual Leave (days)</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     value={policyFormData.casual}
                     onChange={(e) => setPolicyFormData({...policyFormData, casual: parseInt(e.target.value) || 0})}
@@ -1047,7 +1047,7 @@ export default function LeaveTypes({ activeView = "types" }) {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Max Carry Forward</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     value={policyFormData.max_carry}
                     onChange={(e) => setPolicyFormData({...policyFormData, max_carry: parseInt(e.target.value) || 0})}
@@ -1062,7 +1062,7 @@ export default function LeaveTypes({ activeView = "types" }) {
                 
                 {/* Add New Leave Type */}
                 <div className="flex gap-3 mb-4">
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={selectedLeaveType}
                     onChange={(e) => setSelectedLeaveType(e.target.value)}
                     className="flex-1 border border-black rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 bg-gray-50 hover:bg-white transition-colors"
@@ -1077,7 +1077,7 @@ export default function LeaveTypes({ activeView = "types" }) {
                       </option>
                     ))}
                   </select>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     placeholder="Days"
                     value={allocationDays}
@@ -1136,7 +1136,7 @@ export default function LeaveTypes({ activeView = "types" }) {
               </div>
               <div className="flex items-center gap-6">
                 <label className="flex items-center">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     checked={policyFormData.carry_forward}
                     onChange={(e) => setPolicyFormData({...policyFormData, carry_forward: e.target.checked})}
@@ -1145,7 +1145,7 @@ export default function LeaveTypes({ activeView = "types" }) {
                   <span className="text-sm font-medium text-gray-700">Allow Carry Forward</span>
                 </label>
                 <label className="flex items-center">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     checked={policyFormData.encashment}
                     onChange={(e) => setPolicyFormData({...policyFormData, encashment: e.target.checked})}

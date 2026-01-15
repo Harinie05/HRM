@@ -11,7 +11,7 @@ export default function LeaveApplications() {
   // Check if user has permission to view leave applications
   if (!hasPermission("view_leave_applications")) {
     return (
-      <div className="">
+      <div >
         {/* Header */}
         <div className="p-4 sm:p-8 border-b-0">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
@@ -317,7 +317,7 @@ export default function LeaveApplications() {
   };
 
   return (
-    <div className="">
+    <div >
       {/* Header */}
       <div className="p-4 sm:p-8 border-b-0">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
@@ -366,7 +366,7 @@ export default function LeaveApplications() {
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1 max-w-full sm:max-w-md">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="text"
                 placeholder="Search applications..."
                 value={searchTerm}
@@ -376,7 +376,7 @@ export default function LeaveApplications() {
             </div>
             <div className="relative">
               <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-              <select
+              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="pl-10 sm:pl-12 pr-8 py-2 sm:py-3 border border-black rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors text-sm sm:text-base w-full sm:w-auto"
@@ -617,7 +617,7 @@ export default function LeaveApplications() {
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">Employee</label>
                 {isAdmin() ? (
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={formData.employee_id}
                     onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
                     className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -644,7 +644,7 @@ export default function LeaveApplications() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">Leave Policy</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.policy_id}
                   onChange={(e) => setFormData({...formData, policy_id: e.target.value})}
                   className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -660,7 +660,7 @@ export default function LeaveApplications() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">Leave Type</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.leave_type_id}
                   onChange={(e) => setFormData({...formData, leave_type_id: e.target.value})}
                   className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -677,7 +677,7 @@ export default function LeaveApplications() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-1">From Date</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="date"
                     value={formData.from_date}
                     onChange={(e) => setFormData({...formData, from_date: e.target.value})}
@@ -687,7 +687,7 @@ export default function LeaveApplications() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-1">To Date</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="date"
                     value={formData.to_date}
                     onChange={(e) => setFormData({...formData, to_date: e.target.value})}
@@ -698,7 +698,7 @@ export default function LeaveApplications() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">Reason</label>
-                <textarea
+                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.reason}
                   onChange={(e) => setFormData({...formData, reason: e.target.value})}
                   className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -774,7 +774,7 @@ export default function LeaveApplications() {
             ) : (
               <div className="space-y-4">
                 {leaveBalances.map((balance) => (
-                  <div key={balance.leave_type_id} className="border rounded-lg p-4" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
+                  <div key={balance.leave_type_id} className=" rounded-lg p-4" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                     <div className="flex justify-between items-center mb-2">
                       <h4 className="font-medium text-primary">
                         {balance.leave_type_name} ({balance.leave_type_code})
@@ -790,15 +790,15 @@ export default function LeaveApplications() {
                     </div>
                     <div className="grid grid-cols-3 gap-4 text-sm">
                       <div>
-                        <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Allocated:</span>
+                        <span  style={{color: 'var(--text-muted, #6b7280)'}}>Allocated:</span>
                         <div className="font-medium">{balance.total_allocated} days</div>
                       </div>
                       <div>
-                        <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Used:</span>
+                        <span  style={{color: 'var(--text-muted, #6b7280)'}}>Used:</span>
                         <div className="font-medium">{balance.used} days</div>
                       </div>
                       <div>
-                        <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Balance:</span>
+                        <span  style={{color: 'var(--text-muted, #6b7280)'}}>Balance:</span>
                         <div className="font-medium">{balance.balance} days</div>
                       </div>
                     </div>
@@ -852,27 +852,27 @@ export default function LeaveApplications() {
               <h4 className="font-medium mb-2">Application Details</h4>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Employee:</span>
+                  <span  style={{color: 'var(--text-muted, #6b7280)'}}>Employee:</span>
                   <div className="font-medium">{getEmployeeInfo(reviewingApplication.employee_id).name}</div>
-                  <div className="" style={{color: 'var(--text-secondary, #374151)'}}>{getEmployeeInfo(reviewingApplication.employee_id).code}</div>
+                  <div  style={{color: 'var(--text-secondary, #374151)'}}>{getEmployeeInfo(reviewingApplication.employee_id).code}</div>
                 </div>
                 <div>
-                  <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Leave Type:</span>
+                  <span  style={{color: 'var(--text-muted, #6b7280)'}}>Leave Type:</span>
                   <div className="font-medium">{getLeaveTypeName(reviewingApplication.leave_type_id)}</div>
                 </div>
                 <div>
-                  <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Duration:</span>
+                  <span  style={{color: 'var(--text-muted, #6b7280)'}}>Duration:</span>
                   <div className="font-medium">{reviewingApplication.from_date} to {reviewingApplication.to_date}</div>
                   <div className="text-blue-600">{reviewingApplication.total_days} days</div>
                 </div>
                 <div>
-                  <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Applied:</span>
+                  <span  style={{color: 'var(--text-muted, #6b7280)'}}>Applied:</span>
                   <div className="font-medium">{new Date(reviewingApplication.applied_at).toLocaleDateString()}</div>
                 </div>
               </div>
               {reviewingApplication.reason && (
                 <div className="mt-3">
-                  <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Reason:</span>
+                  <span  style={{color: 'var(--text-muted, #6b7280)'}}>Reason:</span>
                   <div className="font-medium">{reviewingApplication.reason}</div>
                 </div>
               )}
@@ -883,7 +883,7 @@ export default function LeaveApplications() {
               <h4 className="font-medium mb-2">Current Leave Balances</h4>
               <div className="space-y-3">
                 {reviewBalances.map((balance) => (
-                  <div key={balance.leave_type_id} className="border rounded-lg p-3" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
+                  <div key={balance.leave_type_id} className=" rounded-lg p-3" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                     <div className="flex justify-between items-center mb-2">
                       <h5 className="font-medium text-primary">
                         {balance.leave_type_name} ({balance.leave_type_code})
@@ -899,15 +899,15 @@ export default function LeaveApplications() {
                     </div>
                     <div className="grid grid-cols-3 gap-4 text-sm">
                       <div>
-                        <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Allocated:</span>
+                        <span  style={{color: 'var(--text-muted, #6b7280)'}}>Allocated:</span>
                         <div className="font-medium">{balance.total_allocated} days</div>
                       </div>
                       <div>
-                        <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Used:</span>
+                        <span  style={{color: 'var(--text-muted, #6b7280)'}}>Used:</span>
                         <div className="font-medium">{balance.used} days</div>
                       </div>
                       <div>
-                        <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Balance:</span>
+                        <span  style={{color: 'var(--text-muted, #6b7280)'}}>Balance:</span>
                         <div className="font-medium">{balance.balance} days</div>
                       </div>
                     </div>

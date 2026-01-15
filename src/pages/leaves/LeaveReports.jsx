@@ -307,7 +307,7 @@ export default function LeaveReports() {
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1 max-w-full sm:max-w-md">
               <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-              <select 
+              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                 value={dateRange} 
                 onChange={(e) => setDateRange(e.target.value)}
                 className="pl-10 sm:pl-12 pr-4 py-2 sm:py-3 border border-black rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full bg-gray-50 hover:bg-white transition-colors text-sm sm:text-base"
@@ -320,7 +320,7 @@ export default function LeaveReports() {
             </div>
             <div className="relative">
               <Calendar className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-              <select 
+              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                 value={department} 
                 onChange={(e) => setDepartment(e.target.value)}
                 className="pl-10 sm:pl-12 pr-8 py-2 sm:py-3 border border-black rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors text-sm sm:text-base w-full sm:w-auto"

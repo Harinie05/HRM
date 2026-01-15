@@ -116,7 +116,7 @@ export default function StatutoryRules() {
         <div className="space-y-4">
         <div className="bg-gradient-to-br from-gray-50 to-white border-0 rounded-xl p-6 hover:shadow-md transition-shadow">
           <div className="flex items-center gap-3 mb-5">
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="checkbox"
               checked={form.pf_enabled}
               onChange={(e) => setForm({ ...form, pf_enabled: e.target.checked })}
@@ -130,7 +130,7 @@ export default function StatutoryRules() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ml-8 mt-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Employee PF %</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   step="0.01"
                   value={form.pf_percent}
@@ -142,7 +142,7 @@ export default function StatutoryRules() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Apply on</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={form.pf_apply_on}
                   onChange={(e) => setForm({ ...form, pf_apply_on: e.target.value })}
                   className="w-full px-4 py-2.5 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white hover:border-gray-300 transition-colors"
@@ -159,7 +159,7 @@ export default function StatutoryRules() {
 
         <div className="bg-gradient-to-br from-gray-50 to-white border-0 rounded-xl p-6 hover:shadow-md transition-shadow">
           <div className="flex items-center gap-3 mb-5">
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="checkbox"
               checked={form.esi_enabled}
               onChange={(e) => setForm({ ...form, esi_enabled: e.target.checked })}
@@ -173,7 +173,7 @@ export default function StatutoryRules() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ml-8 mt-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Threshold Amount (₹)</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   value={form.esi_threshold}
                   onChange={(e) => setForm({ ...form, esi_threshold: e.target.value })}
@@ -185,7 +185,7 @@ export default function StatutoryRules() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Employee ESI %</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   step="0.01"
                   value={form.esi_percent}
@@ -201,7 +201,7 @@ export default function StatutoryRules() {
 
         <div className="bg-gradient-to-br from-gray-50 to-white border-0 rounded-xl p-6 hover:shadow-md transition-shadow">
           <div className="flex items-center gap-3 mb-5">
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="checkbox"
               checked={form.pt_enabled}
               onChange={(e) => setForm({ ...form, pt_enabled: e.target.checked })}
@@ -215,7 +215,7 @@ export default function StatutoryRules() {
             <div className="ml-8 mt-4">
               <div className="w-full sm:w-1/2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Monthly PT Amount (₹)</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   value={form.pt_amount}
                   onChange={(e) => setForm({ ...form, pt_amount: e.target.value })}
@@ -230,7 +230,7 @@ export default function StatutoryRules() {
 
         <div className="bg-gradient-to-br from-gray-50 to-white border-0 rounded-xl p-6 hover:shadow-md transition-shadow">
           <div className="flex items-center gap-3 mb-5">
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="checkbox"
               checked={form.tds_enabled}
               onChange={(e) => setForm({ ...form, tds_enabled: e.target.checked })}
@@ -244,7 +244,7 @@ export default function StatutoryRules() {
             <div className="ml-8 mt-4">
               <div className="w-full sm:w-1/2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">TDS Flat % (for test)</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   step="0.01"
                   value={form.tds_percent}

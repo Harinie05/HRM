@@ -486,8 +486,15 @@ export default function Offer() {
 
         {/* ==================== SENT OFFERS TABLE ==================== */}
         {offers.length > 0 && canViewOffersSent && (
-          <div className="bg-white rounded-2xl border-0 shadow-sm overflow-hidden">
-            <div className="p-6 border-b-0" style={{
+          <div className="bg-white rounded-2xl shadow-sm overflow-hidden relative border" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
+            <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+              transform: 'translate(30%, -30%)'
+            }}></div>
+            <div className="p-6 border-b-0 relative z-10" style={{
               background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05)`
             }}>
               <div className="flex items-center justify-between">
@@ -514,7 +521,7 @@ export default function Offer() {
             </div>
 
               {/* Desktop Table View */}
-            <div className="p-6">
+            <div className="p-6 relative z-10">
               <div className="hidden md:block overflow-x-auto">
                 <table className="min-w-full">
                   <thead className="bg-gray-50 border-b-0">
@@ -951,8 +958,15 @@ export default function Offer() {
 
         {/* ==================== SELECTED CANDIDATES ==================== */}
         {canViewSelectedCandidates && (
-        <div className="bg-white rounded-2xl border-0 shadow-sm overflow-hidden">
-          <div className="p-6 border-b-0" style={{
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden relative border" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="p-6 border-b-0 relative z-10" style={{
             background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05)`
           }}>
             <div className="flex items-center justify-between">
@@ -978,7 +992,7 @@ export default function Offer() {
             </div>
           </div>
 
-          <div className="p-6">
+          <div className="p-6 relative z-10">
             {candidates.length === 0 ? (
               <div className="text-center py-12">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style={{
@@ -1145,8 +1159,16 @@ export default function Offer() {
           {/*                         OFFER MODAL                               */}
           {/* ================================================================== */}
           {showOfferModal && selected && (
-            <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-              <div className="bg-white p-6 w-[550px] rounded-xl shadow-xl">
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-white p-6 w-[550px] rounded-xl shadow-xl relative border" style={{
+                background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
+              }}>
+                <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-10" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <div className="relative z-10">
 
                 <h2 className="text-lg font-semibold mb-3">
                   Generate Offer – {selected.name}
@@ -1157,7 +1179,11 @@ export default function Offer() {
 
                   <input
                     type="number"
-                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                    className="p-2 rounded w-full"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     placeholder="CTC Offered"
                     value={offerForm.ctc}
                     onChange={(e) =>
@@ -1168,7 +1194,11 @@ export default function Offer() {
                   <div className="grid grid-cols-2 gap-3">
                     <input
                       type="number"
-                      className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       placeholder="Basic %"
                       value={offerForm.basic_percent}
                       onChange={(e) =>
@@ -1181,7 +1211,11 @@ export default function Offer() {
 
                     <input
                       type="number"
-                      className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       placeholder="HRA %"
                       value={offerForm.hra_percent}
                       onChange={(e) =>
@@ -1195,7 +1229,11 @@ export default function Offer() {
 
                   <input
                     type="text"
-                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                    className="p-2 rounded w-full"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     placeholder="Location"
                     value={offerForm.location}
                     onChange={(e) =>
@@ -1208,7 +1246,11 @@ export default function Offer() {
 
                   <input
                     type="email"
-                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                    className="p-2 rounded w-full"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     placeholder="Email"
                     value={offerForm.email}
                     onChange={(e) =>
@@ -1218,7 +1260,11 @@ export default function Offer() {
 
                   <input
                     type="date"
-                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                    className="p-2 rounded w-full"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     value={offerForm.joining_date}
                     onChange={(e) =>
                       setOfferForm({
@@ -1229,7 +1275,11 @@ export default function Offer() {
                   />
 
                   <textarea
-                    className="border p-2 rounded w-full h-20" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                    className="p-2 rounded w-full h-20"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     placeholder="Terms & Conditions"
                     value={offerForm.terms}
                     onChange={(e) =>
@@ -1241,7 +1291,11 @@ export default function Offer() {
                   <input
                     type="file"
                     multiple
-                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                    className="p-2 rounded w-full"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     onChange={(e) =>
                       setAttachments(Array.from(e.target.files))
                     }
@@ -1272,6 +1326,7 @@ export default function Offer() {
                   >
                     Preview
                   </button>
+                </div>
                 </div>
               </div>
             </div>
@@ -1321,8 +1376,16 @@ export default function Offer() {
           {/*                          BGV MODAL                                 */}
           {/* ================================================================== */}
           {showBGVModal && selectedBGV && (
-            <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-              <div className="bg-white p-6 rounded-xl w-[450px] shadow-xl">
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-white p-6 rounded-xl w-[450px] shadow-xl relative border" style={{
+                background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
+              }}>
+                <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-10" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <div className="relative z-10">
 
                 <h2 className="text-lg font-semibold mb-4">
                   BGV – {selectedBGV.candidate_name}
@@ -1331,7 +1394,11 @@ export default function Offer() {
                 <div className="space-y-3">
 
                   <select
-                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                    className="p-2 rounded w-full"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     value={bgvForm.verification_type}
                     onChange={(e) =>
                       setBgvForm({
@@ -1348,7 +1415,11 @@ export default function Offer() {
                   {bgvForm.verification_type === "Agency" && (
                     <input
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded w-full"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       placeholder="Agency Name"
                       value={bgvForm.agency_name}
                       onChange={(e) =>
@@ -1361,7 +1432,11 @@ export default function Offer() {
                   )}
 
                   <select
-                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                    className="p-2 rounded w-full"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     value={bgvForm.status}
                     onChange={(e) =>
                       setBgvForm({ ...bgvForm, status: e.target.value })
@@ -1374,11 +1449,11 @@ export default function Offer() {
                   </select>
 
                   {/* BGV Verification Checkboxes */}
-                  <div className="border p-3 rounded bg-content" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
+                  <div className=" p-3 rounded bg-content" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                     <h4 className="font-medium mb-2 text-sm">Verification Checklist:</h4>
                     <div className="space-y-2">
                       <label className="flex items-center text-sm">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           className="mr-2"
                           checked={bgvForm.identity_verified}
@@ -1389,7 +1464,7 @@ export default function Offer() {
                         Identity Verification (Aadhaar, PAN)
                       </label>
                       <label className="flex items-center text-sm">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           className="mr-2"
                           checked={bgvForm.address_verified}
@@ -1400,7 +1475,7 @@ export default function Offer() {
                         Address Verification
                       </label>
                       <label className="flex items-center text-sm">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           className="mr-2"
                           checked={bgvForm.employment_verified}
@@ -1411,7 +1486,7 @@ export default function Offer() {
                         Employment Verification
                       </label>
                       <label className="flex items-center text-sm">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           className="mr-2"
                           checked={bgvForm.education_verified}
@@ -1422,7 +1497,7 @@ export default function Offer() {
                         Education Verification
                       </label>
                       <label className="flex items-center text-sm">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           className="mr-2"
                           checked={bgvForm.criminal_verified}
@@ -1436,7 +1511,11 @@ export default function Offer() {
                   </div>
 
                   <textarea
-                    className="border p-2 rounded w-full h-20" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                    className="p-2 rounded w-full h-20"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     placeholder="Remarks"
                     value={bgvForm.remarks}
                     onChange={(e) =>
@@ -1470,6 +1549,7 @@ export default function Offer() {
                   </button>
                 </div>
 
+                </div>
               </div>
             </div>
           )}
@@ -1478,8 +1558,16 @@ export default function Offer() {
           {/*                      DOCUMENTS MODAL                              */}
           {/* ================================================================== */}
           {showDocuments && (
-            <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-              <div className="bg-white p-6 rounded-xl w-[600px] shadow-xl max-h-[80vh] overflow-y-auto">
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-white p-6 rounded-xl w-[600px] shadow-xl max-h-[80vh] overflow-y-auto relative border" style={{
+                background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
+              }}>
+                <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-10" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <div className="relative z-10">
 
                 <h2 className="text-lg font-semibold mb-4">
                   📄 Uploaded Documents
@@ -1528,6 +1616,7 @@ export default function Offer() {
                   </button>
                 </div>
 
+                </div>
               </div>
             </div>
           )}
@@ -1536,8 +1625,16 @@ export default function Offer() {
           {/*                   COMPREHENSIVE ONBOARDING FORM                   */}
           {/* ================================================================== */}
           {showOnboardingForm && selectedOnboardingCandidate && (
-            <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-              <div className="bg-white p-6 w-[900px] max-h-[90vh] overflow-y-auto rounded-xl shadow-xl">
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white p-6 w-[900px] max-h-[90vh] overflow-y-auto rounded-xl shadow-xl relative border" style={{
+                background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
+              }}>
+                <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-10" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <div className="relative z-10">
                 <h2 className="text-2xl font-semibold mb-6 text-center">
                   Employee Onboarding Form - {selectedOnboardingCandidate.candidateName}
                 </h2>
@@ -1552,7 +1649,11 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">Full Name *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full bg-gray-100" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded w-full bg-gray-100"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={onboardingFormData.full_name}
                       readOnly
                     />
@@ -1562,7 +1663,11 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">Date of Birth *</label>
                     <input
                       type="date"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded w-full"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={onboardingFormData.date_of_birth}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, date_of_birth: e.target.value})}
                       required
@@ -1572,7 +1677,11 @@ export default function Offer() {
                   <div>
                     <label className="block text-sm font-medium mb-1">Gender *</label>
                     <select
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded w-full"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={onboardingFormData.gender}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, gender: e.target.value})}
                       required
@@ -1588,7 +1697,11 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">Personal Email *</label>
                     <input
                       type="email"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded w-full"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={onboardingFormData.personal_email}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, personal_email: e.target.value})}
                       required
@@ -1604,7 +1717,11 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">Phone Number *</label>
                     <input
                       type="tel"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded w-full"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={onboardingFormData.phone_number}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, phone_number: e.target.value})}
                       required
@@ -1615,7 +1732,11 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">Emergency Contact Name *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded w-full"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={onboardingFormData.emergency_contact_name}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, emergency_contact_name: e.target.value})}
                       required
@@ -1624,9 +1745,9 @@ export default function Offer() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Emergency Contact Phone *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="tel"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.emergency_contact_phone}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, emergency_contact_phone: e.target.value})}
                       required
@@ -1643,7 +1764,11 @@ export default function Offer() {
                     <div className="flex gap-2">
                       <input
                         type="text"
-                        className="border p-2 rounded flex-1" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                        className="p-2 rounded flex-1"
+                        style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                        }}
                         value={onboardingFormData.employee_id}
                         onChange={(e) => setOnboardingFormData({...onboardingFormData, employee_id: e.target.value})}
                         required
@@ -1661,9 +1786,9 @@ export default function Offer() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Joining Date *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="date"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.joining_date}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, joining_date: e.target.value})}
                       required
@@ -1672,9 +1797,9 @@ export default function Offer() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Department *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
-                      className="border p-2 rounded w-full bg-gray-100" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className=" p-2 rounded w-full bg-gray-100" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.department}
                       readOnly
                     />
@@ -1682,9 +1807,9 @@ export default function Offer() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Designation *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
-                      className="border p-2 rounded w-full bg-gray-100" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className=" p-2 rounded w-full bg-gray-100" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.designation}
                       readOnly
                     />
@@ -1692,9 +1817,9 @@ export default function Offer() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Work Location</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.work_location}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, work_location: e.target.value})}
                       placeholder="Main Office"
@@ -1703,9 +1828,9 @@ export default function Offer() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Reporting Manager</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.reporting_manager}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, reporting_manager: e.target.value})}
                       placeholder="To be assigned"
@@ -1719,9 +1844,9 @@ export default function Offer() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Bank Name *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.bank_name}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, bank_name: e.target.value})}
                       required
@@ -1730,9 +1855,9 @@ export default function Offer() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Account Number *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.account_number}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, account_number: e.target.value})}
                       required
@@ -1741,9 +1866,9 @@ export default function Offer() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">IFSC Code *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.ifsc_code}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, ifsc_code: e.target.value})}
                       required
@@ -1757,9 +1882,9 @@ export default function Offer() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Aadhaar Number *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.aadhar_number}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, aadhar_number: e.target.value})}
                       required
@@ -1768,9 +1893,9 @@ export default function Offer() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">PAN Number *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.pan_number}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, pan_number: e.target.value})}
                       required
@@ -1785,7 +1910,11 @@ export default function Offer() {
                   <div className="col-span-2">
                     <label className="block text-sm font-medium mb-1">Current Address *</label>
                     <textarea
-                      className="border p-2 rounded w-full h-20" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded w-full h-20"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={onboardingFormData.current_address}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, current_address: e.target.value})}
                       required
@@ -1794,9 +1923,9 @@ export default function Offer() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">City *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.city}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, city: e.target.value})}
                       required
@@ -1805,9 +1934,9 @@ export default function Offer() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">State *</label>
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.state}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, state: e.target.value})}
                       required
@@ -1839,6 +1968,7 @@ export default function Offer() {
                     Submit Onboarding Form
                   </button>
                 </div>
+                </div>
               </div>
             </div>
           )}
@@ -1847,18 +1977,26 @@ export default function Offer() {
           {/*                   DOCUMENT VERIFICATION MODAL                     */}
           {/* ================================================================== */}
           {showDocVerificationModal && selectedOfferForVerification && (
-            <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
               <div className="bg-white p-6 rounded-xl w-[500px] shadow-xl max-h-[80vh] overflow-y-auto">
                 <h2 className="text-lg font-semibold mb-4">
                   📄 Document Verification - {selectedOfferForVerification.candidate_name}
                 </h2>
 
                 <div className="space-y-3">
-                  <div className="border p-4 rounded bg-gray-50">
+                  <div className="p-4 rounded bg-gray-50 relative" style={{
+                    background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}08, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}08)`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
+                    <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-xl opacity-10" style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                      transform: 'translate(30%, -30%)'
+                    }}></div>
+                    <div className="relative z-10">
                     <h4 className="font-medium mb-3 text-sm">Required Documents:</h4>
                     <div className="space-y-2">
                       <label className="flex items-center text-sm">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           className="mr-3"
                           checked={docVerificationForm.aadhaar}
@@ -1867,7 +2005,7 @@ export default function Offer() {
                         Aadhaar Card (Front & Back)
                       </label>
                       <label className="flex items-center text-sm">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           className="mr-3"
                           checked={docVerificationForm.pan}
@@ -1876,7 +2014,7 @@ export default function Offer() {
                         PAN Card
                       </label>
                       <label className="flex items-center text-sm">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           className="mr-3"
                           checked={docVerificationForm.photo}
@@ -1885,7 +2023,7 @@ export default function Offer() {
                         Passport Size Photo
                       </label>
                       <label className="flex items-center text-sm">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           className="mr-3"
                           checked={docVerificationForm.education}
@@ -1894,7 +2032,7 @@ export default function Offer() {
                         Educational Certificates
                       </label>
                       <label className="flex items-center text-sm">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           className="mr-3"
                           checked={docVerificationForm.bank}
@@ -1903,7 +2041,7 @@ export default function Offer() {
                         Bank Passbook/Statement
                       </label>
                       <label className="flex items-center text-sm">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           className="mr-3"
                           checked={docVerificationForm.medical_degree}
@@ -1912,7 +2050,7 @@ export default function Offer() {
                         Medical Degree Certificate
                       </label>
                       <label className="flex items-center text-sm">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           className="mr-3"
                           checked={docVerificationForm.council_registration}
@@ -1921,7 +2059,7 @@ export default function Offer() {
                         Medical Council Registration
                       </label>
                       <label className="flex items-center text-sm">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           className="mr-3"
                           checked={docVerificationForm.medical_license}
@@ -1930,13 +2068,22 @@ export default function Offer() {
                         Medical License Copy
                       </label>
                     </div>
+                    </div>
                   </div>
 
-                  <div className="border p-4 rounded bg-gray-50">
+                  <div className="p-4 rounded bg-gray-50 relative" style={{
+                    background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}08, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}08)`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
+                    <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-xl opacity-10" style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                      transform: 'translate(30%, -30%)'
+                    }}></div>
+                    <div className="relative z-10">
                     <h4 className="font-medium mb-3 text-sm">Optional Documents:</h4>
                     <div className="space-y-2">
                       <label className="flex items-center text-sm">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           className="mr-3"
                           checked={docVerificationForm.experience}
@@ -1945,7 +2092,7 @@ export default function Offer() {
                         Experience Certificates
                       </label>
                       <label className="flex items-center text-sm">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           className="mr-3"
                           checked={docVerificationForm.relieving}
@@ -1954,7 +2101,7 @@ export default function Offer() {
                         Relieving Letter
                       </label>
                       <label className="flex items-center text-sm">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           className="mr-3"
                           checked={docVerificationForm.salary_slips}
@@ -1963,7 +2110,7 @@ export default function Offer() {
                         Salary Slips (Last 3 months)
                       </label>
                       <label className="flex items-center text-sm">
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           className="mr-3"
                           checked={docVerificationForm.specialty_cert}
@@ -1971,6 +2118,7 @@ export default function Offer() {
                         />
                         Specialty Certification
                       </label>
+                    </div>
                     </div>
                   </div>
                 </div>
@@ -1998,19 +2146,26 @@ export default function Offer() {
           {/*                      LINK GENERATION MODAL                        */}
           {/* ================================================================== */}
           {showLinkModal && (
-            <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
               <div className="bg-white p-6 rounded-xl w-[500px] shadow-xl">
 
                 <h2 className="text-lg font-semibold mb-4">
                   🔗 Document Upload Link
                 </h2>
 
-                <p className=" mb-4" style={{color: 'var(--text-secondary, #374151)'}}>
+                <p className="mb-4" style={{color: 'var(--text-secondary, #374151)'}}>
                   Share this link with <strong>{linkCandidate}</strong> to upload documents:
                 </p>
 
-                <div className="bg-gray-100 p-3 rounded border mb-4">
-                  <p className="text-sm font-mono break-all">{generatedLink}</p>
+                <div className="bg-gray-100 p-3 rounded border mb-4 relative" style={{
+                  background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}08, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}08)`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-xl opacity-10" style={{
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                    transform: 'translate(30%, -30%)'
+                  }}></div>
+                  <p className="text-sm font-mono break-all relative z-10">{generatedLink}</p>
                 </div>
 
                 <div className="flex justify-between">
@@ -2037,7 +2192,6 @@ export default function Offer() {
                     📋 Copy Link
                   </button>
                 </div>
-
               </div>
             </div>
           )}

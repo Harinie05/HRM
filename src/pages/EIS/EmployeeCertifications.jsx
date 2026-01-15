@@ -369,7 +369,7 @@ export default function EmployeeCertifications() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Certification Name *</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     placeholder="e.g., AWS Certified Solutions Architect"
                     value={form.name}
@@ -379,7 +379,7 @@ export default function EmployeeCertifications() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Issued By</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     placeholder="e.g., Amazon Web Services"
                     value={form.issued_by}
@@ -389,7 +389,7 @@ export default function EmployeeCertifications() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Expiry Date</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="date"
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     value={form.expiry}
@@ -401,7 +401,7 @@ export default function EmployeeCertifications() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Certificate Document</label>
                   <div className="flex items-center gap-2">
                     <FiUpload className="text-gray-400" />
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="file"
                       accept=".pdf,.jpg,.jpeg,.png"
                       onChange={(e) => setForm({ ...form, file: e.target.files[0] })}

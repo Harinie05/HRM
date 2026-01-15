@@ -238,10 +238,10 @@ export default function PayrollReports() {
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
           <span className="text-sm text-gray-600">Period & Export</span>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center bg-gray-100 rounded-full p-1 overflow-x-auto scrollbar-hide border border-black gap-2 sm:gap-0" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
-            <select
+            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               value={selectedPeriod}
               onChange={(e) => setSelectedPeriod(e.target.value)}
-              className="border-0 bg-transparent px-4 py-2 text-sm focus:outline-none rounded-full w-full sm:w-auto"
+              className=" bg-transparent px-4 py-2 text-sm focus:outline-none rounded-full w-full sm:w-auto"
             >
               <option value="current-month">Current Month</option>
               <option value="last-month">Last Month</option>

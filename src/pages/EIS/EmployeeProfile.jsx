@@ -182,7 +182,7 @@ export default function EmployeeProfile() {
           <div className="bg-white rounded-lg p-8 text-center">
             <FiUser className="mx-auto h-12 w-12 text-muted mb-4" />
             <h3 className="text-lg font-medium text-primary mb-2">Employee Not Found</h3>
-            <p className="" style={{color: 'var(--text-muted, #6b7280)'}}>The requested employee profile could not be found.</p>
+            <p  style={{color: 'var(--text-muted, #6b7280)'}}>The requested employee profile could not be found.</p>
           </div>
         </div>
       </Layout>
@@ -546,7 +546,7 @@ export default function EmployeeProfile() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Work Location</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="text"
                     value={editForm.work_location}
                     onChange={(e) => setEditForm({...editForm, work_location: e.target.value})}
@@ -557,7 +557,7 @@ export default function EmployeeProfile() {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Reporting Manager</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="text"
                     value={editForm.reporting_manager}
                     onChange={(e) => setEditForm({...editForm, reporting_manager: e.target.value})}
@@ -568,7 +568,7 @@ export default function EmployeeProfile() {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Joining Date</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="date"
                     value={editForm.joining_date}
                     onChange={(e) => setEditForm({...editForm, joining_date: e.target.value})}
@@ -578,7 +578,7 @@ export default function EmployeeProfile() {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Work Shift</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={editForm.work_shift}
                     onChange={(e) => setEditForm({...editForm, work_shift: e.target.value})}
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -593,7 +593,7 @@ export default function EmployeeProfile() {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Probation Period</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={editForm.probation_period}
                     onChange={(e) => setEditForm({...editForm, probation_period: e.target.value})}
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -714,7 +714,7 @@ export default function EmployeeProfile() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Select Photo
                 </label>
-                <input 
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                   type="file" 
                   accept="image/*"
                   onChange={(e) => {

@@ -249,7 +249,7 @@ export default function Grievances() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
                   {isAdmin() ? (
-                    <select 
+                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                       value={formData.employeeId}
                       onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
                       className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -278,7 +278,7 @@ export default function Grievances() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Grievance Type</label>
-                  <select 
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     value={formData.grievanceType}
                     onChange={(e) => setFormData({...formData, grievanceType: e.target.value})}
                     className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -296,7 +296,7 @@ export default function Grievances() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
-                  <select 
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     value={formData.priority}
                     onChange={(e) => setFormData({...formData, priority: e.target.value})}
                     className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -310,7 +310,7 @@ export default function Grievances() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Date of Occurrence</label>
-                  <input 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     type="date"
                     value={formData.dateOccurred}
                     onChange={(e) => setFormData({...formData, dateOccurred: e.target.value})}
@@ -319,7 +319,7 @@ export default function Grievances() {
                 </div>
                 <div className="sm:col-span-2 lg:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
-                  <input 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     type="text"
                     value={formData.subject}
                     onChange={(e) => setFormData({...formData, subject: e.target.value})}
@@ -329,7 +329,7 @@ export default function Grievances() {
                 </div>
                 <div className="sm:col-span-2 lg:col-span-3">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                  <textarea 
+                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
                     value={formData.description}
                     onChange={(e) => setFormData({...formData, description: e.target.value})}
                     rows={4}

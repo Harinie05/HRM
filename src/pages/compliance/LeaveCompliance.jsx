@@ -352,7 +352,7 @@ export default function LeaveCompliance() {
             <label className="block text-sm font-medium mb-1">
               Employee ID <span className="text-red-500">*</span>
             </label>
-            <select
+            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               required
               name="employee_id"
               value={form.employee_id}
@@ -393,7 +393,7 @@ export default function LeaveCompliance() {
             <label className="block text-sm font-medium mb-1">
               Employee Name <span className="text-red-500">*</span>
             </label>
-            <select
+            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               required
               name="employee_name"
               value={form.employee_name}
@@ -434,7 +434,7 @@ export default function LeaveCompliance() {
             <label className="block text-sm font-medium mb-1">
               Total Working Days <span className="text-red-500">*</span>
             </label>
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="number"
               required
               name="total_working_days"
@@ -452,7 +452,7 @@ export default function LeaveCompliance() {
             <label className="block text-sm font-medium mb-1">
               Actual Working Days <span className="text-red-500">*</span>
             </label>
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="number"
               required
               name="actual_working_days"
@@ -470,7 +470,7 @@ export default function LeaveCompliance() {
             <label className="block text-sm font-medium mb-1">
               Total Leaves Taken <span className="text-red-500">*</span>
             </label>
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="number"
               required
               name="leaves_taken"
@@ -485,7 +485,7 @@ export default function LeaveCompliance() {
           {/* Paid Leaves */}
           <div>
             <label className="block text-sm font-medium mb-1">Paid Leaves</label>
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="number"
               name="paid_leaves"
               value={form.paid_leaves}
@@ -499,7 +499,7 @@ export default function LeaveCompliance() {
           {/* Unpaid Leaves */}
           <div>
             <label className="block text-sm font-medium mb-1">Unpaid Leaves</label>
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="number"
               name="unpaid_leaves"
               value={form.unpaid_leaves}
@@ -513,7 +513,7 @@ export default function LeaveCompliance() {
           {/* Sick Leaves */}
           <div>
             <label className="block text-sm font-medium mb-1">Sick Leaves</label>
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="number"
               name="sick_leaves"
               value={form.sick_leaves}
@@ -527,7 +527,7 @@ export default function LeaveCompliance() {
           {/* Casual Leaves */}
           <div>
             <label className="block text-sm font-medium mb-1">Casual Leaves</label>
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="number"
               name="casual_leaves"
               value={form.casual_leaves}
@@ -541,7 +541,7 @@ export default function LeaveCompliance() {
           {/* Earned Leaves */}
           <div>
             <label className="block text-sm font-medium mb-1">Earned Leaves</label>
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="number"
               name="earned_leaves"
               value={form.earned_leaves}
@@ -555,7 +555,7 @@ export default function LeaveCompliance() {
           {/* Overtime Hours */}
           <div>
             <label className="block text-sm font-medium mb-1">Overtime Hours</label>
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="number"
               name="overtime_hours"
               value={form.overtime_hours}
@@ -570,7 +570,7 @@ export default function LeaveCompliance() {
           {/* Month */}
           <div>
             <label className="block text-sm font-medium mb-1">Month</label>
-            <select
+            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               name="month"
               value={form.month}
               onChange={handleChange}
@@ -595,7 +595,7 @@ export default function LeaveCompliance() {
           {/* Year */}
           <div>
             <label className="block text-sm font-medium mb-1">Year</label>
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="number"
               name="year"
               value={form.year}
@@ -610,7 +610,7 @@ export default function LeaveCompliance() {
           {/* Remarks */}
           <div className="col-span-2">
             <label className="block text-sm font-medium mb-1">Remarks</label>
-            <textarea
+            <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               name="remarks"
               value={form.remarks}
               onChange={handleChange}

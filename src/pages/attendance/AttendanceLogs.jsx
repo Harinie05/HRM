@@ -913,7 +913,7 @@ export default function AttendanceLogs() {
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
                       {isAdmin() ? (
-                        <select
+                        <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           value={selectedEmployee}
                           onChange={(e) => {
                             setSelectedEmployee(e.target.value);
@@ -966,7 +966,7 @@ export default function AttendanceLogs() {
                       <div className="mt-4 sm:mt-6">
                         <label className="block text-sm font-medium text-gray-700 mb-2">Office Location</label>
                         {!showAddLocation ? (
-                          <select
+                          <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             value={selectedLocation}
                             onChange={(e) => {
                               if (e.target.value === 'add_new') {
@@ -989,7 +989,7 @@ export default function AttendanceLogs() {
                           </select>
                         ) : (
                           <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
-                            <input
+                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                               type="text"
                               value={newLocationName}
                               onChange={(e) => setNewLocationName(e.target.value)}
@@ -1438,7 +1438,7 @@ export default function AttendanceLogs() {
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
                         {isAdmin() ? (
-                          <select
+                          <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             value={regularizationForm.employee_id}
                             onChange={(e) => setRegularizationForm({...regularizationForm, employee_id: e.target.value})}
                             className="w-full px-3 sm:px-4 py-2 bg-white border-0 rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base"
@@ -1483,7 +1483,7 @@ export default function AttendanceLogs() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="date"
                           value={regularizationForm.date}
                           onChange={(e) => setRegularizationForm({...regularizationForm, date: e.target.value})}
@@ -1495,7 +1495,7 @@ export default function AttendanceLogs() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Issue Type</label>
-                        <select
+                        <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           value={regularizationForm.issue_type}
                           onChange={(e) => setRegularizationForm({...regularizationForm, issue_type: e.target.value})}
                           className="w-full px-3 sm:px-4 py-2 bg-white border-0 rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base"
@@ -1510,7 +1510,7 @@ export default function AttendanceLogs() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Reason</label>
-                        <textarea
+                        <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           value={regularizationForm.reason}
                           onChange={(e) => setRegularizationForm({...regularizationForm, reason: e.target.value})}
                           rows="4"
@@ -1588,7 +1588,7 @@ export default function AttendanceLogs() {
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
                         {isAdmin() ? (
-                          <select
+                          <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             value={odForm.employee_id}
                             onChange={(e) => setOdForm({...odForm, employee_id: e.target.value})}
                             className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
@@ -1630,7 +1630,7 @@ export default function AttendanceLogs() {
                     </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">OD Date</label>
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="date"
                           value={odForm.od_date}
                           onChange={(e) => setOdForm({...odForm, od_date: e.target.value})}
@@ -1640,7 +1640,7 @@ export default function AttendanceLogs() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">From Time</label>
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="time"
                             value={odForm.from_time}
                             onChange={(e) => setOdForm({...odForm, from_time: e.target.value})}
@@ -1649,7 +1649,7 @@ export default function AttendanceLogs() {
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">To Time</label>
-                          <input
+                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                             type="time"
                             value={odForm.to_time}
                             onChange={(e) => setOdForm({...odForm, to_time: e.target.value})}
@@ -1659,7 +1659,7 @@ export default function AttendanceLogs() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                        <input
+                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="text"
                           value={odForm.location}
                           onChange={(e) => setOdForm({...odForm, location: e.target.value})}
@@ -1669,7 +1669,7 @@ export default function AttendanceLogs() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Purpose</label>
-                        <textarea
+                        <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           value={odForm.purpose}
                           onChange={(e) => setOdForm({...odForm, purpose: e.target.value})}
                           rows="4"
@@ -1743,7 +1743,7 @@ export default function AttendanceLogs() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Report Type</label>
-                      <select
+                      <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         value={reportFilters.reportType}
                         onChange={(e) => setReportFilters({...reportFilters, reportType: e.target.value})}
                         className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
@@ -1755,7 +1755,7 @@ export default function AttendanceLogs() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">From Date</label>
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="date"
                         value={reportFilters.fromDate}
                         onChange={(e) => setReportFilters({...reportFilters, fromDate: e.target.value})}
@@ -1764,7 +1764,7 @@ export default function AttendanceLogs() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">To Date</label>
-                      <input
+                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         type="date"
                         value={reportFilters.toDate}
                         onChange={(e) => setReportFilters({...reportFilters, toDate: e.target.value})}
@@ -1773,7 +1773,7 @@ export default function AttendanceLogs() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
-                      <select
+                      <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                         value={reportFilters.employeeId}
                         onChange={(e) => setReportFilters({...reportFilters, employeeId: e.target.value})}
                         className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"

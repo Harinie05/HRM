@@ -331,7 +331,7 @@ export default function PayrollRun() {
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="text"
                 placeholder="Search by employee or month..."
                 value={searchTerm}
@@ -339,10 +339,10 @@ export default function PayrollRun() {
                 className="pl-10 pr-4 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent w-full text-sm"
               />
             </div>
-            <select
+            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
-              className="border border-black rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm w-full sm:w-auto"
+              className=" border-black rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm w-full sm:w-auto"
             >
               <option value="">All Months</option>
               {months.map(month => (
@@ -573,7 +573,7 @@ export default function PayrollRun() {
             <form onSubmit={handleRunPayroll} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Month</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={runData.month}
                   onChange={(e) => {
                     setRunData({...runData, month: e.target.value});
@@ -592,7 +592,7 @@ export default function PayrollRun() {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Year</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   value={runData.year}
                   onChange={(e) => {

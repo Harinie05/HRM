@@ -107,29 +107,38 @@ export default function DesignationList() {
   };
 
   return (
-    <div className="bg-white rounded-2xl border-0 overflow-hidden">
+    <div className="bg-white rounded-xl p-5 shadow-sm overflow-hidden relative border" style={{
+      background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+      borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+    }}>
+      <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+        transform: 'translate(40%, -40%)'
+      }}></div>
+      <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+        transform: 'translate(-40%, 40%)'
+      }}></div>
       {/* Header */}
-      <div className="p-6 border-b-0">
+      <div className="p-5 border-b-0 relative z-10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+            <div className="p-2 rounded-lg" style={{
               backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
             }}>
-              <svg className="w-5 h-5" style={{
+              <svg className="h-5 w-5" style={{
                 color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
               }} fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
             </div>
-            <div>
-              <h2 className="text-lg font-medium text-gray-900">Designations & Roles</h2>
-              <p className="text-sm text-gray-600">Overview of all roles and their permission levels</p>
-            </div>
+            <h2 className="text-lg font-semibold text-gray-900">Designations & Roles</h2>
           </div>
         </div>
+        <p className="text-sm text-gray-600 mt-2">Overview of all roles and their permission levels</p>
       </div>
 
-      <div className="p-6 space-y-6">
+      <div className="p-5 space-y-6">
         {/* Search */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
@@ -142,9 +151,10 @@ export default function DesignationList() {
                 placeholder="Search roles..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                className="pl-10 pr-4 py-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                 style={{
-                  focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                 }}
               />
             </div>
@@ -162,9 +172,10 @@ export default function DesignationList() {
                   type="text"
                   value={newRole.name}
                   onChange={(e) => setNewRole({...newRole, name: e.target.value})}
-                  className="w-full px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                  className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                   style={{
-                    focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                   }}
                   placeholder="e.g., Senior Developer, HR Manager"
                 />
@@ -174,9 +185,10 @@ export default function DesignationList() {
                 <select
                   value={newRole.level}
                   onChange={(e) => setNewRole({...newRole, level: e.target.value})}
-                  className="w-full px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                  className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                   style={{
-                    focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                   }}
                 >
                   <option value="employee">Employee</option>
@@ -192,9 +204,10 @@ export default function DesignationList() {
                 value={newRole.description}
                 onChange={(e) => setNewRole({...newRole, description: e.target.value})}
                 rows={3}
-                className="w-full px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
+                className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
                 style={{
-                  focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                 }}
                 placeholder="Describe the role responsibilities and scope..."
               />
@@ -249,9 +262,16 @@ export default function DesignationList() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredRoles.map((role) => (
-              <div key={role.id} className="bg-white rounded-xl border-0 p-6 hover:shadow-md transition-all duration-200">
-                <div className="flex items-start justify-between mb-4">
-                  <div className={`w-12 h-12 ${getRoleColor(role.level)} rounded-xl flex items-center justify-center text-white`}>
+              <div key={role.id} className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+                background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <div className="flex items-start justify-between mb-4 relative z-10">
+                  <div className={`w-12 h-12 ${getRoleColor(role.level)} rounded-lg flex items-center justify-center text-white shadow-sm`}>
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>

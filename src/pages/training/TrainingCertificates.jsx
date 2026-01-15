@@ -173,7 +173,7 @@ export default function TrainingCertificates() {
           </div>
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="text"
               placeholder="Search certificates..."
               value={searchTerm}
@@ -346,7 +346,7 @@ export default function TrainingCertificates() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Training Program</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={formData.training_id}
                     onChange={(e) => setFormData({...formData, training_id: e.target.value, employee_id: ""})}
                     className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-all duration-200 bg-white"
@@ -362,7 +362,7 @@ export default function TrainingCertificates() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Candidate</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={formData.employee_id}
                     onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
                     className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-all duration-200 bg-white"
@@ -385,7 +385,7 @@ export default function TrainingCertificates() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Score (%)</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     min="0"
                     max="100"
@@ -398,7 +398,7 @@ export default function TrainingCertificates() {
                 </div>
                 <div className="bg-gray-50 rounded-lg p-3">
                   <label className="flex items-center cursor-pointer">
-                    <input
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                       type="checkbox"
                       checked={formData.has_expiry}
                       onChange={(e) => setFormData({...formData, has_expiry: e.target.checked})}

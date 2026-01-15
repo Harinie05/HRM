@@ -133,7 +133,7 @@ export default function JobApply() {
           </div>
 
           <div className="space-y-6">
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="text"
               placeholder="Full Name"
               value={form.name}
@@ -144,7 +144,7 @@ export default function JobApply() {
               }}
             />
 
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="email"
               placeholder="Email"
               value={form.email}
@@ -152,7 +152,7 @@ export default function JobApply() {
               className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-gray-500 transition-all"
             />
 
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="tel"
               placeholder="Phone Number"
               value={form.phone}
@@ -160,7 +160,7 @@ export default function JobApply() {
               className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-gray-500 transition-all"
             />
 
-            <input
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="text"
               placeholder="Experience (e.g., 3 years)"
               value={form.experience}
@@ -168,7 +168,7 @@ export default function JobApply() {
               className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-gray-500 transition-all"
             />
 
-            <textarea
+            <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               placeholder="Skills (comma-separated)"
               value={form.skills}
               onChange={(e) => updateField("skills", e.target.value)}
@@ -177,11 +177,11 @@ export default function JobApply() {
             />
 
             {/* Resume Upload */}
-            <div className="border-t-0 pt-6">
+            <div className="-t-0 pt-6">
               <label className="block mb-2 text-sm font-medium text-gray-900">
                 Upload Resume (PDF / DOC) *
               </label>
-              <input
+              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 type="file"
                 accept=".pdf,.doc,.docx"
                 onChange={(e) => {

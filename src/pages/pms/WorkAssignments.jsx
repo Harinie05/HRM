@@ -365,14 +365,25 @@ export default function WorkAssignments() {
       )}
 
       {/* My Assignments */}
-      <div className="bg-white rounded-lg border p-6">
+      <div className="relative rounded-xl shadow-sm p-5 overflow-hidden" style={{
+        background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`
+      }}>
+        <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9',
+          transform: 'translate(40%, -40%)'
+        }} />
+        <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9',
+          transform: 'translate(-40%, 40%)'
+        }} />
+        <div className="relative z-10">
         <h3 className="text-lg font-semibold mb-4">My Assignments</h3>
         
         {/* Desktop Table View */}
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b">
+              <tr className="-b">
                 <th className="text-left p-2">Title</th>
                 <th className="text-left p-2">Category</th>
                 <th className="text-left p-2">Weightage</th>
@@ -383,7 +394,7 @@ export default function WorkAssignments() {
             </thead>
             <tbody>
               {myAssignments.map((assignment) => (
-                <tr key={assignment.id} className="border-b">
+                <tr key={assignment.id} className="-b">
                   <td className="p-2">{assignment.title}</td>
                   <td className="p-2">{assignment.category}</td>
                   <td className="p-2">{assignment.weightage_percentage}%</td>
@@ -425,7 +436,7 @@ export default function WorkAssignments() {
             <p className="text-gray-500 text-center py-4">No assignments found</p>
           ) : (
             myAssignments.map((assignment) => (
-              <div key={assignment.id} className="border border-gray-200 rounded-lg p-4">
+              <div key={assignment.id} className=" border-gray-200 rounded-lg p-4">
                 <div className="flex justify-between items-start mb-3">
                   <h4 className="font-medium text-gray-900">{assignment.title}</h4>
                   <div className="flex items-center gap-2">
@@ -471,17 +482,29 @@ export default function WorkAssignments() {
             ))
           )}
         </div>
+        </div>
       </div>
 
       {/* All Assignments */}
-      <div className="bg-white rounded-lg border p-6">
+      <div className="relative rounded-xl shadow-sm p-5 overflow-hidden" style={{
+        background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`
+      }}>
+        <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9',
+          transform: 'translate(40%, -40%)'
+        }} />
+        <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9',
+          transform: 'translate(-40%, 40%)'
+        }} />
+        <div className="relative z-10">
         <h3 className="text-lg font-semibold mb-4">All Assignments</h3>
         
         {/* Desktop Table View */}
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b">
+              <tr className="-b">
                 <th className="text-left p-2">Title</th>
                 <th className="text-left p-2">Employee</th>
                 <th className="text-left p-2">Category</th>
@@ -494,7 +517,7 @@ export default function WorkAssignments() {
             </thead>
             <tbody>
               {assignments.map((assignment) => (
-                <tr key={assignment.id} className="border-b">
+                <tr key={assignment.id} className="-b">
                   <td className="p-2">{assignment.title}</td>
                   <td className="p-2">{assignment.employee_name}</td>
                   <td className="p-2">{assignment.category}</td>
@@ -543,7 +566,7 @@ export default function WorkAssignments() {
             <p className="text-gray-500 text-center py-4">No assignments found</p>
           ) : (
             assignments.map((assignment) => (
-              <div key={assignment.id} className="border border-gray-200 rounded-lg p-4">
+              <div key={assignment.id} className=" border-gray-200 rounded-lg p-4">
                 <div className="mb-3">
                   <h4 className="font-medium text-gray-900">{assignment.title}</h4>
                   <p className="text-sm text-gray-600">{assignment.employee_name}</p>
@@ -570,6 +593,7 @@ export default function WorkAssignments() {
             ))
           )}
         </div>
+        </div>
       </div>
 
       {/* Create Assignment Modal */}
@@ -583,13 +607,21 @@ export default function WorkAssignments() {
                 placeholder="Assignment Title"
                 value={formData.title}
                 onChange={(e) => setFormData({...formData, title: e.target.value})}
-                className="w-full p-3  rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                }}
                 required
               />
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({...formData, category: e.target.value})}
-                className="w-full p-3  rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                }}
               >
                 <option value="Operational">Operational</option>
                 <option value="Admin">Admin</option>
@@ -601,13 +633,21 @@ export default function WorkAssignments() {
                 placeholder="Weightage %"
                 value={formData.weightage_percentage}
                 onChange={(e) => setFormData({...formData, weightage_percentage: e.target.value})}
-                className="w-full p-3  rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                }}
                 required
               />
               <select
                 value={formData.frequency}
                 onChange={(e) => setFormData({...formData, frequency: e.target.value})}
-                className="w-full p-3  rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                }}
               >
                 <option value="Daily">Daily</option>
                 <option value="Weekly">Weekly</option>
@@ -617,7 +657,11 @@ export default function WorkAssignments() {
               <select
                 value={formData.review_cycle_id}
                 onChange={(e) => setFormData({...formData, review_cycle_id: e.target.value})}
-                className="w-full p-3  rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                }}
                 required
               >
                 <option value="">Select Review Cycle</option>
@@ -628,7 +672,11 @@ export default function WorkAssignments() {
               <select
                 value={formData.assigned_employee_id}
                 onChange={(e) => setFormData({...formData, assigned_employee_id: e.target.value})}
-                className="w-full p-3  rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                }}
                 required
               >
                 <option value="">Select Employee</option>
@@ -664,7 +712,11 @@ export default function WorkAssignments() {
               <select
                 value={statusData.completion_status}
                 onChange={(e) => setStatusData({...statusData, completion_status: e.target.value})}
-                className="w-full p-3  rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                }}
               >
                 <option value="Not Completed">Not Completed</option>
                 <option value="Partially Completed">Partially Completed</option>
@@ -674,7 +726,11 @@ export default function WorkAssignments() {
                 placeholder="Remarks (optional)"
                 value={statusData.remarks}
                 onChange={(e) => setStatusData({...statusData, remarks: e.target.value})}
-                className="w-full p-3  rounded-lg h-20 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full p-3 rounded-lg h-20 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                }}
               />
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <button type="submit" className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">

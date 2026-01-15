@@ -11,7 +11,7 @@ export default function LeaveRules() {
   // Check if user has permission to view leave rules
   if (!hasPermission("view_leave_rules")) {
     return (
-      <div className="">
+      <div >
         {/* Header */}
         <div className="p-8 border-b-0">
           <div className="flex justify-between items-center">
@@ -158,7 +158,7 @@ export default function LeaveRules() {
   );
 
   return (
-    <div className="">
+    <div >
       {/* Header */}
       <div className="p-8 border-b-0">
         <div className="flex justify-between items-center">
@@ -194,7 +194,7 @@ export default function LeaveRules() {
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">Status</span>
-              <select
+              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
@@ -207,7 +207,7 @@ export default function LeaveRules() {
             <div className="flex items-center gap-3 sm:ml-auto">
               <div className="relative max-w-md">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="text"
                   placeholder="Search rules..."
                   value={searchTerm}
@@ -452,7 +452,7 @@ export default function LeaveRules() {
             <form onSubmit={handleSubmit} className="p-8 space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Accrual Frequency</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.accrual_frequency}
                   onChange={(e) => setFormData({...formData, accrual_frequency: e.target.value})}
                   className="w-full border border-black rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
@@ -466,7 +466,7 @@ export default function LeaveRules() {
               </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Accrual Method</label>
-                <select
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.accrual_method}
                   onChange={(e) => setFormData({...formData, accrual_method: e.target.value})}
                   className="w-full border border-black rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
@@ -480,7 +480,7 @@ export default function LeaveRules() {
               </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Carry Forward Limit (days)</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="number"
                   value={formData.carry_forward_limit || ""}
                   onChange={(e) => setFormData({...formData, carry_forward_limit: e.target.value ? parseInt(e.target.value) : null})}
@@ -489,7 +489,7 @@ export default function LeaveRules() {
               </div>
               <div className="flex items-center gap-6">
                 <label className="flex items-center">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     checked={formData.encashment_allowed}
                     onChange={(e) => setFormData({...formData, encashment_allowed: e.target.checked})}
@@ -498,7 +498,7 @@ export default function LeaveRules() {
                   <span className="text-sm font-medium text-gray-700">Encashment Allowed</span>
                 </label>
                 <label className="flex items-center">
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="checkbox"
                     checked={formData.auto_deduct_lop}
                     onChange={(e) => setFormData({...formData, auto_deduct_lop: e.target.checked})}
@@ -510,7 +510,7 @@ export default function LeaveRules() {
               {formData.encashment_allowed && (
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Encashment Rate (%)</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="number"
                     value={formData.encashment_rate || ""}
                     onChange={(e) => setFormData({...formData, encashment_rate: e.target.value ? parseFloat(e.target.value) : null})}

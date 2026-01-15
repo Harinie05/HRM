@@ -515,7 +515,7 @@ export default function ODApplications() {
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">Employee</label>
                 {isAdmin() ? (
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     value={formData.employee_id}
                     onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
                     className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent text-sm"
@@ -552,7 +552,7 @@ export default function ODApplications() {
               
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">OD Date</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="date"
                   value={formData.od_date}
                   onChange={(e) => setFormData({...formData, od_date: e.target.value})}
@@ -564,7 +564,7 @@ export default function ODApplications() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-1">From Time</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="time"
                     value={formData.from_time}
                     onChange={(e) => setFormData({...formData, from_time: e.target.value})}
@@ -573,7 +573,7 @@ export default function ODApplications() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-1">To Time</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     type="time"
                     value={formData.to_time}
                     onChange={(e) => setFormData({...formData, to_time: e.target.value})}
@@ -584,7 +584,7 @@ export default function ODApplications() {
               
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">Purpose</label>
-                <textarea
+                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   value={formData.purpose}
                   onChange={(e) => setFormData({...formData, purpose: e.target.value})}
                   className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent text-sm"
@@ -596,7 +596,7 @@ export default function ODApplications() {
               
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">Location</label>
-                <input
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                   type="text"
                   value={formData.location}
                   onChange={(e) => setFormData({...formData, location: e.target.value})}

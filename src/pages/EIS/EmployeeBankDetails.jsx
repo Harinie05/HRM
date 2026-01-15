@@ -152,7 +152,7 @@ export default function EmployeeBankDetails() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Bank Name *</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="e.g., State Bank of India"
                     value={form.bank_name}
@@ -161,7 +161,7 @@ export default function EmployeeBankDetails() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Branch Name *</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Branch location"
                     value={form.branch_name}
@@ -184,7 +184,7 @@ export default function EmployeeBankDetails() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Account Holder Name *</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Full name as per bank records"
                     value={form.account_holder_name}
@@ -193,7 +193,7 @@ export default function EmployeeBankDetails() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Account Type</label>
-                  <select
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.account_type}
                     onChange={(e) => setForm({ ...form, account_type: e.target.value })}
@@ -205,7 +205,7 @@ export default function EmployeeBankDetails() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Account Number *</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Bank account number"
                     value={form.account_number}
@@ -214,7 +214,7 @@ export default function EmployeeBankDetails() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">IFSC Code *</label>
-                  <input
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                     className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="e.g., SBIN0001234"
                     value={form.ifsc_code}
