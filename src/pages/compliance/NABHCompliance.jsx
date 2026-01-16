@@ -345,12 +345,28 @@ export default function NABHCompliance() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl shadow-sm border-0 p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+      <div className="rounded-xl shadow-sm overflow-hidden relative border p-6" style={{
+        background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+      }}>
+        <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+          transform: 'translate(40%, -40%)'
+        }}></div>
+        <div className="relative z-10">
         <form onSubmit={handleSubmit} className="space-y-8">
           {canAdd ? (
             <>
           {/* Basic Employee Information */}
-          <div className="bg-gradient-to-br from-gray-50 to-white p-6 rounded-lg border-0 hover:shadow-md transition-shadow">
+          <div className="p-6 rounded-lg overflow-hidden relative border hover:shadow-md transition-shadow" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
+            <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl opacity-10" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+              transform: 'translate(40%, -40%)'
+            }}></div>
+            <div className="relative z-10">
             <h3 className="text-lg font-semibold mb-4">Employee Information</h3>
             <div className="grid grid-cols-2 gap-6">
               <div>
@@ -469,10 +485,19 @@ export default function NABHCompliance() {
                 />
               </div>
             </div>
+            </div>
           </div>
 
           {/* Qualification & Documentation */}
-          <div className="bg-gradient-to-br from-gray-50 to-white p-6 rounded-lg border-0 hover:shadow-md transition-shadow">
+          <div className="p-6 rounded-lg overflow-hidden relative border hover:shadow-md transition-shadow" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
+            <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl opacity-10" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+              transform: 'translate(40%, -40%)'
+            }}></div>
+            <div className="relative z-10">
             <h3 className="text-lg font-semibold mb-4">Qualification & Documentation</h3>
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2">
@@ -539,10 +564,19 @@ export default function NABHCompliance() {
                 </label>
               </div>
             </div>
+            </div>
           </div>
 
           {/* Medical Fitness & Credentialing */}
-          <div className="bg-gradient-to-br from-gray-50 to-white p-6 rounded-lg border-0 hover:shadow-md transition-shadow">
+          <div className="p-6 rounded-lg overflow-hidden relative border hover:shadow-md transition-shadow" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
+            <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl opacity-10" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+              transform: 'translate(40%, -40%)'
+            }}></div>
+            <div className="relative z-10">
             <h3 className="text-lg font-semibold mb-4">Medical Fitness & Credentialing</h3>
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2">
@@ -615,10 +649,19 @@ export default function NABHCompliance() {
                 />
               </div>
             </div>
+            </div>
           </div>
 
           {/* Training Requirements */}
-          <div className="bg-gradient-to-br from-gray-50 to-white p-6 rounded-lg border-0 hover:shadow-md transition-shadow">
+          <div className="p-6 rounded-lg overflow-hidden relative border hover:shadow-md transition-shadow" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
+            <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl opacity-10" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+              transform: 'translate(40%, -40%)'
+            }}></div>
+            <div className="relative z-10">
             <h3 className="text-lg font-semibold mb-4">Training Requirements</h3>
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2">
@@ -717,10 +760,19 @@ export default function NABHCompliance() {
                 />
               </div>
             </div>
+            </div>
           </div>
 
           {/* Performance & Monitoring */}
-          <div className="bg-gradient-to-br from-gray-50 to-white p-6 rounded-lg border-0 hover:shadow-md transition-shadow">
+          <div className="p-6 rounded-lg overflow-hidden relative border hover:shadow-md transition-shadow" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
+            <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl opacity-10" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+              transform: 'translate(40%, -40%)'
+            }}></div>
+            <div className="relative z-10">
             <h3 className="text-lg font-semibold mb-4">Performance & Monitoring</h3>
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2">
@@ -782,10 +834,19 @@ export default function NABHCompliance() {
                 />
               </div>
             </div>
+            </div>
           </div>
 
           {/* Compliance Status */}
-          <div className="bg-gradient-to-br from-gray-50 to-white p-6 rounded-lg border-0 hover:shadow-md transition-shadow">
+          <div className="p-6 rounded-lg overflow-hidden relative border hover:shadow-md transition-shadow" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
+            <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl opacity-10" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+              transform: 'translate(40%, -40%)'
+            }}></div>
+            <div className="relative z-10">
             <h3 className="text-lg font-semibold mb-4">Compliance Status</h3>
             <div className="grid grid-cols-2 gap-6">
               <div>
@@ -860,6 +921,7 @@ export default function NABHCompliance() {
                   </div>
                 </div>
               </div>
+            </div>
             </div>
           </div>
 
@@ -1078,6 +1140,7 @@ export default function NABHCompliance() {
             </div>
           </div>
         )}
+        </div>
       </div>
       <Toast toast={toast} hideToast={hideToast} />
     </div>

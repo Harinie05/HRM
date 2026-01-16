@@ -7,22 +7,41 @@ import { hasPermission } from "../../utils/permissions";
 
 export default function LeaveCalendar() {
   const { toast, showToast, hideToast } = useToast();
-  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
+  const [colors, setColors] = useState({
+    primary: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+    secondary: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'
+  });
   // Check if user has permission to view leave calendar
   if (!hasPermission("view_leave_calendar")) {
     return (
       <div >
-        {/* Header */}
-        <div className="p-8 border-b-0">
-          <div className="flex justify-between items-center">
+        {/* Hero Header matching User Management */}
+        <div className="rounded-2xl shadow-sm p-4 sm:p-6 relative overflow-hidden border" style={{
+          background: `linear-gradient(to right, ${colors.primary}10, ${colors.secondary}10)`,
+          borderColor: colors.primary,
+          borderWidth: '1px'
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: colors.secondary,
+            transform: 'translate(-40%, 40%)'
+          }}></div>
+          <div className="flex justify-between items-center relative z-10">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-                <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <svg className="w-5 h-5" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                 </svg>
               </div>
               <div>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">Leave Calendar</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Leave Calendar</h2>
                 <p className="text-gray-600 text-base">View team leaves and plan coverage</p>
               </div>
             </div>
@@ -313,8 +332,12 @@ export default function LeaveCalendar() {
       <div className="p-8 border-b-0">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-              <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+              backgroundColor: `${colors.primary}20`
+            }}>
+              <svg className="w-5 h-5" style={{
+                color: colors.primary
+              }} fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
               </svg>
             </div>
@@ -323,13 +346,20 @@ export default function LeaveCalendar() {
               <p className="text-gray-600 text-base">View team leaves and plan coverage</p>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4 relative">
+            <div className="absolute -top-16 -right-16 w-36 h-36 rounded-full blur-3xl opacity-30" style={{
+              backgroundColor: colors.primary
+            }}></div>
+            <div className="flex items-center gap-2 relative z-10">
               <Filter size={18} className="text-gray-400" />
-              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+              <select 
                 value={selectedDepartment}
                 onChange={(e) => setSelectedDepartment(e.target.value)}
-                className=" border-black rounded-2xl px-4 py-3 text-sm bg-gray-50 hover:bg-white transition-colors"
+                className="border rounded-2xl px-4 py-3 text-sm bg-gray-50 hover:bg-white transition-colors"
+                style={{
+                  backgroundColor: `${colors.primary}10`,
+                  borderColor: `${colors.primary}20`
+                }}
               >
                 <option value="All Departments">All Departments</option>
                 {departments.map(dept => (
@@ -337,7 +367,9 @@ export default function LeaveCalendar() {
                 ))}
               </select>
             </div>
-            <div className="bg-gray-100 border border-black rounded-full p-1 inline-flex space-x-1">
+            <div className="bg-gray-100 border rounded-full p-1 inline-flex space-x-1 relative z-10" style={{
+              borderColor: `${colors.primary}20`
+            }}>
               <button 
                 onClick={() => setViewMode("month")}
                 className={`px-4 py-2 text-sm font-semibold rounded-full transition-all duration-300 ${
@@ -368,34 +400,47 @@ export default function LeaveCalendar() {
       </div>
 
       {/* Calendar Navigation */}
-      <div className="p-8 border-b-0">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-4">
+      <div className="bg-white rounded-xl shadow-sm relative overflow-hidden border" style={{
+        background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+      }}>
+        <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+          transform: 'translate(40%, -40%)'
+        }}></div>
+        <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+          transform: 'translate(-40%, 40%)'
+        }}></div>
+        <div className="p-8 relative z-10">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={() => navigateMonth(-1)}
+                className="p-3 hover:bg-gray-100 rounded-2xl transition-colors"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <h3 className="text-xl font-bold text-gray-900">
+                {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
+              </h3>
+              <button 
+                onClick={() => navigateMonth(1)}
+                className="p-3 hover:bg-gray-100 rounded-2xl transition-colors"
+              >
+                <ChevronRight size={20} />
+              </button>
+            </div>
             <button 
-              onClick={() => navigateMonth(-1)}
-              className="p-3 hover:bg-gray-100 rounded-2xl transition-colors"
+              onClick={() => setCurrentDate(new Date())}
+              style={{ backgroundColor: colors.primary }}
+              className="px-6 py-3 text-sm text-white rounded-2xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+              onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
             >
-              <ChevronLeft size={20} />
-            </button>
-            <h3 className="text-xl font-bold text-gray-900">
-              {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
-            </h3>
-            <button 
-              onClick={() => navigateMonth(1)}
-              className="p-3 hover:bg-gray-100 rounded-2xl transition-colors"
-            >
-              <ChevronRight size={20} />
+              Today
             </button>
           </div>
-          <button 
-            onClick={() => setCurrentDate(new Date())}
-            style={{ backgroundColor: colors.primary }}
-            className="px-6 py-3 text-sm text-white rounded-2xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-            onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-            onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
-          >
-            Today
-          </button>
         </div>
       </div>
 
@@ -411,7 +456,9 @@ export default function LeaveCalendar() {
           </div>
           <div className="grid grid-cols-7 gap-1">
             {getDaysInMonth().map((day, index) => (
-              <div key={index} className="min-h-[100px] border border-black p-2">
+              <div key={index} className="min-h-[100px] border p-2" style={{
+                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}20`
+              }}>
                 {day && (
                   <>
                     <div className="text-sm font-medium text-primary mb-1">{day}</div>
@@ -454,7 +501,9 @@ export default function LeaveCalendar() {
               const day = date.getDate();
               const isCurrentMonth = date.getMonth() === currentDate.getMonth();
               return (
-                <div key={index} className={`min-h-[120px] border border-black p-2 ${!isCurrentMonth ? 'bg-content' : ''}`}>
+                <div key={index} className={`min-h-[120px] border p-2 ${!isCurrentMonth ? 'bg-content' : ''}`} style={{
+                  borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}20`
+                }}>
                   <div className={`text-sm font-medium mb-1 ${isCurrentMonth ? 'text-primary' : 'text-muted'}`}>
                     {day}
                   </div>
@@ -492,7 +541,9 @@ export default function LeaveCalendar() {
                 <div className="text-center py-8 text-muted">No leaves found for this period.</div>
               ) : (
                 leaves.map((leave, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 border border-black rounded-lg">
+                  <div key={index} className="flex items-center justify-between p-4 border rounded-lg" style={{
+                    borderColor: `${colors.primary}20`
+                  }}>
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                         <Calendar size={20} className="text-blue-600" />
@@ -544,7 +595,9 @@ export default function LeaveCalendar() {
       {/* Leave Details Modal */}
       {showLeaveModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 border" style={{
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Employees on Leave</h3>
               <button 

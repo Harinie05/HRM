@@ -35,17 +35,14 @@ export default function HRLayout() {
 
   const fetchColors = async () => {
     try {
-      const tenantCode = localStorage.getItem('tenantCode');
+      const tenantCode = localStorage.getItem('tenant_code');
       if (tenantCode) {
         const response = await api.get(`/auth/branding/${tenantCode}`);
         if (response.data.primary_color && response.data.secondary_color) {
-          const newColors = {
+          setColors({
             primary: response.data.primary_color,
             secondary: response.data.secondary_color
-          };
-          setColors(newColors);
-          document.documentElement.style.setProperty('--primary-color', newColors.primary);
-          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+          });
         }
       }
     } catch (error) {
@@ -73,10 +70,19 @@ export default function HRLayout() {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Header with gradient background */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
-          background: `linear-gradient(to right, ${colors.primary}10, ${colors.secondary}10)`
+        <div className="rounded-2xl shadow-sm p-4 sm:p-6 relative overflow-hidden border" style={{
+          background: `linear-gradient(to right, ${colors.primary}10, ${colors.secondary}10)`,
+          borderColor: `${colors.primary}20`
         }}>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: colors.secondary,
+            transform: 'translate(-40%, 40%)'
+          }}></div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 relative z-10">
             <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
                 backgroundColor: `${colors.primary}20`
@@ -92,7 +98,9 @@ export default function HRLayout() {
               </div>
             </div>
             <div className="flex gap-2 sm:gap-3 flex-shrink-0">
-              <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
+              <div className="bg-white rounded-lg p-2 sm:p-3 shadow-sm border" style={{
+                borderColor: `${colors.primary}20`
+              }}>
                 <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <Users className="h-3 w-3" />
                   <span className="text-xs font-medium">Modules</span>
@@ -103,46 +111,49 @@ export default function HRLayout() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden relative" style={{
+          background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+          border: `1px solid ${colors.primary}20`
+        }}>
+          <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
+            background: `radial-gradient(circle, ${colors.primary}40 0%, transparent 70%)`,
+            transform: 'translate(40%, -40%)'
+          }}></div>
           {/* Content */}
           <div className="p-4 sm:p-6">
             {/* Tab Navigation */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-6">
-              <span className="text-sm text-gray-600">Modules</span>
-              <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto scrollbar-hide border-0" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
-                  {tabs.map((tabName) => (
-                    <button
-                      key={tabName}
-                      onClick={() => setTab(tabName)}
-                      className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0`}
-                      style={{
-                        backgroundColor: tab === tabName ? (colors.primary) : 'transparent',
-                        color: tab === tabName ? 'white' : '#6b7280'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (tab !== tabName) {
-                          e.target.style.backgroundColor = colors.secondary;
-                          e.target.style.color = 'white';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (tab !== tabName) {
-                          e.target.style.backgroundColor = 'transparent';
-                          e.target.style.color = '#6b7280';
-                        }
-                      }}
-                    >
-                      {tabName}
-                    </button>
-                  ))}
-                </div>
+            <div className="mb-6">
+              <div className="rounded-full p-1.5 inline-flex space-x-1 overflow-x-auto scrollbar-hide w-full sm:w-auto" style={{
+                backgroundColor: `${colors.primary}10`,
+                border: `1px solid ${colors.primary}20`
+              }}>
+                {tabs.map((tabName) => (
+                  <button
+                    key={tabName}
+                    onClick={() => setTab(tabName)}
+                    className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0`}
+                    style={{
+                      backgroundColor: tab === tabName ? colors.primary : 'transparent',
+                      color: tab === tabName ? 'white' : '#6b7280'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (tab !== tabName) {
+                        e.target.style.backgroundColor = colors.secondary;
+                        e.target.style.color = 'white';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (tab !== tabName) {
+                        e.target.style.backgroundColor = 'transparent';
+                        e.target.style.color = '#6b7280';
+                      }
+                    }}
+                  >
+                    {tabName}
+                  </button>
+                ))}
               </div>
-              {/* Scroll indicator */}
-              <div className="flex justify-center mb-6">
-                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </div>
+            </div>
 
               {/* Tab Content */}
               {tab === "Lifecycle Actions" && (

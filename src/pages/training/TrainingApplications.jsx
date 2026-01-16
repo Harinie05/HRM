@@ -195,8 +195,15 @@ export default function TrainingApplications() {
 
       {/* Program Info */}
       {program && (
-        <div className="bg-white rounded-lg border-0 p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="rounded-lg p-6 relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 pointer-events-none" style={{
+            background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'} 0%, transparent 70%)`,
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
             <div>
               <h3 className="font-medium text-gray-900">Program Details</h3>
               <p className="text-sm text-gray-600 mt-1">{program.description}</p>
@@ -245,13 +252,21 @@ export default function TrainingApplications() {
       )}
 
       {/* Filters */}
-      <div className="bg-white rounded-lg border-0 p-6">
-        <div className="flex justify-between items-center">
+      <div className="rounded-lg p-6 relative overflow-hidden" style={{
+        background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
+        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+      }}>
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 pointer-events-none" style={{
+          background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'} 0%, transparent 70%)`,
+          transform: 'translate(40%, -40%)'
+        }}></div>
+        <div className="flex justify-between items-center relative z-10">
           <h3 className="text-lg font-medium text-gray-900">Applications</h3>
-          <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+          <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className=" rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            className="rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
           >
             <option value="">All Status</option>
             <option value="Pending">Pending</option>
@@ -262,7 +277,14 @@ export default function TrainingApplications() {
       </div>
 
       {/* Applications Table */}
-      <div className="bg-white rounded-lg border-0 overflow-hidden">
+      <div className="rounded-lg overflow-hidden relative" style={{
+        background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
+        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+      }}>
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 pointer-events-none" style={{
+          background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'} 0%, transparent 70%)`,
+          transform: 'translate(40%, -40%)'
+        }}></div>
         {loading ? (
           <div className="flex justify-center items-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -272,11 +294,12 @@ export default function TrainingApplications() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left border-0">
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input
                     type="checkbox"
                     checked={selectedApplications.length === filteredApplications.length && filteredApplications.length > 0}
                     onChange={handleSelectAll}
-                    className="rounded border-gray-300"
+                    className="rounded"
+                    style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                   />
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border-0">Applicant</th>
@@ -301,11 +324,12 @@ export default function TrainingApplications() {
                 filteredApplications.map((application) => (
                   <tr key={application.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 border-0">
-                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                      <input
                         type="checkbox"
                         checked={selectedApplications.includes(application.id)}
                         onChange={() => handleSelectApplication(application.id)}
-                        className="rounded border-gray-300"
+                        className="rounded"
+                        style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                       />
                     </td>
                     <td className="px-6 py-4 border-0">
@@ -389,21 +413,23 @@ export default function TrainingApplications() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input
                     type="text"
                     value={emailTemplate.subject}
                     onChange={(e) => setEmailTemplate({...emailTemplate, subject: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                   />
                 </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Message</label>
-                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <textarea
                     value={emailTemplate.message}
                     onChange={(e) => setEmailTemplate({...emailTemplate, message: e.target.value})}
                     rows={12}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 resize-none"
+                    className="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 resize-none"
+                    style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                   />
                 </div>
                 

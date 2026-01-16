@@ -69,17 +69,14 @@ export default function StaffScheduling() {
 
   const fetchColors = async () => {
     try {
-      const tenantCode = localStorage.getItem('tenantCode');
+      const tenantCode = localStorage.getItem('tenant_code');
       if (tenantCode) {
         const response = await api.get(`/auth/branding/${tenantCode}`);
         if (response.data.primary_color && response.data.secondary_color) {
-          const newColors = {
+          setColors({
             primary: response.data.primary_color,
             secondary: response.data.secondary_color
-          };
-          setColors(newColors);
-          document.documentElement.style.setProperty('--primary-color', newColors.primary);
-          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+          });
         }
       }
     } catch (error) {
@@ -273,11 +270,23 @@ export default function StaffScheduling() {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-              activeTab === tab
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-colors`}
+            style={{
+              backgroundColor: activeTab === tab ? colors.primary : 'transparent',
+              color: activeTab === tab ? 'white' : '#6b7280'
+            }}
+            onMouseEnter={(e) => {
+              if (activeTab !== tab) {
+                e.target.style.backgroundColor = colors.secondary;
+                e.target.style.color = 'white';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeTab !== tab) {
+                e.target.style.backgroundColor = 'transparent';
+                e.target.style.color = '#6b7280';
+              }
+            }}
           >
             {tab === 'manage' ? 'Patient Load & Staff Allocation' : 
              tab === 'records' ? 'View & Manage Records' : 
@@ -289,23 +298,37 @@ export default function StaffScheduling() {
       {activeTab === 'manage' && (
         <div className="space-y-6">
           {!canAdd ? (
-            <div className="bg-white rounded-lg  p-6 text-center">
+            <div className="bg-white rounded-lg p-6 text-center relative overflow-hidden" style={{
+              background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+              border: `1px solid ${colors.primary}20`
+            }}>
               <p className="text-gray-500">You don't have permission to manage staff schedules.</p>
             </div>
           ) : (
             <>
-              <div className="bg-white rounded-lg  p-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">
+              <div className="bg-white rounded-lg p-6 relative overflow-hidden" style={{
+                background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+                border: `1px solid ${colors.primary}20`
+              }}>
+                <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
+                  background: `radial-gradient(circle, ${colors.primary}40 0%, transparent 70%)`,
+                  transform: 'translate(40%, -40%)'
+                }}></div>
+                <h3 className="text-lg font-medium text-gray-900 mb-4 relative z-10">
                   {editingLoad ? 'Edit Patient Load' : 'Record Patient Load'}
                 </h3>
-            <form onSubmit={handlePatientLoadSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <form onSubmit={handlePatientLoadSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select 
                   value={patientLoadForm.department_id}
                   onChange={(e) => setPatientLoadForm({...patientLoadForm, department_id: e.target.value, custom_department: ''})}
-                  className=" rounded-md px-3 py-2 w-full"
+                  className="rounded-md px-3 py-2 w-full"
                   required
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 >
                   <option value="">Select Department</option>
                   {departments.map(dept => (
@@ -314,32 +337,44 @@ export default function StaffScheduling() {
                   <option value="other">Other</option>
                 </select>
                 {patientLoadForm.department_id === 'other' && (
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="text"
                     placeholder="Enter department name"
                     value={patientLoadForm.custom_department}
                     onChange={(e) => setPatientLoadForm({...patientLoadForm, custom_department: e.target.value})}
-                    className=" rounded-md px-3 py-2 w-full mt-2"
+                    className="rounded-md px-3 py-2 w-full mt-2"
                     required
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input 
                   type="date"
                   value={patientLoadForm.date}
                   onChange={(e) => setPatientLoadForm({...patientLoadForm, date: e.target.value})}
-                  className=" rounded-md px-3 py-2 w-full"
+                  className="rounded-md px-3 py-2 w-full"
                   required
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Shift</label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select 
                   value={patientLoadForm.shift}
                   onChange={(e) => setPatientLoadForm({...patientLoadForm, shift: e.target.value})}
-                  className=" rounded-md px-3 py-2 w-full"
+                  className="rounded-md px-3 py-2 w-full"
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 >
                   <option value="Morning">Morning</option>
                   <option value="Evening">Evening</option>
@@ -348,57 +383,77 @@ export default function StaffScheduling() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Total Patients</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input 
                   type="number"
                   placeholder="Enter total patient count"
                   value={patientLoadForm.total_patients}
                   onChange={(e) => setPatientLoadForm({...patientLoadForm, total_patients: parseInt(e.target.value) || 0})}
-                  className=" rounded-md px-3 py-2 w-full"
+                  className="rounded-md px-3 py-2 w-full"
                   min="0"
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Critical Patients</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input 
                   type="number"
                   placeholder="Enter critical patient count"
                   value={patientLoadForm.critical_patients}
                   onChange={(e) => setPatientLoadForm({...patientLoadForm, critical_patients: parseInt(e.target.value) || 0})}
-                  className=" rounded-md px-3 py-2 w-full"
+                  className="rounded-md px-3 py-2 w-full"
                   min="0"
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">ICU Patients</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input 
                   type="number"
                   placeholder="Enter ICU patient count"
                   value={patientLoadForm.icu_patients}
                   onChange={(e) => setPatientLoadForm({...patientLoadForm, icu_patients: parseInt(e.target.value) || 0})}
-                  className=" rounded-md px-3 py-2 w-full"
+                  className="rounded-md px-3 py-2 w-full"
                   min="0"
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">OPD Patients</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input 
                   type="number"
                   placeholder="Enter OPD patient count"
                   value={patientLoadForm.opd_patients}
                   onChange={(e) => setPatientLoadForm({...patientLoadForm, opd_patients: parseInt(e.target.value) || 0})}
-                  className=" rounded-md px-3 py-2 w-full"
+                  className="rounded-md px-3 py-2 w-full"
                   min="0"
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Emergency Patients</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input 
                   type="number"
                   placeholder="Enter emergency patient count"
                   value={patientLoadForm.emergency_patients}
                   onChange={(e) => setPatientLoadForm({...patientLoadForm, emergency_patients: parseInt(e.target.value) || 0})}
-                  className=" rounded-md px-3 py-2 w-full"
+                  className="rounded-md px-3 py-2 w-full"
                   min="0"
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 />
               </div>
               <div className="md:col-span-3">
@@ -418,18 +473,29 @@ export default function StaffScheduling() {
             </form>
           </div>
 
-          <div className="bg-white rounded-lg  p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">
+          <div className="bg-white rounded-lg p-6 relative overflow-hidden" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+            border: `1px solid ${colors.primary}20`
+          }}>
+            <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
+              background: `radial-gradient(circle, ${colors.primary}40 0%, transparent 70%)`,
+              transform: 'translate(40%, -40%)'
+            }}></div>
+            <h3 className="text-lg font-medium text-gray-900 mb-4 relative z-10">
               {editingAllocation ? 'Edit Staff Allocation' : 'Create Staff Allocation'}
             </h3>
-            <form onSubmit={handleAllocationSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <form onSubmit={handleAllocationSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select 
                   value={allocationForm.department_id}
                   onChange={(e) => setAllocationForm({...allocationForm, department_id: e.target.value, custom_department: ''})}
-                  className=" rounded-md px-3 py-2 w-full"
+                  className="rounded-md px-3 py-2 w-full"
                   required
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 >
                   <option value="">Select Department</option>
                   {departments.map(dept => (
@@ -438,32 +504,44 @@ export default function StaffScheduling() {
                   <option value="other">Other</option>
                 </select>
                 {allocationForm.department_id === 'other' && (
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="text"
                     placeholder="Enter department name"
                     value={allocationForm.custom_department}
                     onChange={(e) => setAllocationForm({...allocationForm, custom_department: e.target.value})}
-                    className=" rounded-md px-3 py-2 w-full mt-2"
+                    className="rounded-md px-3 py-2 w-full mt-2"
                     required
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input 
                   type="date"
                   value={allocationForm.date}
                   onChange={(e) => setAllocationForm({...allocationForm, date: e.target.value})}
-                  className=" rounded-md px-3 py-2 w-full"
+                  className="rounded-md px-3 py-2 w-full"
                   required
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Shift</label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select 
                   value={allocationForm.shift}
                   onChange={(e) => setAllocationForm({...allocationForm, shift: e.target.value})}
-                  className=" rounded-md px-3 py-2 w-full"
+                  className="rounded-md px-3 py-2 w-full"
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 >
                   <option value="Morning">Morning</option>
                   <option value="Evening">Evening</option>
@@ -472,68 +550,92 @@ export default function StaffScheduling() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Required Nurses</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input 
                   type="number"
                   placeholder="How many nurses needed?"
                   value={allocationForm.required_nurses}
                   onChange={(e) => setAllocationForm({...allocationForm, required_nurses: parseInt(e.target.value) || 0})}
-                  className=" rounded-md px-3 py-2 w-full"
+                  className="rounded-md px-3 py-2 w-full"
                   min="0"
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Allocated Nurses</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input 
                   type="number"
                   placeholder="How many nurses assigned?"
                   value={allocationForm.allocated_nurses}
                   onChange={(e) => setAllocationForm({...allocationForm, allocated_nurses: parseInt(e.target.value) || 0})}
-                  className=" rounded-md px-3 py-2 w-full"
+                  className="rounded-md px-3 py-2 w-full"
                   min="0"
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Required Doctors</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input 
                   type="number"
                   placeholder="How many doctors needed?"
                   value={allocationForm.required_doctors}
                   onChange={(e) => setAllocationForm({...allocationForm, required_doctors: parseInt(e.target.value) || 0})}
-                  className=" rounded-md px-3 py-2 w-full"
+                  className="rounded-md px-3 py-2 w-full"
                   min="0"
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Allocated Doctors</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input 
                   type="number"
                   placeholder="How many doctors assigned?"
                   value={allocationForm.allocated_doctors}
                   onChange={(e) => setAllocationForm({...allocationForm, allocated_doctors: parseInt(e.target.value) || 0})}
-                  className=" rounded-md px-3 py-2 w-full"
+                  className="rounded-md px-3 py-2 w-full"
                   min="0"
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Required Support Staff</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input 
                   type="number"
                   placeholder="How many support staff needed?"
                   value={allocationForm.required_support_staff}
                   onChange={(e) => setAllocationForm({...allocationForm, required_support_staff: parseInt(e.target.value) || 0})}
-                  className=" rounded-md px-3 py-2 w-full"
+                  className="rounded-md px-3 py-2 w-full"
                   min="0"
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Allocated Support Staff</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input 
                   type="number"
                   placeholder="How many support staff assigned?"
                   value={allocationForm.allocated_support_staff}
                   onChange={(e) => setAllocationForm({...allocationForm, allocated_support_staff: parseInt(e.target.value) || 0})}
-                  className=" rounded-md px-3 py-2 w-full"
+                  className="rounded-md px-3 py-2 w-full"
                   min="0"
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 />
               </div>
               <div className="md:col-span-3">

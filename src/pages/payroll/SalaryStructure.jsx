@@ -56,7 +56,7 @@ export default function SalaryStructure() {
 
   const fetchColors = async () => {
     try {
-      const tenantCode = localStorage.getItem('tenantCode');
+      const tenantCode = localStorage.getItem('tenant_code');
       if (tenantCode) {
         const response = await api.get(`/auth/branding/${tenantCode}`);
         if (response.data.primary_color && response.data.secondary_color) {
@@ -312,12 +312,23 @@ export default function SalaryStructure() {
   );
 
   return (
-    <div className="bg-white rounded-2xl border border-black overflow-hidden">
+    <div className="rounded-2xl overflow-hidden relative" style={{
+      background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+      border: `1px solid ${colors.primary}20`
+    }}>
+      <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+        backgroundColor: colors.primary,
+        transform: 'translate(40%, -40%)'
+      }}></div>
       {/* Header */}
-      <div className="p-6 border-b border-black">
+      <div className="p-6 relative z-10" style={{
+        borderBottom: `1px solid ${colors.primary}20`
+      }}>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-            <DollarSign className="w-5 h-5 text-gray-600" />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+            backgroundColor: `${colors.primary}20`
+          }}>
+            <DollarSign className="w-5 h-5" style={{ color: colors.primary }} />
           </div>
           <div>
             <h2 className="text-lg font-medium text-gray-900">Salary Structure</h2>
@@ -327,16 +338,20 @@ export default function SalaryStructure() {
       </div>
 
       {/* Content */}
-      <div className="p-6">
+      <div className="p-6 relative z-10">
         {/* Search and Add Button */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
           <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
             <div className="flex items-center gap-4">
               <label className="text-sm font-medium text-gray-700">Status:</label>
-              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+              <select 
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
+                className="px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
+                style={{
+                  backgroundColor: `${colors.primary}10`,
+                  border: `1px solid ${colors.primary}`
+                }}
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -345,19 +360,23 @@ export default function SalaryStructure() {
             </div>
             <div className="relative max-w-md w-full sm:w-auto">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+              <input 
                 type="text"
                 placeholder="Search salary structures..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 pr-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent w-full text-sm"
+                className="pl-12 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent w-full text-sm"
+                style={{
+                  backgroundColor: `${colors.primary}10`,
+                  border: `1px solid ${colors.primary}`
+                }}
               />
             </div>
           </div>
           {canAdd && (
             <button 
               onClick={() => handleOpenModal()}
-              className="px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border w-full sm:w-auto justify-center text-white"
+              className="px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium w-full sm:w-auto justify-center text-white"
               style={{
                 backgroundColor: colors.primary,
                 borderColor: colors.primary
@@ -372,7 +391,9 @@ export default function SalaryStructure() {
         </div>
 
         {/* Table */}
-        <div className="bg-white rounded-2xl border border-black overflow-hidden">
+        <div className="rounded-2xl overflow-hidden" style={{
+          border: `1px solid ${colors.primary}20`
+        }}>
           {loading ? (
             <div className="flex justify-center items-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-600"></div>
@@ -382,7 +403,10 @@ export default function SalaryStructure() {
               {/* Desktop Table View */}
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-100 border-b border-black">
+                  <thead className="border-b" style={{
+                    backgroundColor: `${colors.primary}10`,
+                    borderColor: `${colors.primary}20`
+                  }}>
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Structure Name</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Annual CTC</th>
@@ -434,8 +458,9 @@ export default function SalaryStructure() {
                                 {canViewDetails && (
                                   <button 
                                     onClick={() => handleViewStructure(structure)}
-                                    className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                                    className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
                                     title="View Details"
+                                    aria-label={`View details for ${structure.name}`}
                                   >
                                     <Eye size={16} />
                                   </button>
@@ -443,8 +468,9 @@ export default function SalaryStructure() {
                                 {canLinkEmployees && (
                                   <button 
                                     onClick={() => handleOpenLinkModal(structure)}
-                                    className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                                    className="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors"
                                     title="Link Employees"
+                                    aria-label={`Link employees to ${structure.name}`}
                                   >
                                     <Link size={16} />
                                   </button>
@@ -452,8 +478,9 @@ export default function SalaryStructure() {
                                 {canEdit && (
                                   <button 
                                     onClick={() => handleOpenModal(structure)}
-                                    className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                                    className="p-2 text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50 rounded-lg transition-colors"
                                     title="Edit Structure"
+                                    aria-label={`Edit ${structure.name}`}
                                   >
                                     <Edit size={16} />
                                   </button>
@@ -461,8 +488,9 @@ export default function SalaryStructure() {
                                 {canDelete && (
                                   <button 
                                     onClick={() => handleDelete(structure.id)}
-                                    className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                                    className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
                                     title="Delete Structure"
+                                    aria-label={`Delete ${structure.name}`}
                                   >
                                     <Trash2 size={16} />
                                   </button>
@@ -489,8 +517,14 @@ export default function SalaryStructure() {
                     const employeeCount = linkedEmployeeIds.length;
                     
                     return (
-                      <div key={structure.id} className="p-4 border-b-0 hover:bg-gray-50">
-                        <div className="flex items-center justify-between mb-3">
+                      <div key={structure.id} className="p-4 border-b-0 hover:bg-gray-50 relative overflow-hidden" style={{
+                        border: `1px solid ${colors.primary}20`
+                      }}>
+                        <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
+                          backgroundColor: colors.primary,
+                          transform: 'translate(30%, -30%)'
+                        }}></div>
+                        <div className="flex items-center justify-between mb-3 relative z-10">
                           <div>
                             <div className="text-sm font-medium text-gray-900">{structure.name}</div>
                             <div className="text-sm text-gray-600">₹{structure.ctc?.toLocaleString()}/year</div>
@@ -501,7 +535,7 @@ export default function SalaryStructure() {
                             {structure.is_active ? "Active" : "Inactive"}
                           </span>
                         </div>
-                        <div className="space-y-2">
+                        <div className="space-y-2 relative z-10">
                           <div className="flex justify-between">
                             <span className="text-sm font-medium text-gray-900">Basic:</span>
                             <span className="text-sm text-gray-600">{structure.basic_percent}%</span>
@@ -515,11 +549,12 @@ export default function SalaryStructure() {
                             <span className="text-sm text-gray-600">{employeeCount} employees</span>
                           </div>
                         </div>
-                        <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                        <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100 relative z-10">
                           {canViewDetails && (
                             <button 
                               onClick={() => handleViewStructure(structure)}
                               className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                              aria-label={`View details for ${structure.name}`}
                             >
                               <Eye size={14} />
                               View
@@ -529,6 +564,7 @@ export default function SalaryStructure() {
                             <button 
                               onClick={() => handleOpenLinkModal(structure)}
                               className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                              aria-label={`Link employees to ${structure.name}`}
                             >
                               <Link size={14} />
                               Link
@@ -538,6 +574,7 @@ export default function SalaryStructure() {
                             <button 
                               onClick={() => handleOpenModal(structure)}
                               className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                              aria-label={`Edit ${structure.name}`}
                             >
                               <Edit size={14} />
                               Edit
@@ -547,6 +584,7 @@ export default function SalaryStructure() {
                             <button 
                               onClick={() => handleDelete(structure.id)}
                               className="flex items-center gap-1 text-red-600 hover:text-red-900 px-3 py-1 rounded-lg hover:bg-red-50 transition-colors text-sm"
+                              aria-label={`Delete ${structure.name}`}
                             >
                               <Trash2 size={14} />
                               Delete
@@ -573,55 +611,74 @@ export default function SalaryStructure() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Structure Name</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input 
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full border border-black rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
+                  className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
                   placeholder="e.g., Senior Developer, Manager Level"
                   required
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Cost to Company (CTC) - Annually</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input 
                   type="number"
                   value={formData.ctc}
                   onChange={(e) => setFormData({...formData, ctc: parseFloat(e.target.value) || 0})}
-                  className="w-full border border-black rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
+                  className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
                   placeholder="Enter annual CTC amount"
                   required
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Basic %</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="number"
                     value={formData.basic_percent}
                     onChange={(e) => setFormData({...formData, basic_percent: parseFloat(e.target.value) || 0})}
-                    className="w-full border border-black rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
+                    className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
                     required
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">HRA %</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="number"
                     value={formData.hra_percent}
                     onChange={(e) => setFormData({...formData, hra_percent: parseFloat(e.target.value) || 0})}
-                    className="w-full border border-black rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
+                    className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
                     required
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 </div>
               </div>
               <div>
                 <label className="flex items-center">
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="checkbox"
                     checked={formData.is_active}
                     onChange={(e) => setFormData({...formData, is_active: e.target.checked})}
                     className="mr-2"
+                    style={{
+                      accentColor: colors.primary
+                    }}
                   />
                   Active
                 </label>
@@ -630,14 +687,17 @@ export default function SalaryStructure() {
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="flex-1 px-4 py-2 border border-black rounded-xl text-gray-700 hover:bg-gray-50 text-sm font-medium"
+                  className="flex-1 px-4 py-2 rounded-xl text-gray-700 hover:bg-gray-50 text-sm font-medium"
+                  style={{
+                    border: `1px solid ${colors.primary}20`
+                  }}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 px-4 py-2 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium border transition-colors"
+                  className="flex-1 px-4 py-2 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium transition-colors"
                   style={{
                     backgroundColor: colors.primary,
                     borderColor: colors.primary
@@ -676,12 +736,17 @@ export default function SalaryStructure() {
                   console.log(`Employee ${employee.name} (ID: ${employee.id}) - Selected: ${isCurrentlySelected}`);
                   
                   return (
-                    <div key={employee.id} className="flex items-center p-3 border border-black rounded-lg hover:bg-gray-50">
-                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <div key={employee.id} className="flex items-center p-3 rounded-lg hover:bg-gray-50" style={{
+                      border: `1px solid ${colors.primary}20`
+                    }}>
+                      <input 
                         type="checkbox"
                         checked={isCurrentlySelected}
                         onChange={() => toggleEmployeeSelection(employee.id)}
                         className="mr-3"
+                        style={{
+                          accentColor: colors.primary
+                        }}
                       />
                       <div className="flex-1">
                         <div className="font-medium">{employee.name}</div>
@@ -701,7 +766,10 @@ export default function SalaryStructure() {
               <button
                 type="button"
                 onClick={handleCloseLinkModal}
-                className="flex-1 px-4 py-2 border border-black rounded-lg text-gray-700 hover:bg-gray-50"
+                className="flex-1 px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-50"
+                style={{
+                  border: `1px solid ${colors.primary}20`
+                }}
               >
                 Cancel
               </button>

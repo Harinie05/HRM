@@ -55,17 +55,14 @@ export default function Assets() {
 
   const fetchColors = async () => {
     try {
-      const tenantCode = localStorage.getItem('tenantCode');
+      const tenantCode = localStorage.getItem('tenant_code');
       if (tenantCode) {
         const response = await api.get(`/auth/branding/${tenantCode}`);
         if (response.data.primary_color && response.data.secondary_color) {
-          const newColors = {
+          setColors({
             primary: response.data.primary_color,
             secondary: response.data.secondary_color
-          };
-          setColors(newColors);
-          document.documentElement.style.setProperty('--primary-color', newColors.primary);
-          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+          });
         }
       }
     } catch (error) {
@@ -253,11 +250,18 @@ export default function Assets() {
   return (
     <div className="space-y-6">
       {/* Asset Assignment Form */}
-      <div className="rounded-lg shadow-sm  bg-white">
-        <div className="px-6 py-4 border-b border-black">
+      <div className="rounded-lg shadow-sm bg-white relative overflow-hidden" style={{
+        background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+        border: `1px solid ${colors.primary}20`
+      }}>
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
+          background: `radial-gradient(circle, ${colors.primary}40 0%, transparent 70%)`,
+          transform: 'translate(40%, -40%)'
+        }}></div>
+        <div className="px-6 py-4 border-b border-gray-200 relative z-10">
           <h3 className="text-lg font-semibold text-gray-900">Asset Assignment</h3>
         </div>
-        <form onSubmit={handleSubmit} className="p-4 sm:p-6">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 relative z-10">
           {!canAdd ? (
             <div className="text-center py-8">
               <p className="text-gray-500">You don't have permission to create asset assignments.</p>
@@ -268,10 +272,14 @@ export default function Assets() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
                   {isAdmin() ? (
-                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                    <select 
                       value={formData.employeeId}
                       onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                      className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      style={{
+                        backgroundColor: `${colors.primary}10`,
+                        border: `1px solid ${colors.primary}`
+                      }}
                     >
                       <option value="">Select Employee</option>
                       {employees.map((emp) => (
@@ -297,10 +305,14 @@ export default function Assets() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Asset Type</label>
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                  <select 
                     value={formData.assetType}
                     onChange={(e) => setFormData({...formData, assetType: e.target.value})}
-                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   >
                     <option value="">Select Type</option>
                     <option value="laptop">Laptop</option>
@@ -319,69 +331,97 @@ export default function Assets() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Asset Name</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                  <input 
                     type="text"
                     value={formData.assetName}
                     onChange={(e) => setFormData({...formData, assetName: e.target.value})}
-                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     placeholder="Asset name"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Asset ID</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                  <input 
                     type="text"
                     value={formData.assetId}
                     onChange={(e) => setFormData({...formData, assetId: e.target.value})}
-                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     placeholder="Unique asset ID"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Brand</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                  <input 
                     type="text"
                     value={formData.brand}
                     onChange={(e) => setFormData({...formData, brand: e.target.value})}
-                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     placeholder="Brand name"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Model</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                  <input 
                     type="text"
                     value={formData.model}
                     onChange={(e) => setFormData({...formData, model: e.target.value})}
-                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     placeholder="Model number"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Serial Number</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                  <input 
                     type="text"
                     value={formData.serialNumber}
                     onChange={(e) => setFormData({...formData, serialNumber: e.target.value})}
-                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     placeholder="Serial number"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Assigned Date</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                  <input 
                     type="date"
                     value={formData.assignedDate}
                     onChange={(e) => setFormData({...formData, assignedDate: e.target.value})}
-                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Condition</label>
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                  <select 
                     value={formData.condition}
                     onChange={(e) => setFormData({...formData, condition: e.target.value})}
-                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   >
                     <option value="">Select Condition</option>
                     <option value="new">New</option>
@@ -394,12 +434,16 @@ export default function Assets() {
                 </div>
                 <div className="sm:col-span-2 lg:col-span-3">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Remarks</label>
-                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                  <textarea 
                     value={formData.remarks}
                     onChange={(e) => setFormData({...formData, remarks: e.target.value})}
                     rows={3}
-                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                     placeholder="Additional remarks or special instructions..."
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 </div>
               </div>
@@ -424,15 +468,22 @@ export default function Assets() {
 
       {/* Pending Assets */}
       {pendingAssets.length > 0 && (
-        <div className="rounded-lg shadow-sm  bg-white">
-          <div className="px-6 py-4 border-b border-black">
+        <div className="rounded-lg shadow-sm bg-white relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+          border: `1px solid ${colors.primary}20`
+        }}>
+          <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
+            background: `radial-gradient(circle, ${colors.primary}40 0%, transparent 70%)`,
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="px-6 py-4 border-b border-gray-200 relative z-10">
             <h3 className="text-lg font-semibold text-gray-900">Pending Asset Approvals</h3>
           </div>
           
           {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto">
+          <div className="hidden md:block overflow-x-auto relative z-10">
             <table className="min-w-full divide-y divide-gray-200 ">
-              <thead className="bg-gray-50 border-b border-black">
+              <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Asset</th>
@@ -468,7 +519,13 @@ export default function Assets() {
                         {canApprove && (
                           <button
                             onClick={() => handleApproval(asset.id, true)}
-                            className="inline-flex items-center justify-center px-2 sm:px-3 py-1 border border-transparent text-xs sm:text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                            className="inline-flex items-center justify-center px-2 sm:px-3 py-1 border text-xs sm:text-sm leading-4 font-medium rounded-md text-white transition-colors"
+                            style={{
+                              backgroundColor: colors.primary,
+                              borderColor: colors.primary
+                            }}
+                            onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                            onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
                           >
                             <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -480,7 +537,13 @@ export default function Assets() {
                         {canReject && (
                           <button
                             onClick={() => handleApproval(asset.id, false)}
-                            className="inline-flex items-center justify-center px-2 sm:px-3 py-1 border border-transparent text-xs sm:text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                            className="inline-flex items-center justify-center px-2 sm:px-3 py-1 border text-xs sm:text-sm leading-4 font-medium rounded-md text-white transition-colors"
+                            style={{
+                              backgroundColor: colors.secondary,
+                              borderColor: colors.secondary
+                            }}
+                            onMouseEnter={(e) => e.target.style.backgroundColor = colors.primary}
+                            onMouseLeave={(e) => e.target.style.backgroundColor = colors.secondary}
                           >
                             <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -501,7 +564,7 @@ export default function Assets() {
           </div>
 
           {/* Mobile Card View */}
-          <div className="md:hidden">
+          <div className="md:hidden relative z-10">
             {pendingAssets.map((asset) => (
               <div key={asset.id} className="p-4 border-b-0 hover:bg-gray-50">
                 <div className="flex items-center justify-between mb-3">
@@ -542,7 +605,13 @@ export default function Assets() {
                     {canApprove && (
                       <button
                         onClick={() => handleApproval(asset.id, true)}
-                        className="flex items-center gap-1 px-3 py-1 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                        className="flex items-center gap-1 px-3 py-1 text-sm text-white rounded-md transition-colors"
+                        style={{
+                          backgroundColor: colors.primary,
+                          borderColor: colors.primary
+                        }}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -553,7 +622,13 @@ export default function Assets() {
                     {canReject && (
                       <button
                         onClick={() => handleApproval(asset.id, false)}
-                        className="flex items-center gap-1 px-3 py-1 text-sm bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                        className="flex items-center gap-1 px-3 py-1 text-sm text-white rounded-md transition-colors"
+                        style={{
+                          backgroundColor: colors.secondary,
+                          borderColor: colors.secondary
+                        }}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = colors.primary}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = colors.secondary}
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -570,15 +645,22 @@ export default function Assets() {
       )}
 
       {/* Assets List */}
-      <div className="rounded-lg shadow-sm  bg-white">
-        <div className="px-6 py-4 border-b border-black">
+      <div className="rounded-lg shadow-sm bg-white relative overflow-hidden" style={{
+        background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+        border: `1px solid ${colors.primary}20`
+      }}>
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
+          background: `radial-gradient(circle, ${colors.primary}40 0%, transparent 70%)`,
+          transform: 'translate(40%, -40%)'
+        }}></div>
+        <div className="px-6 py-4 border-b border-gray-200 relative z-10">
           <h3 className="text-lg font-semibold text-gray-900">All Assets</h3>
         </div>
         
         {/* Desktop Table View */}
-        <div className="hidden md:block overflow-x-auto">
+        <div className="hidden md:block overflow-x-auto relative z-10">
           <table className="min-w-full divide-y divide-gray-200 ">
-            <thead className="bg-gray-50 border-b border-black">
+            <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Asset</th>
@@ -611,7 +693,10 @@ export default function Assets() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{asset.assignedDate}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${
-                        asset.status === 'Rejected' ? 'bg-gray-50 text-gray-600 border-gray-200' : 'bg-gray-100 text-gray-800 border-gray-300'
+                        asset.status === 'Assigned' ? 'bg-green-100 text-green-800 border-green-300' : 
+                        asset.status === 'Rejected' ? 'bg-red-100 text-red-800 border-red-300' : 
+                        asset.status === 'Pending' ? 'bg-yellow-100 text-yellow-800 border-yellow-300' :
+                        'bg-blue-100 text-blue-800 border-blue-300'
                       }`}>
                         {asset.status}
                       </span>
@@ -624,7 +709,7 @@ export default function Assets() {
         </div>
 
         {/* Mobile Card View */}
-        <div className="md:hidden">
+        <div className="md:hidden relative z-10">
           {assets.length === 0 ? (
             <div className="p-6 text-center text-gray-500">
               <p>No assets found</p>
@@ -638,7 +723,10 @@ export default function Assets() {
                     <div className="text-sm text-gray-600">{asset.employee}</div>
                   </div>
                   <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${
-                    asset.status === 'Rejected' ? 'bg-gray-50 text-gray-600 border-gray-200' : 'bg-gray-100 text-gray-800 border-gray-300'
+                    asset.status === 'Assigned' ? 'bg-green-100 text-green-800 border-green-300' : 
+                    asset.status === 'Rejected' ? 'bg-red-100 text-red-800 border-red-300' : 
+                    asset.status === 'Pending' ? 'bg-yellow-100 text-yellow-800 border-yellow-300' :
+                    'bg-blue-100 text-blue-800 border-blue-300'
                   }`}>
                     {asset.status}
                   </span>

@@ -151,9 +151,16 @@ export default function TrainingCertificates() {
   return (
     <div className="space-y-6">
 
-      <div className="rounded-lg shadow-sm border-0" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+      <div className="rounded-lg shadow-sm relative overflow-hidden" style={{ 
+        background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
+        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+      }}>
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 pointer-events-none" style={{
+          background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'} 0%, transparent 70%)`,
+          transform: 'translate(40%, -40%)'
+        }}></div>
         {/* Header */}
-        <div className="p-6 border-0">
+        <div className="p-6 border-0 relative z-10">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-medium text-gray-900">Training Certificates</h3>
             {(hasPermission('generate_training_certificate') || isAdmin()) && (
@@ -173,12 +180,13 @@ export default function TrainingCertificates() {
           </div>
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <input
               type="text"
               placeholder="Search certificates..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
+              className="pl-10 pr-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
+              style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
             />
           </div>
         </div>
@@ -325,7 +333,7 @@ export default function TrainingCertificates() {
         </div>
 
         {/* Stats Footer */}
-        <div className="px-6 py-4 bg-gray-50 border-t border-black">
+        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
           <div className="flex justify-between items-center text-sm text-gray-600">
             <span>Total Certificates: {certificates.length}</span>
             <span>Active: {certificates.filter(c => !c.expiry_date || new Date(c.expiry_date) > new Date()).length}</span>
@@ -346,10 +354,11 @@ export default function TrainingCertificates() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Training Program</label>
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <select
                     value={formData.training_id}
                     onChange={(e) => setFormData({...formData, training_id: e.target.value, employee_id: ""})}
-                    className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-all duration-200 bg-white"
+                    className="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-all duration-200 bg-white"
+                    style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                     required
                   >
                     <option value="">Select Training Program</option>
@@ -362,10 +371,11 @@ export default function TrainingCertificates() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Candidate</label>
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <select
                     value={formData.employee_id}
                     onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                    className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-all duration-200 bg-white"
+                    className="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-all duration-200 bg-white"
+                    style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                     required
                     disabled={!formData.training_id}
                   >
@@ -385,24 +395,26 @@ export default function TrainingCertificates() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Score (%)</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input
                     type="number"
                     min="0"
                     max="100"
                     value={formData.score}
                     onChange={(e) => setFormData({...formData, score: e.target.value})}
-                    className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-all duration-200 bg-white"
+                    className="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-all duration-200 bg-white"
+                    style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                     placeholder="Final score"
                     required
                   />
                 </div>
                 <div className="bg-gray-50 rounded-lg p-3">
                   <label className="flex items-center cursor-pointer">
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <input
                       type="checkbox"
                       checked={formData.has_expiry}
                       onChange={(e) => setFormData({...formData, has_expiry: e.target.checked})}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                      style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                     />
                     <span className="ml-2 text-sm font-medium text-gray-700">
                       Certificate has expiry date (1 year from issue)

@@ -339,80 +339,16 @@ export default function Statutory() {
 
   return (
     <div className="space-y-6">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Records</p>
-              <p className="text-2xl font-bold text-gray-900">{calculations.length}</p>
-              <p className="text-gray-400 text-xs mt-1">Active records</p>
-            </div>
-            <div className="p-3 rounded-lg" style={{
-              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-            }}>
-              <FileText className="h-6 w-6" style={{
-                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-              }} />
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total PF</p>
-              <p className="text-2xl font-bold text-gray-900">₹{calculations.reduce((sum, c) => sum + (c.pf_amount || 0), 0).toFixed(0)}</p>
-              <p className="text-gray-400 text-xs mt-1">This period</p>
-            </div>
-            <div className="p-3 rounded-lg" style={{
-              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-            }}>
-              <DollarSign className="h-6 w-6" style={{
-                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-              }} />
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total ESI</p>
-              <p className="text-2xl font-bold text-gray-900">₹{calculations.reduce((sum, c) => sum + (c.esi_amount || 0), 0).toFixed(0)}</p>
-              <p className="text-gray-400 text-xs mt-1">This period</p>
-            </div>
-            <div className="p-3 rounded-lg" style={{
-              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-            }}>
-              <Calculator className="h-6 w-6" style={{
-                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-              }} />
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Employees</p>
-              <p className="text-2xl font-bold text-gray-900">{new Set(calculations.map(c => c.employee_id)).size}</p>
-              <p className="text-gray-400 text-xs mt-1">Unique count</p>
-            </div>
-            <div className="p-3 rounded-lg" style={{
-              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-            }}>
-              <Users className="h-6 w-6" style={{
-                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-              }} />
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Form Section */}
-      <div className="bg-white rounded-xl border-0 shadow-sm">
-        <div className="p-5 border-b-0">
+      <div className="bg-white rounded-xl shadow-sm overflow-hidden relative border" style={{
+        background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+      }}>
+        <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+          transform: 'translate(40%, -40%)'
+        }}></div>
+        <div className="p-5 border-b-0 relative z-10">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg" style={{
               backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -428,12 +364,12 @@ export default function Statutory() {
           </div>
         </div>
         
-        <div className="p-6">
+        <div className="p-6 relative z-10">
         {/* Statutory Rules Display */}
         {statutoryRules && (
-          <div className="bg-blue-50 p-4 rounded-lg mb-6">
-            <h3 className="text-lg font-medium mb-2">Current Statutory Rules</h3>
-            <div className="grid grid-cols-4 gap-4 text-sm">
+          <div className="bg-blue-50 p-3 rounded-lg mb-4">
+            <h3 className="text-sm font-medium mb-1.5">Current Statutory Rules</h3>
+            <div className="grid grid-cols-4 gap-3 text-xs">
               <div>PF: {statutoryRules.pf_enabled ? `${statutoryRules.pf_percent}%` : 'Disabled'}</div>
               <div>ESI: {statutoryRules.esi_enabled ? `${statutoryRules.esi_percent}%` : 'Disabled'}</div>
               <div>PT: {statutoryRules.pt_enabled ? `₹${statutoryRules.pt_amount}` : 'Disabled'}</div>
@@ -530,13 +466,13 @@ export default function Statutory() {
             <label className="block text-sm font-medium mb-1">
               Basic Salary <span className="text-red-500">*</span>
             </label>
-            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               type="number"
               required
               name="basic_salary"
               value={form.basic_salary}
               onChange={handleChange}
-              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Basic Salary"
               min="0"
               step="0.01"
@@ -548,13 +484,13 @@ export default function Statutory() {
             <label className="block text-sm font-medium mb-1">
               Gross Salary <span className="text-red-500">*</span>
             </label>
-            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               type="number"
               required
               name="gross_salary"
               value={form.gross_salary}
               onChange={handleChange}
-              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Gross Salary"
               min="0"
               step="0.01"
@@ -577,12 +513,12 @@ export default function Statutory() {
               {form.pf_enabled && (
                 <div className="flex items-center space-x-2">
                   <label className="text-sm">Percentage:</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="number"
                     name="pf_percentage"
                     value={form.pf_percentage}
                     onChange={handleChange}
-                    className="w-20 border border-black rounded px-2 py-1 text-sm"
+                    className="w-20 rounded px-2 py-1 text-sm"
                     min="0"
                     max="100"
                     step="0.01"
@@ -609,12 +545,12 @@ export default function Statutory() {
               {form.esi_enabled && (
                 <div className="flex items-center space-x-2">
                   <label className="text-sm">Percentage:</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="number"
                     name="esi_percentage"
                     value={form.esi_percentage}
                     onChange={handleChange}
-                    className="w-20 border border-black rounded px-2 py-1 text-sm"
+                    className="w-20 rounded px-2 py-1 text-sm"
                     min="0"
                     max="100"
                     step="0.01"
@@ -641,12 +577,12 @@ export default function Statutory() {
               {form.pt_enabled && (
                 <div className="flex items-center space-x-2">
                   <label className="text-sm">Amount:</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="number"
                     name="pt_amount"
                     value={form.pt_amount}
                     onChange={handleChange}
-                    className="w-20 border border-black rounded px-2 py-1 text-sm"
+                    className="w-20 rounded px-2 py-1 text-sm"
                     min="0"
                     step="1"
                   />
@@ -672,12 +608,12 @@ export default function Statutory() {
               {form.tds_enabled && (
                 <div className="flex items-center space-x-2">
                   <label className="text-sm">Percentage:</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="number"
                     name="tds_percentage"
                     value={form.tds_percentage}
                     onChange={handleChange}
-                    className="w-20 border border-black rounded px-2 py-1 text-sm"
+                    className="w-20 rounded px-2 py-1 text-sm"
                     min="0"
                     max="100"
                     step="0.01"
@@ -691,11 +627,11 @@ export default function Statutory() {
           {/* Month */}
           <div>
             <label className="block text-sm font-medium mb-1">Month</label>
-            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               name="month"
               value={form.month}
               onChange={handleChange}
-              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Month</option>
               <option value="01">January</option>
@@ -716,12 +652,12 @@ export default function Statutory() {
           {/* Year */}
           <div>
             <label className="block text-sm font-medium mb-1">Year</label>
-            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               type="number"
               name="year"
               value={form.year}
               onChange={handleChange}
-              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Year"
               min="2020"
               max="2030"
@@ -746,8 +682,8 @@ export default function Statutory() {
           <div className="col-span-2 flex gap-4">
             <button
               type="submit"
-              style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-              className="px-6 py-2 text-white rounded-lg border border-black transition-colors"
+              style={{ backgroundColor: 'var(--primary-color, #2862e9)', border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}` }}
+              className="px-6 py-2 text-white rounded-lg transition-colors"
               onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
               onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
             >
@@ -757,8 +693,8 @@ export default function Statutory() {
               <button
                 type="button"
                 onClick={cancelEdit}
-                style={{ backgroundColor: 'var(--secondary-color, #474e71)' }}
-                className="px-6 py-2 text-white rounded-lg border border-black transition-colors"
+                style={{ backgroundColor: 'var(--secondary-color, #474e71)', border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}` }}
+                className="px-6 py-2 text-white rounded-lg transition-colors"
                 onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                 onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
               >
@@ -773,8 +709,15 @@ export default function Statutory() {
 
       {/* Records Table */}
       {(calculations.length > 0 || deletedCalculations.length > 0) && (
-        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
-          <div className="p-5 border-b-0">
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden relative border" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="p-5 border-b-0 relative z-10">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg" style={{

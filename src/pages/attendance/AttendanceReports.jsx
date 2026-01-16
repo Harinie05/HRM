@@ -60,7 +60,14 @@ export default function AttendanceReports() {
     <Layout>
       <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
         {/* Key Performance Indicators matching Dashboard */}
-        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+        <div className="rounded-xl shadow-sm overflow-hidden relative border" style={{
+          background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+          borderColor: `${colors.primary}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(30%, -30%)'
+          }}></div>
           {/* Header */}
           <div className="p-5 border-b-0">
             <div className="flex items-center gap-3">
@@ -80,7 +87,10 @@ export default function AttendanceReports() {
           
           <div className="p-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+            borderColor: `${colors.primary}20`
+          }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Records</p>
@@ -97,7 +107,10 @@ export default function AttendanceReports() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+            borderColor: `${colors.primary}20`
+          }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Report Type</p>
@@ -114,7 +127,10 @@ export default function AttendanceReports() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+            borderColor: `${colors.primary}20`
+          }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Data Status</p>
@@ -131,7 +147,10 @@ export default function AttendanceReports() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+            borderColor: `${colors.primary}20`
+          }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Last Updated</p>
@@ -152,7 +171,14 @@ export default function AttendanceReports() {
         </div>
 
         {/* Report Actions matching Dashboard */}
-        <div className="bg-white rounded-xl border-0 shadow-sm">
+        <div className="rounded-xl shadow-sm relative border" style={{
+          background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+          borderColor: `${colors.primary}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(30%, -30%)'
+          }}></div>
           <div className="p-5 border-b-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -209,7 +235,14 @@ export default function AttendanceReports() {
         </div>
 
         {/* Report Content matching Dashboard */}
-        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+        <div className="rounded-xl shadow-sm overflow-hidden relative border" style={{
+          background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+          borderColor: `${colors.primary}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(30%, -30%)'
+          }}></div>
           <div className="p-6 border-b-0" style={{
             background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05)`
           }}>
@@ -246,7 +279,10 @@ export default function AttendanceReports() {
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {report.map((item, index) => (
-                  <div key={index} className="bg-white rounded-xl p-6 border-0 shadow-sm hover:shadow-md transition-all duration-300 group">
+                  <div key={index} className="rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 group border" style={{
+                    background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+                    borderColor: `${colors.primary}20`
+                  }}>
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-4">
                         <div className="p-3 rounded-xl transition-all duration-300" style={{

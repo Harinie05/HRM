@@ -330,7 +330,15 @@ export default function LeaveCompliance() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl shadow-sm border-0 bg-white p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+      <div className="rounded-xl shadow-sm overflow-hidden relative border p-6" style={{
+        background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+      }}>
+        <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+          transform: 'translate(40%, -40%)'
+        }}></div>
+        <div className="relative z-10">
         {/* Leave Rules Display */}
         {leaveRules && (
           <div className="bg-blue-50 p-4 rounded-lg mb-6">
@@ -698,7 +706,7 @@ export default function LeaveCompliance() {
                       <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-black">
+                  <tbody className="bg-white divide-y divide-gray-200">
                     {(showDeleted ? deletedComplianceRecords : complianceRecords).map((record, index) => (
                       <tr key={index} className={`hover:bg-gray-50 border-b-0 ${showDeleted ? 'bg-red-50' : ''}`}>
                         <td className="px-4 py-2 text-sm border-r-0">
@@ -837,6 +845,7 @@ export default function LeaveCompliance() {
             </div>
           </div>
         )}
+        </div>
       </div>
       <Toast toast={toast} hideToast={hideToast} />
     </div>

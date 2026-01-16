@@ -340,80 +340,16 @@ export default function LabourRegister() {
 
   return (
     <div className="space-y-6">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-5 border-0 shadow-sm hover:shadow-lg transition-all duration-200">
-          <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Records</p>
-              <p className="text-2xl font-bold text-gray-900">{registers.length}</p>
-              <p className="text-gray-400 text-xs mt-1">Active records</p>
-            </div>
-            <div className="p-3 rounded-lg" style={{
-              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-            }}>
-              <FileText className="h-6 w-6" style={{
-                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-              }} />
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-5 border-0 shadow-sm hover:shadow-lg transition-all duration-200">
-          <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Active</p>
-              <p className="text-2xl font-bold text-gray-900">{registers.filter(r => r.compliance_status === 'Active').length}</p>
-              <p className="text-gray-400 text-xs mt-1">Compliant</p>
-            </div>
-            <div className="p-3 rounded-lg" style={{
-              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-            }}>
-              <CheckCircle className="h-6 w-6" style={{
-                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-              }} />
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-5 border-0 shadow-sm hover:shadow-lg transition-all duration-200">
-          <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Pending</p>
-              <p className="text-2xl font-bold text-gray-900">{registers.filter(r => r.compliance_status === 'Pending').length}</p>
-              <p className="text-gray-400 text-xs mt-1">To review</p>
-            </div>
-            <div className="p-3 rounded-lg" style={{
-              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-            }}>
-              <AlertTriangle className="h-6 w-6" style={{
-                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-              }} />
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-5 border-0 shadow-sm hover:shadow-lg transition-all duration-200">
-          <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Employees</p>
-              <p className="text-2xl font-bold text-gray-900">{new Set(registers.map(r => r.employee_id)).size}</p>
-              <p className="text-gray-400 text-xs mt-1">Unique count</p>
-            </div>
-            <div className="p-3 rounded-lg" style={{
-              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-            }}>
-              <Users className="h-6 w-6" style={{
-                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-              }} />
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Form Section */}
-      <div className="bg-white rounded-xl border-0 shadow-sm">
-        <div className="p-5 border-b-0">
+      <div className="bg-white rounded-xl shadow-sm overflow-hidden relative border" style={{
+        background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+      }}>
+        <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+          transform: 'translate(40%, -40%)'
+        }}></div>
+        <div className="p-5 border-b-0 relative z-10">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg" style={{
               backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -429,7 +365,7 @@ export default function LabourRegister() {
           </div>
         </div>
         
-        <div className="p-6">
+        <div className="p-6 relative z-10">
         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6 mb-8">
           {/* Employee ID */}
           <div>
@@ -712,8 +648,15 @@ export default function LabourRegister() {
 
       {/* Records Table */}
       {(registers.length > 0 || deletedRegisters.length > 0) && (
-        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
-          <div className="p-5 border-b-0">
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden relative border" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="p-5 border-b-0 relative z-10">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg" style={{

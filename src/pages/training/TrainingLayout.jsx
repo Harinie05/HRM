@@ -99,9 +99,16 @@ export default function TrainingLayout() {
           </div>
         </div>
 
-          <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+          <div className="rounded-xl shadow-sm overflow-hidden relative" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+          }}>
+            <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 pointer-events-none" style={{
+              background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'} 0%, transparent 70%)`,
+              transform: 'translate(40%, -40%)'
+            }}></div>
             {/* Content */}
-            <div className="p-4 sm:p-6">
+            <div className="p-4 sm:p-6 relative z-10">
               {/* Tab Navigation */}
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-6">
                 <span className="text-sm text-gray-600">Modules</span>

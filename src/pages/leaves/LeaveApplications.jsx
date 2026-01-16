@@ -7,22 +7,61 @@ import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function LeaveApplications() {
   const { toast, showToast, hideToast } = useToast();
+  const [colors, setColors] = useState({
+    primary: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+    secondary: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'
+  });
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+          document.documentElement.style.setProperty('--primary-color', newColors.primary);
+          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
   
   // Check if user has permission to view leave applications
   if (!hasPermission("view_leave_applications")) {
     return (
       <div >
-        {/* Header */}
-        <div className="p-4 sm:p-8 border-b-0">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        {/* Hero Header matching User Management */}
+        <div className="rounded-2xl shadow-sm p-4 sm:p-6 relative overflow-hidden border" style={{
+          background: `linear-gradient(to right, ${colors.primary}10, ${colors.secondary}10)`,
+          borderColor: `${colors.primary}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: colors.secondary,
+            transform: 'translate(-40%, 40%)'
+          }}></div>
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 relative z-10">
             <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-xl flex items-center justify-center mx-auto sm:mx-0">
-                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center mx-auto sm:mx-0" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clipRule="evenodd" />
                 </svg>
               </div>
               <div className="text-center sm:text-left">
-                <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">Leave Applications & Approvals</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Leave Applications & Approvals</h2>
                 <p className="text-gray-600 text-sm sm:text-base">Review and manage employee leave requests</p>
               </div>
             </div>
@@ -75,6 +114,7 @@ export default function LeaveApplications() {
   }, [employees]);
 
   useEffect(() => {
+    fetchColors();
     fetchApplications();
     fetchEmployees();
     fetchLeaveTypes();
@@ -322,8 +362,12 @@ export default function LeaveApplications() {
       <div className="p-4 sm:p-8 border-b-0">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-xl flex items-center justify-center mx-auto sm:mx-0">
-              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center mx-auto sm:mx-0" style={{
+              backgroundColor: `${colors.primary}20`
+            }}>
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" style={{
+                color: colors.primary
+              }} fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clipRule="evenodd" />
               </svg>
             </div>
@@ -332,7 +376,10 @@ export default function LeaveApplications() {
               <p className="text-gray-600 text-sm sm:text-base">Review and manage employee leave requests</p>
             </div>
           </div>
-          <div className="flex justify-center sm:justify-end gap-3">
+          <div className="flex justify-center sm:justify-end gap-3 relative">
+            <div className="absolute -top-16 -right-16 w-36 h-36 rounded-full blur-3xl opacity-30" style={{
+              backgroundColor: colors.primary
+            }}></div>
             {hasPermission("apply_leave") && (
               <button 
                 onClick={() => {
@@ -348,9 +395,9 @@ export default function LeaveApplications() {
                   setShowModal(true);
                 }}
                 style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                className="text-white px-4 sm:px-6 py-2 sm:py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm sm:text-base"
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                className="text-white px-4 sm:px-6 py-2 sm:py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm sm:text-base relative z-20"
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'}
               >
                 <Plus size={16} className="sm:w-[18px] sm:h-[18px]" />
                 New Application
@@ -362,30 +409,51 @@ export default function LeaveApplications() {
 
       {/* Filters */}
       {hasPermission("view_leave_applications") && (
-        <div className="p-4 sm:p-8 border-b-0">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1 max-w-full sm:max-w-md">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
-                type="text"
-                placeholder="Search applications..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 sm:pl-12 pr-4 py-2 sm:py-3 border border-black rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full bg-gray-50 hover:bg-white transition-colors text-sm sm:text-base"
-              />
-            </div>
-            <div className="relative">
-              <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="pl-10 sm:pl-12 pr-8 py-2 sm:py-3 border border-black rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors text-sm sm:text-base w-full sm:w-auto"
-              >
-                <option value="All">All Status</option>
-                <option value="Pending">Pending</option>
-                <option value="Approved">Approved</option>
-                <option value="Rejected">Rejected</option>
-              </select>
+        <div className="bg-white rounded-xl shadow-sm relative overflow-hidden border" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
+          <div className="p-4 sm:p-8 relative z-10">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="relative flex-1 max-w-full sm:max-w-md">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                <input 
+                  type="text"
+                  placeholder="Search applications..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 sm:pl-12 pr-4 py-2 sm:py-3 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full hover:bg-white transition-colors text-sm sm:text-base border"
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    borderColor: `${colors.primary}20`
+                  }}
+                />
+              </div>
+              <div className="relative">
+                <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                <select 
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="pl-10 sm:pl-12 pr-8 py-2 sm:py-3 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:bg-white transition-colors text-sm sm:text-base w-full sm:w-auto border"
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    borderColor: `${colors.primary}20`
+                  }}
+                >
+                  <option value="All">All Status</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Approved">Approved</option>
+                  <option value="Rejected">Rejected</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
@@ -393,7 +461,18 @@ export default function LeaveApplications() {
 
       {/* Table */}
       {hasPermission("view_leave_applications") && (
-        <div className="bg-white rounded-2xl border border-black overflow-hidden">
+        <div className="rounded-2xl shadow-sm overflow-hidden relative border" style={{
+          background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+          borderColor: `${colors.primary}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(-40%, 40%)'
+          }}></div>
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
             <div className="min-w-[800px]">
@@ -611,16 +690,22 @@ export default function LeaveApplications() {
       {/* New Application Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg border border-black p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto border" style={{
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
             <h3 className="text-lg font-semibold mb-4">New Leave Application</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">Employee</label>
                 {isAdmin() ? (
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <select 
                     value={formData.employee_id}
                     onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                    className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     required
                   >
                     <option value="">Select Employee</option>
@@ -631,7 +716,9 @@ export default function LeaveApplications() {
                     ))}
                   </select>
                 ) : (
-                  <div className="w-full border border-black rounded-lg px-3 py-2 bg-gray-50 text-gray-700">
+                  <div className="w-full border-0 rounded-lg px-3 py-2 bg-gray-50 text-gray-700" style={{
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                  }}>
                     {(() => {
                       const currentUserId = localStorage.getItem('user_id');
                       const currentUserEmployee = employees.find(emp => emp.id == currentUserId);
@@ -644,10 +731,14 @@ export default function LeaveApplications() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">Leave Policy</label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select 
                   value={formData.policy_id}
                   onChange={(e) => setFormData({...formData, policy_id: e.target.value})}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                  }}
                   required
                 >
                   <option value="">Select Leave Policy</option>
@@ -660,10 +751,14 @@ export default function LeaveApplications() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">Leave Type</label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select 
                   value={formData.leave_type_id}
                   onChange={(e) => setFormData({...formData, leave_type_id: e.target.value})}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                  }}
                   required
                 >
                   <option value="">Select Leave Type</option>
@@ -677,31 +772,43 @@ export default function LeaveApplications() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-1">From Date</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="date"
                     value={formData.from_date}
                     onChange={(e) => setFormData({...formData, from_date: e.target.value})}
-                    className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     required
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-1">To Date</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="date"
                     value={formData.to_date}
                     onChange={(e) => setFormData({...formData, to_date: e.target.value})}
-                    className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     required
                   />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">Reason</label>
-                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <textarea 
                   value={formData.reason}
                   onChange={(e) => setFormData({...formData, reason: e.target.value})}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                  }}
                   rows="3"
                   placeholder="Enter reason for leave..."
                   required
@@ -711,7 +818,10 @@ export default function LeaveApplications() {
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="px-3 py-2 border border-black rounded-lg text-secondary hover:bg-content text-sm"
+                  className="px-3 py-2 border-0 rounded-lg text-secondary hover:bg-gray-50 text-sm"
+                  style={{
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                  }}
                 >
                   Cancel
                 </button>
@@ -747,7 +857,9 @@ export default function LeaveApplications() {
       {/* Leave Balance Modal */}
       {showBalanceModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg border border-black p-6 w-full max-w-lg max-h-[80vh] overflow-y-auto">
+          <div className="bg-white rounded-lg border p-6 w-full max-w-lg max-h-[80vh] overflow-y-auto" style={{
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Leave Balances</h3>
               <button 
@@ -836,7 +948,9 @@ export default function LeaveApplications() {
       {/* Review Modal */}
       {showReviewModal && reviewingApplication && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg border border-black p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg border p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto" style={{
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Review Leave Application</h3>
               <button 
@@ -920,7 +1034,10 @@ export default function LeaveApplications() {
             <div className="flex gap-4 pt-4 border-t">
               <button
                 onClick={() => setShowReviewModal(false)}
-                className="flex-1 px-4 py-2 border border-black rounded-lg text-secondary hover:bg-content"
+                className="flex-1 px-4 py-2 border-0 rounded-lg text-secondary hover:bg-content"
+                style={{
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                }}
               >
                 Cancel
               </button>
@@ -949,4 +1066,3 @@ export default function LeaveApplications() {
     </div>
   );
 }
-

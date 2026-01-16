@@ -51,7 +51,7 @@ export default function PayrollRun() {
 
   const fetchColors = async () => {
     try {
-      const tenantCode = localStorage.getItem('tenantCode');
+      const tenantCode = localStorage.getItem('tenant_code');
       if (tenantCode) {
         const response = await api.get(`/auth/branding/${tenantCode}`);
         if (response.data.primary_color && response.data.secondary_color) {
@@ -281,12 +281,23 @@ export default function PayrollRun() {
   const thisMonthCount = runs.filter(r => r.month === months[new Date().getMonth()]).length;
 
   return (
-    <div className="bg-white rounded-2xl border border-black overflow-hidden">
+    <div className="rounded-2xl overflow-hidden relative" style={{
+      background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+      border: `1px solid ${colors.primary}20`
+    }}>
+      <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
+        background: `radial-gradient(circle, ${colors.primary}40 0%, transparent 70%)`,
+        transform: 'translate(30%, -30%)'
+      }}></div>
       {/* Header */}
-      <div className="p-6 border-b border-black">
+      <div className="p-6 relative z-10" style={{
+        borderBottom: `1px solid ${colors.primary}20`
+      }}>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-            <Play className="w-5 h-5 text-gray-600" />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+            backgroundColor: `${colors.primary}20`
+          }}>
+            <Play className="w-5 h-5" style={{ color: colors.primary }} />
           </div>
           <div>
             <h2 className="text-lg font-medium text-gray-900">Payroll Run</h2>
@@ -331,18 +342,26 @@ export default function PayrollRun() {
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+              <input 
                 type="text"
                 placeholder="Search by employee or month..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent w-full text-sm"
+                className="pl-10 pr-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent w-full text-sm"
+                style={{
+                  backgroundColor: `${colors.primary}10`,
+                  border: `1px solid ${colors.primary}`
+                }}
               />
             </div>
-            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <select 
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
-              className=" border-black rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm w-full sm:w-auto"
+              className="rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm w-full sm:w-auto"
+              style={{
+                backgroundColor: `${colors.primary}10`,
+                border: `1px solid ${colors.primary}`
+              }}
             >
               <option value="">All Months</option>
               {months.map(month => (
@@ -355,36 +374,60 @@ export default function PayrollRun() {
         {/* Stats Cards */}
         <div className="mb-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-gray-50 rounded-xl p-6 border border-black">
-              <div className="flex items-center justify-between">
+            <div className="rounded-xl p-6 relative overflow-hidden" style={{
+              border: `1px solid ${colors.primary}20`
+            }}>
+              <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
+                backgroundColor: colors.primary,
+                transform: 'translate(30%, -30%)'
+              }}></div>
+              <div className="flex items-center justify-between relative z-10">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">Active Employees</p>
                   <p className="text-3xl font-bold text-gray-900">{activeEmployeesCount}</p>
                 </div>
-                <div className="p-3 bg-gray-100 rounded-xl">
-                  <Users className="h-10 w-10 text-gray-600" />
+                <div className="p-3 rounded-xl" style={{
+                  backgroundColor: `${colors.primary}20`
+                }}>
+                  <Users className="h-10 w-10" style={{ color: colors.primary }} />
                 </div>
               </div>
             </div>
-            <div className="bg-gray-50 rounded-xl p-6 border border-black">
-              <div className="flex items-center justify-between">
+            <div className="rounded-xl p-6 relative overflow-hidden" style={{
+              border: `1px solid ${colors.primary}20`
+            }}>
+              <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
+                backgroundColor: colors.secondary,
+                transform: 'translate(30%, -30%)'
+              }}></div>
+              <div className="flex items-center justify-between relative z-10">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">Completed Runs</p>
                   <p className="text-3xl font-bold text-gray-900">{completedRunsCount}</p>
                 </div>
-                <div className="p-3 bg-gray-100 rounded-xl">
-                  <Play className="h-10 w-10 text-gray-600" />
+                <div className="p-3 rounded-xl" style={{
+                  backgroundColor: `${colors.primary}20`
+                }}>
+                  <Play className="h-10 w-10" style={{ color: colors.primary }} />
                 </div>
               </div>
             </div>
-            <div className="bg-gray-50 rounded-xl p-6 border border-black">
-              <div className="flex items-center justify-between">
+            <div className="rounded-xl p-6 relative overflow-hidden" style={{
+              border: `1px solid ${colors.primary}20`
+            }}>
+              <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
+                backgroundColor: colors.primary,
+                transform: 'translate(30%, -30%)'
+              }}></div>
+              <div className="flex items-center justify-between relative z-10">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">This Month</p>
                   <p className="text-3xl font-bold text-gray-900">{thisMonthCount}</p>
                 </div>
-                <div className="p-3 bg-gray-100 rounded-xl">
-                  <Calendar className="h-10 w-10 text-gray-600" />
+                <div className="p-3 rounded-xl" style={{
+                  backgroundColor: `${colors.primary}20`
+                }}>
+                  <Calendar className="h-10 w-10" style={{ color: colors.primary }} />
                 </div>
               </div>
             </div>
@@ -392,11 +435,15 @@ export default function PayrollRun() {
         </div>
 
         {/* Table */}
-        <div className="bg-white rounded-2xl border border-black overflow-hidden">
+        <div className="rounded-2xl overflow-hidden" style={{
+          border: `1px solid ${colors.primary}20`
+        }}>
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-100 border-b border-black">
+              <thead className="bg-gray-100" style={{
+                borderBottom: `1px solid ${colors.primary}20`
+              }}>
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Month</th>
@@ -456,7 +503,12 @@ export default function PayrollRun() {
                           <div className="text-sm font-medium text-gray-900">₹{run.net_salary?.toLocaleString()}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                            run.status === 'Completed' ? 'bg-green-100 text-green-800 border-green-300' : 
+                            run.status === 'Processing' ? 'bg-yellow-100 text-yellow-800 border-yellow-300' : 
+                            run.status === 'Failed' ? 'bg-red-100 text-red-800 border-red-300' :
+                            'bg-blue-100 text-blue-800 border-blue-300'
+                          }`}>
                             {run.status}
                           </span>
                         </td>
@@ -465,8 +517,9 @@ export default function PayrollRun() {
                             {canViewDetails && (
                               <button 
                                 onClick={() => handleViewPayroll(run)}
-                                className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                                className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
                                 title="View Details"
+                                aria-label={`View payroll details for ${run.employee_name}`}
                               >
                                 <Eye size={16} />
                               </button>
@@ -512,7 +565,12 @@ export default function PayrollRun() {
                       <div className="text-sm font-medium text-gray-900">{run.employee_name}</div>
                       <div className="text-sm text-gray-500">Code: {run.employee_code}</div>
                     </div>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                      run.status === 'Completed' ? 'bg-green-100 text-green-800 border-green-300' : 
+                      run.status === 'Processing' ? 'bg-yellow-100 text-yellow-800 border-yellow-300' : 
+                      run.status === 'Failed' ? 'bg-red-100 text-red-800 border-red-300' :
+                      'bg-blue-100 text-blue-800 border-blue-300'
+                    }`}>
                       {run.status}
                     </span>
                   </div>
@@ -543,6 +601,7 @@ export default function PayrollRun() {
                       <button 
                         onClick={() => handleViewPayroll(run)}
                         className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                        aria-label={`View payroll details for ${run.employee_name}`}
                       >
                         <Eye size={14} />
                         View Details
@@ -559,7 +618,9 @@ export default function PayrollRun() {
       {/* Run Payroll Modal */}
       {showRunModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg border border-black p-6 w-full max-w-md">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md" style={{
+            border: `1px solid ${colors.primary}20`
+          }}>
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-semibold">Run Payroll</h3>
               <button 
@@ -573,15 +634,19 @@ export default function PayrollRun() {
             <form onSubmit={handleRunPayroll} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Month</label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select 
                   value={runData.month}
                   onChange={(e) => {
                     setRunData({...runData, month: e.target.value});
                     setValidationChecked(false);
                     setValidationResult(null);
                   }}
-                  className="w-full border border-black rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  className="w-full rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
                   required
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 >
                   <option value="">Select Month</option>
                   {months.map(month => (
@@ -592,7 +657,7 @@ export default function PayrollRun() {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Year</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input 
                   type="number"
                   value={runData.year}
                   onChange={(e) => {
@@ -600,10 +665,14 @@ export default function PayrollRun() {
                     setValidationChecked(false);
                     setValidationResult(null);
                   }}
-                  className="w-full border border-black rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  className="w-full rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
                   min="2020"
                   max="2030"
                   required
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 />
               </div>
               
@@ -632,7 +701,10 @@ export default function PayrollRun() {
                     setValidationChecked(false);
                     setValidationResult(null);
                   }}
-                  className="flex-1 px-4 py-2 border border-black rounded-xl text-gray-600 hover:bg-gray-50"
+                  className="flex-1 px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-50"
+                  style={{
+                    border: `1px solid ${colors.primary}20`
+                  }}
                 >
                   Cancel
                 </button>
@@ -731,7 +803,12 @@ export default function PayrollRun() {
                   <div>
                     <span className="text-gray-600">Status:</span>
                     <span className="ml-2">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                        selectedRun.status === 'Completed' ? 'bg-green-100 text-green-800 border-green-300' : 
+                        selectedRun.status === 'Processing' ? 'bg-yellow-100 text-yellow-800 border-yellow-300' : 
+                        selectedRun.status === 'Failed' ? 'bg-red-100 text-red-800 border-red-300' :
+                        'bg-blue-100 text-blue-800 border-blue-300'
+                      }`}>
                         {selectedRun.status}
                       </span>
                     </span>

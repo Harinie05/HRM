@@ -7,7 +7,10 @@ import { hasPermission } from "../../utils/permissions";
 
 export default function LeaveReports() {
   const { toast, showToast, hideToast } = useToast();
-  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
+  const [colors, setColors] = useState({
+    primary: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+    secondary: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'
+  });
   // Check if user has permission to view leave reports
   if (!hasPermission("view_leave_reports")) {
     return (
@@ -267,29 +270,43 @@ export default function LeaveReports() {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Header with gradient background matching Organization setup */}
-      <div className="p-8 border-b-0">
-        <div className="flex justify-between items-center">
+      {/* Header */}
+      <div className="rounded-2xl shadow-sm p-4 sm:p-6 relative overflow-hidden border" style={{
+        background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+        borderColor: `${colors.primary}20`
+      }}>
+        <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: colors.primary,
+          transform: 'translate(40%, -40%)'
+        }}></div>
+        <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: colors.primary,
+          transform: 'translate(-40%, 40%)'
+        }}></div>
+        <div className="flex justify-between items-center relative z-10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-              <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
-              </svg>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+              backgroundColor: `${colors.primary}20`
+            }}>
+              <BarChart3 className="w-5 h-5" style={{ color: colors.primary }} />
             </div>
             <div>
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">Leave Reports</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Leave Reports</h2>
               <p className="text-gray-600 text-base">Comprehensive leave usage analysis and insights</p>
             </div>
           </div>
-          <div className="text-right">
-            <div className="flex items-center gap-2 text-gray-600 mb-2">
+          <div className="text-right relative">
+            <div className="absolute -top-16 -right-16 w-36 h-36 rounded-full blur-3xl opacity-30" style={{
+              backgroundColor: colors.primary
+            }}></div>
+            <div className="flex items-center gap-2 text-gray-600 mb-2 relative z-10">
               <span className="text-sm font-medium">Export Available</span>
             </div>
             {hasPermission("export_leave_reports") && (
               <button 
                 onClick={exportToCSV}
-                style={{ backgroundColor: colors.primary, borderColor: colors.primary }}
-                className="text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 font-semibold border"
+                className="text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 font-semibold relative z-20"
+                style={{ backgroundColor: colors.primary }}
                 onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
                 onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
               >
@@ -303,14 +320,29 @@ export default function LeaveReports() {
 
       {/* Filters */}
       {hasPermission("view_leave_reports") && (
-        <div className="p-4 sm:p-8 border-b-0">
-          <div className="flex flex-col sm:flex-row gap-4">
+        <div className="rounded-2xl shadow-sm p-6 relative overflow-hidden border" style={{
+          background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+          borderColor: `${colors.primary}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(-40%, 40%)'
+          }}></div>
+          <div className="flex flex-col sm:flex-row gap-4 relative z-10">
             <div className="relative flex-1 max-w-full sm:max-w-md">
               <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+              <select 
                 value={dateRange} 
                 onChange={(e) => setDateRange(e.target.value)}
-                className="pl-10 sm:pl-12 pr-4 py-2 sm:py-3 border border-black rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full bg-gray-50 hover:bg-white transition-colors text-sm sm:text-base"
+                className="pl-10 sm:pl-12 pr-4 py-2 sm:py-3 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full hover:bg-white transition-colors text-sm sm:text-base border-0"
+                style={{
+                  backgroundColor: `${colors.primary}10`,
+                  border: `1px solid ${colors.primary}`
+                }}
               >
                 <option value="thisMonth">This Month</option>
                 <option value="lastMonth">Last Month</option>
@@ -320,10 +352,14 @@ export default function LeaveReports() {
             </div>
             <div className="relative">
               <Calendar className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+              <select 
                 value={department} 
                 onChange={(e) => setDepartment(e.target.value)}
-                className="pl-10 sm:pl-12 pr-8 py-2 sm:py-3 border border-black rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors text-sm sm:text-base w-full sm:w-auto"
+                className="pl-10 sm:pl-12 pr-8 py-2 sm:py-3 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:bg-white transition-colors text-sm sm:text-base w-full sm:w-auto border-0"
+                style={{
+                  backgroundColor: `${colors.primary}10`,
+                  border: `1px solid ${colors.primary}`
+                }}
               >
                 <option value="all">All Departments</option>
                 {departments.map(dept => (
@@ -338,8 +374,15 @@ export default function LeaveReports() {
       {/* Stats Cards */}
       {hasPermission("view_leave_reports") && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-          <div className="bg-white p-3 sm:p-6 rounded-2xl border border-black shadow-sm">
-            <div className="flex items-center justify-between">
+          <div className="bg-white p-3 sm:p-6 rounded-2xl shadow-sm border relative overflow-hidden" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+            borderColor: `${colors.primary}20`
+          }}>
+            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(30%, -30%)'
+            }}></div>
+            <div className="flex items-center justify-between relative z-10">
               <div>
                 <p className="text-gray-600 text-xs sm:text-sm font-semibold">Total Applications</p>
                 <p className="text-xl sm:text-3xl font-bold text-gray-900 mt-1">{stats.totalApplications}</p>
@@ -349,8 +392,15 @@ export default function LeaveReports() {
               </div>
             </div>
           </div>
-          <div className="bg-white p-6 rounded-2xl border border-black shadow-sm">
-            <div className="flex items-center justify-between">
+          <div className="bg-white p-6 rounded-2xl shadow-sm border relative overflow-hidden" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+            borderColor: `${colors.primary}20`
+          }}>
+            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(30%, -30%)'
+            }}></div>
+            <div className="flex items-center justify-between relative z-10">
               <div>
                 <p className="text-gray-600 text-sm font-semibold">Approved</p>
                 <p className="text-3xl font-bold text-gray-900 mt-1">{stats.approvedLeaves}</p>
@@ -360,8 +410,15 @@ export default function LeaveReports() {
               </div>
             </div>
           </div>
-          <div className="bg-white p-6 rounded-2xl border border-black shadow-sm">
-            <div className="flex items-center justify-between">
+          <div className="bg-white p-6 rounded-2xl shadow-sm border relative overflow-hidden" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+            borderColor: `${colors.primary}20`
+          }}>
+            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(30%, -30%)'
+            }}></div>
+            <div className="flex items-center justify-between relative z-10">
               <div>
                 <p className="text-gray-600 text-sm font-semibold">Pending</p>
                 <p className="text-3xl font-bold text-gray-900 mt-1">{stats.pendingApprovals}</p>
@@ -371,8 +428,15 @@ export default function LeaveReports() {
               </div>
             </div>
           </div>
-          <div className="bg-white p-6 rounded-2xl border border-black shadow-sm">
-            <div className="flex items-center justify-between">
+          <div className="bg-white p-6 rounded-2xl shadow-sm border relative overflow-hidden" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+            borderColor: `${colors.primary}20`
+          }}>
+            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(30%, -30%)'
+            }}></div>
+            <div className="flex items-center justify-between relative z-10">
               <div>
                 <p className="text-gray-600 text-sm font-semibold">Rejected</p>
                 <p className="text-3xl font-bold text-gray-900 mt-1">{stats.rejectedLeaves}</p>
@@ -387,8 +451,19 @@ export default function LeaveReports() {
 
       {/* Department Breakdown */}
       {hasPermission("view_leave_reports") && (
-        <div className="bg-white rounded-3xl border border-black shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-black bg-gray-50">
+        <div className="rounded-2xl shadow-sm overflow-hidden relative border" style={{
+          background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+          borderColor: `${colors.primary}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(-40%, 40%)'
+          }}></div>
+          <div className="p-6 border-b relative z-10" style={{ borderColor: `${colors.primary}20` }}>
             <h3 className="text-xl font-bold text-gray-900">Department-wise Leave Summary</h3>
           </div>
           

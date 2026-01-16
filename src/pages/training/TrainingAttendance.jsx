@@ -221,9 +221,16 @@ export default function TrainingAttendance() {
   return (
     <div className="space-y-6">
 
-      <div className="rounded-lg shadow-sm border-0" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+      <div className="rounded-lg shadow-sm relative overflow-hidden" style={{ 
+        background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
+        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+      }}>
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 pointer-events-none" style={{
+          background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'} 0%, transparent 70%)`,
+          transform: 'translate(40%, -40%)'
+        }}></div>
         {/* Header */}
-        <div className="p-6 border-0">
+        <div className="p-6 border-0 relative z-10">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-medium text-gray-900">Training Attendance & Assessment</h3>
             {(hasPermission('mark_training_attendance') || isAdmin()) && (
@@ -439,10 +446,11 @@ export default function TrainingAttendance() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Training Program</label>
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <select
                     value={formData.training_id}
                     onChange={(e) => setFormData({...formData, training_id: e.target.value, employee_id: "", attendance: {}, assessments: {}})}
-                    className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                    className="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                    style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                     required
                   >
                     <option value="">Select Training Program</option>
@@ -455,10 +463,11 @@ export default function TrainingAttendance() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Candidate</label>
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <select
                     value={formData.employee_id}
                     onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                    className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                    className="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                    style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                     required
                     disabled={!formData.training_id}
                   >
@@ -484,11 +493,12 @@ export default function TrainingAttendance() {
                       <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto border-0 rounded-lg p-3">
                         {trainingDays.map(day => (
                           <label key={day.date} className="flex items-center cursor-pointer">
-                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                            <input
                               type="checkbox"
                               checked={formData.attendance[day.date] || false}
                               onChange={(e) => handleAttendanceChange(day.date, e.target.checked)}
-                              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                              className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                              style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                             />
                             <span className="ml-2 text-sm text-gray-700">{day.label} ({day.displayDate})</span>
                           </label>
@@ -499,25 +509,27 @@ export default function TrainingAttendance() {
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Assessment 1 Score (%)</label>
-                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                        <input
                           type="number"
                           min="0"
                           max="100"
                           value={formData.assessments.assessment1 || ''}
                           onChange={(e) => handleAssessmentChange('assessment1', e.target.value)}
-                          className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                          className="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                          style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                           placeholder="Assessment 1"
                         />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Assessment 2 Score (%)</label>
-                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                        <input
                           type="number"
                           min="0"
                           max="100"
                           value={formData.assessments.assessment2 || ''}
                           onChange={(e) => handleAssessmentChange('assessment2', e.target.value)}
-                          className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                          className="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                          style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                           placeholder="Assessment 2"
                         />
                       </div>

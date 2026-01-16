@@ -109,8 +109,15 @@ export default function ComplianceLayout() {
         </div>
 
         {/* Compliance Management Section */}
-        <div className="bg-white rounded-xl border-0 shadow-sm">
-          <div className="p-5 border-b-0">
+        <div className="rounded-xl shadow-sm overflow-hidden relative border" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="p-5 border-b-0 relative z-10">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg" style={{
@@ -125,7 +132,7 @@ export default function ComplianceLayout() {
             </div>
           </div>
           
-          <div className="p-4 sm:p-5 space-y-4">
+          <div className="p-4 sm:p-5 space-y-4 relative z-10">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                 <span className="text-sm text-gray-600 whitespace-nowrap">Compliance Management</span>

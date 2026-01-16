@@ -84,10 +84,17 @@ export default function TrainingCalendar() {
   return (
     <div className="space-y-6">
 
-      <div className="rounded-lg shadow-sm border-0" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+      <div className="rounded-lg shadow-sm relative overflow-hidden" style={{ 
+        background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
+        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+      }}>
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 pointer-events-none" style={{
+          background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'} 0%, transparent 70%)`,
+          transform: 'translate(40%, -40%)'
+        }}></div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-6 relative z-10">
         {loading ? (
           <div className="flex justify-center items-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>

@@ -200,7 +200,15 @@ export default function TrainingPrograms() {
     <div className="space-y-6">
 
       {/* Filters */}
-      <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl border-0 shadow-sm hover:shadow-md transition-shadow p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+      <div className="rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 overflow-hidden relative border" style={{
+        background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+      }}>
+        <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+          transform: 'translate(40%, -40%)'
+        }}></div>
+        <div className="relative z-10">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-medium text-gray-900">Training Programs</h3>
           {canAdd && (
@@ -221,15 +229,15 @@ export default function TrainingPrograms() {
         <div className="flex gap-4">
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               type="text"
               placeholder="Search programs..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border-0 rounded-lg hover:border-gray-300 transition-colors focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
+              className="pl-10 pr-4 py-2 rounded-lg hover:border-gray-300 transition-colors focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
             />
           </div>
-          <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+          <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             className=" rounded-lg hover:border-gray-300 transition-colors px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -240,10 +248,18 @@ export default function TrainingPrograms() {
             ))}
           </select>
         </div>
+        </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white bg-gradient-to-br from-gray-50 to-white rounded-xl border-0 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+      <div className="rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden relative border" style={{
+        background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+      }}>
+        <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+          transform: 'translate(40%, -40%)'
+        }}></div>
         {loading ? (
           <div className="flex justify-center items-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -394,7 +410,7 @@ export default function TrainingPrograms() {
                           {generatedLinks[program.id] && (
                             <div className="mt-2">
                               <label className="text-xs text-gray-600 font-medium">Application Link:</label>
-                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                                 type="text"
                                 value={generatedLinks[program.id]}
                                 readOnly
@@ -544,7 +560,7 @@ export default function TrainingPrograms() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Program Title</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="text"
                     value={formData.title}
                     onChange={(e) => setFormData({...formData, title: e.target.value})}
@@ -555,7 +571,7 @@ export default function TrainingPrograms() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     value={formData.description}
                     onChange={(e) => setFormData({...formData, description: e.target.value})}
                     className="w-full px-3 py-2 border-0 rounded-lg hover:border-gray-300 transition-colors focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white resize-none"
@@ -566,7 +582,7 @@ export default function TrainingPrograms() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                       value={formData.category}
                       onChange={(e) => setFormData({...formData, category: e.target.value})}
                       className="w-full px-3 py-2 border-0 rounded-lg hover:border-gray-300 transition-colors focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
@@ -580,7 +596,7 @@ export default function TrainingPrograms() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Duration (Hours)</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                       type="number"
                       value={formData.duration_hours}
                       onChange={(e) => setFormData({...formData, duration_hours: e.target.value})}
@@ -593,7 +609,7 @@ export default function TrainingPrograms() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                       type="date"
                       value={formData.startDate}
                       onChange={(e) => setFormData({...formData, startDate: e.target.value})}
@@ -602,7 +618,7 @@ export default function TrainingPrograms() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                       type="date"
                       value={formData.endDate}
                       onChange={(e) => setFormData({...formData, endDate: e.target.value})}
@@ -613,7 +629,7 @@ export default function TrainingPrograms() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                       value={formData.type}
                       onChange={(e) => setFormData({...formData, type: e.target.value})}
                       className="w-full px-3 py-2 border-0 rounded-lg hover:border-gray-300 transition-colors focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
@@ -627,7 +643,7 @@ export default function TrainingPrograms() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Max Participants</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                       type="number"
                       value={formData.max_participants}
                       onChange={(e) => setFormData({...formData, max_participants: e.target.value})}
@@ -640,7 +656,7 @@ export default function TrainingPrograms() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Trainer</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                       type="text"
                       value={formData.trainer}
                       onChange={(e) => setFormData({...formData, trainer: e.target.value})}
@@ -650,7 +666,7 @@ export default function TrainingPrograms() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                       type="text"
                       value={formData.department}
                       onChange={(e) => setFormData({...formData, department: e.target.value})}

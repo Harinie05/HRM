@@ -150,10 +150,15 @@ export default function AttendanceRules() {
     <Layout>
       <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
         {/* Hero Header matching Dashboard */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-6" style={{
-          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        <div className="rounded-2xl shadow-sm p-6 relative overflow-hidden border" style={{
+          background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+          borderColor: `${colors.primary}20`
         }}>
-          <div className="flex items-center justify-between">
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="flex items-center justify-between relative z-10">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -182,7 +187,10 @@ export default function AttendanceRules() {
 
         {/* Key Performance Indicators matching Dashboard */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+            borderColor: `${colors.primary}20`
+          }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Rules</p>
@@ -199,7 +207,10 @@ export default function AttendanceRules() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+            borderColor: `${colors.primary}20`
+          }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Active Rules</p>
@@ -216,7 +227,10 @@ export default function AttendanceRules() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+            borderColor: `${colors.primary}20`
+          }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Locations</p>
@@ -233,7 +247,10 @@ export default function AttendanceRules() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+            borderColor: `${colors.primary}20`
+          }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Grace Time</p>
@@ -253,7 +270,14 @@ export default function AttendanceRules() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Status Filter */}
-          <div className="lg:col-span-2 bg-white rounded-xl border-0 shadow-sm">
+          <div className="lg:col-span-2 rounded-xl shadow-sm relative border" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+            borderColor: `${colors.primary}20`
+          }}>
+            <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(30%, -30%)'
+            }}></div>
             <div className="p-5 border-b-0">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -272,10 +296,14 @@ export default function AttendanceRules() {
             <div className="p-5">
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
               <span className="text-sm font-medium text-gray-700">Status Filter:</span>
-              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+              <select 
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
+                className="px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm border"
+                style={{
+                  backgroundColor: `${colors.primary}10`,
+                  borderColor: `${colors.primary}20`
+                }}
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -294,7 +322,14 @@ export default function AttendanceRules() {
           </div>
 
           {/* ATTENDANCE RULES */}
-          <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+          <div className="rounded-xl shadow-sm overflow-hidden relative border" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+            borderColor: `${colors.primary}20`
+          }}>
+            <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(30%, -30%)'
+            }}></div>
             <div className="p-4 sm:p-6 border-b-0 bg-gray-50">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
@@ -476,7 +511,14 @@ export default function AttendanceRules() {
           </div>
 
           {/* ATTENDANCE LOCATIONS */}
-          <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+          <div className="rounded-xl shadow-sm overflow-hidden relative border" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+            borderColor: `${colors.primary}20`
+          }}>
+            <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(30%, -30%)'
+            }}></div>
             <div className="p-4 sm:p-6 border-b-0 bg-gray-50">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
@@ -623,25 +665,29 @@ export default function AttendanceRules() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-2 text-gray-700">Rule Name</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="text"
                     value={ruleForm.rule_name}
                     onChange={(e) => setRuleForm({...ruleForm, rule_name: e.target.value})}
-                    className="w-full border-0 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    className="w-full rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent text-sm border" 
                     style={{
-                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      backgroundColor: `${colors.primary}10`,
+                      borderColor: `${colors.primary}20`,
+                      focusRingColor: colors.primary
                     }}
                     placeholder="e.g., Late Entry Default"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2 text-gray-700">Rule Type</label>
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <select 
                     value={ruleForm.rule_type}
                     onChange={(e) => setRuleForm({...ruleForm, rule_type: e.target.value})}
-                    className="w-full border-0 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    className="w-full rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent text-sm border"
                     style={{
-                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      backgroundColor: `${colors.primary}10`,
+                      borderColor: `${colors.primary}20`,
+                      focusRingColor: colors.primary
                     }}
                   >
                     <option value="Late">Late</option>
@@ -651,13 +697,15 @@ export default function AttendanceRules() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2 text-gray-700">Value (minutes)</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="number"
                     value={ruleForm.value}
                     onChange={(e) => setRuleForm({...ruleForm, value: parseInt(e.target.value)})}
-                    className="w-full border-0 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    className="w-full rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent text-sm border"
                     style={{
-                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      backgroundColor: `${colors.primary}10`,
+                      borderColor: `${colors.primary}20`,
+                      focusRingColor: colors.primary
                     }}
                   />
                 </div>
@@ -697,38 +745,44 @@ export default function AttendanceRules() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-2 text-gray-700">Location Name</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="text"
                     value={locationForm.location_name}
                     onChange={(e) => setLocationForm({...locationForm, location_name: e.target.value})}
-                    className="w-full border-0 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    className="w-full rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent text-sm border"
                     style={{
-                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      backgroundColor: `${colors.primary}10`,
+                      borderColor: `${colors.primary}20`,
+                      focusRingColor: colors.primary
                     }}
                     placeholder="e.g., Main Office"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2 text-gray-700">Grace Time (minutes)</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="number"
                     value={locationForm.grace_time}
                     onChange={(e) => setLocationForm({...locationForm, grace_time: parseInt(e.target.value)})}
-                    className="w-full border-0 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    className="w-full rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent text-sm border"
                     style={{
-                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      backgroundColor: `${colors.primary}10`,
+                      borderColor: `${colors.primary}20`,
+                      focusRingColor: colors.primary
                     }}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2 text-gray-700">OT Rule (optional)</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="text"
                     value={locationForm.ot_rule}
                     onChange={(e) => setLocationForm({...locationForm, ot_rule: e.target.value})}
-                    className="w-full border-0 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    className="w-full rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent text-sm border"
                     style={{
-                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      backgroundColor: `${colors.primary}10`,
+                      borderColor: `${colors.primary}20`,
+                      focusRingColor: colors.primary
                     }}
                     placeholder="e.g., OT > 30 mins"
                   />

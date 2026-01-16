@@ -26,7 +26,7 @@ export default function StatutoryRules() {
 
   const fetchColors = async () => {
     try {
-      const tenantCode = localStorage.getItem('tenantCode');
+      const tenantCode = localStorage.getItem('tenant_code');
       if (tenantCode) {
         const res = await api.get(`/auth/branding/${tenantCode}`);
         setColors({
@@ -97,8 +97,15 @@ export default function StatutoryRules() {
   };
 
   return (
-    <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
-      <div className="p-5 border-b-0">
+    <div className="rounded-xl shadow-sm overflow-hidden relative" style={{
+      background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+      border: `1px solid ${colors.primary}20`
+    }}>
+      <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+        backgroundColor: colors.primary,
+        transform: 'translate(40%, -40%)'
+      }}></div>
+      <div className="p-5 relative z-10">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg" style={{
             backgroundColor: `${colors.primary}20`
@@ -112,22 +119,32 @@ export default function StatutoryRules() {
         </div>
       </div>
 
-      <div className="p-6">
+      <div className="p-6 relative z-10">
         <div className="space-y-4">
-        <div className="bg-gradient-to-br from-gray-50 to-white border-0 rounded-xl p-6 hover:shadow-md transition-shadow">
-          <div className="flex items-center gap-3 mb-5">
-            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+        <div className="rounded-xl p-6 hover:shadow-md transition-shadow relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+          border: `1px solid ${colors.primary}20`
+        }}>
+          <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="flex items-center gap-3 mb-5 relative z-10">
+            <input 
               type="checkbox"
               checked={form.pf_enabled}
               onChange={(e) => setForm({ ...form, pf_enabled: e.target.checked })}
               className="w-5 h-5 rounded focus:ring-2"
-              style={{ accentColor: colors.primary }}
+              style={{ 
+                accentColor: colors.primary,
+                backgroundColor: `${colors.primary}10`
+              }}
             />
             <h3 className="text-base font-semibold text-gray-900">Provident Fund (PF)</h3>
           </div>
           
           {form.pf_enabled && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ml-8 mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ml-8 mt-4 relative z-10">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Employee PF %</label>
                 <input
@@ -135,8 +152,11 @@ export default function StatutoryRules() {
                   step="0.01"
                   value={form.pf_percent}
                   onChange={(e) => setForm({ ...form, pf_percent: e.target.value })}
-                  className="w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white transition-colors"
-                  style={{ borderColor: colors.primary }}
+                  className="w-full px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white transition-colors"
+                  style={{ 
+                    border: `1px solid ${colors.primary}`,
+                    backgroundColor: `${colors.primary}10`
+                  }}
                 />
               </div>
               <div>
@@ -144,8 +164,11 @@ export default function StatutoryRules() {
                 <select
                   value={form.pf_apply_on}
                   onChange={(e) => setForm({ ...form, pf_apply_on: e.target.value })}
-                  className="w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white transition-colors"
-                  style={{ borderColor: colors.primary }}
+                  className="w-full px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white transition-colors"
+                  style={{ 
+                    border: `1px solid ${colors.primary}`,
+                    backgroundColor: `${colors.primary}10`
+                  }}
                 >
                   <option value="Basic">Basic Salary</option>
                   <option value="Gross">Gross Salary</option>
@@ -155,28 +178,41 @@ export default function StatutoryRules() {
           )}
         </div>
 
-        <div className="bg-gradient-to-br from-gray-50 to-white border-0 rounded-xl p-6 hover:shadow-md transition-shadow">
-          <div className="flex items-center gap-3 mb-5">
-            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+        <div className="rounded-xl p-6 hover:shadow-md transition-shadow relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+          border: `1px solid ${colors.primary}20`
+        }}>
+          <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
+            backgroundColor: colors.secondary,
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="flex items-center gap-3 mb-5 relative z-10">
+            <input 
               type="checkbox"
               checked={form.esi_enabled}
               onChange={(e) => setForm({ ...form, esi_enabled: e.target.checked })}
               className="w-5 h-5 rounded focus:ring-2"
-              style={{ accentColor: colors.primary }}
+              style={{ 
+                accentColor: colors.primary,
+                backgroundColor: `${colors.primary}10`
+              }}
             />
             <h3 className="text-base font-semibold text-gray-900">Employee State Insurance (ESI)</h3>
           </div>
           
           {form.esi_enabled && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ml-8 mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ml-8 mt-4 relative z-10">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Threshold Amount (₹)</label>
                 <input
                   type="number"
                   value={form.esi_threshold}
                   onChange={(e) => setForm({ ...form, esi_threshold: e.target.value })}
-                  className="w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white transition-colors"
-                  style={{ borderColor: colors.primary }}
+                  className="w-full px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white transition-colors"
+                  style={{ 
+                    border: `1px solid ${colors.primary}`,
+                    backgroundColor: `${colors.primary}10`
+                  }}
                 />
                 <p className="text-xs text-gray-500 mt-1.5">Salary &gt; threshold → ESI auto = 0</p>
               </div>
@@ -187,16 +223,25 @@ export default function StatutoryRules() {
                   step="0.01"
                   value={form.esi_percent}
                   onChange={(e) => setForm({ ...form, esi_percent: e.target.value })}
-                  className="w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white transition-colors"
-                  style={{ borderColor: colors.primary }}
+                  className="w-full px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white transition-colors"
+                  style={{ 
+                    border: `1px solid ${colors.primary}`,
+                    backgroundColor: `${colors.primary}10`
+                  }}
                 />
               </div>
             </div>
           )}
         </div>
 
-        <div className="bg-gradient-to-br from-gray-50 to-white border-0 rounded-xl p-6 hover:shadow-md transition-shadow">
-          <div className="flex items-center gap-3 mb-5">
+        <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 hover:shadow-md transition-shadow relative overflow-hidden" style={{
+          border: `1px solid ${colors.primary}20`
+        }}>
+          <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="flex items-center gap-3 mb-5 relative z-10">
             <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="checkbox"
               checked={form.pt_enabled}
@@ -208,23 +253,32 @@ export default function StatutoryRules() {
           </div>
           
           {form.pt_enabled && (
-            <div className="ml-8 mt-4">
+            <div className="ml-8 mt-4 relative z-10">
               <div className="w-full sm:w-1/2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Monthly PT Amount (₹)</label>
                 <input
                   type="number"
                   value={form.pt_amount}
                   onChange={(e) => setForm({ ...form, pt_amount: e.target.value })}
-                  className="w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white transition-colors"
-                  style={{ borderColor: colors.primary }}
+                  className="w-full px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white transition-colors"
+                  style={{ 
+                    border: `1px solid ${colors.primary}`,
+                    backgroundColor: `${colors.primary}10`
+                  }}
                 />
               </div>
             </div>
           )}
         </div>
 
-        <div className="bg-gradient-to-br from-gray-50 to-white border-0 rounded-xl p-6 hover:shadow-md transition-shadow">
-          <div className="flex items-center gap-3 mb-5">
+        <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 hover:shadow-md transition-shadow relative overflow-hidden" style={{
+          border: `1px solid ${colors.primary}20`
+        }}>
+          <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
+            backgroundColor: colors.secondary,
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="flex items-center gap-3 mb-5 relative z-10">
             <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               type="checkbox"
               checked={form.tds_enabled}
@@ -236,7 +290,7 @@ export default function StatutoryRules() {
           </div>
           
           {form.tds_enabled && (
-            <div className="ml-8 mt-4">
+            <div className="ml-8 mt-4 relative z-10">
               <div className="w-full sm:w-1/2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">TDS Flat % (for test)</label>
                 <input
@@ -244,8 +298,11 @@ export default function StatutoryRules() {
                   step="0.01"
                   value={form.tds_percent}
                   onChange={(e) => setForm({ ...form, tds_percent: e.target.value })}
-                  className="w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white transition-colors"
-                  style={{ borderColor: colors.primary }}
+                  className="w-full px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white transition-colors"
+                  style={{ 
+                    border: `1px solid ${colors.primary}`,
+                    backgroundColor: `${colors.primary}10`
+                  }}
                 />
               </div>
             </div>
@@ -254,13 +311,16 @@ export default function StatutoryRules() {
       </div>
 
       {canEdit && (
-        <div className="mt-6 flex justify-center sm:justify-end">
+        <div className="mt-6 flex justify-center sm:justify-end relative z-10">
           <button
             onClick={submit}
             onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
             onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
             className="px-8 py-2.5 rounded-lg font-medium transition-all flex items-center gap-2 text-sm w-full sm:w-auto justify-center text-white shadow-sm hover:shadow-md"
-            style={{ backgroundColor: colors.primary }}
+            style={{ 
+              backgroundColor: colors.primary,
+              border: `1px solid ${colors.primary}`
+            }}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />

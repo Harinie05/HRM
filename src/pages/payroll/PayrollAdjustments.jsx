@@ -30,7 +30,7 @@ export default function PayrollAdjustments() {
 
   const fetchColors = async () => {
     try {
-      const tenantCode = localStorage.getItem('tenantCode');
+      const tenantCode = localStorage.getItem('tenant_code');
       if (tenantCode) {
         const res = await api.get(`/auth/branding/${tenantCode}`);
         setColors({
@@ -291,12 +291,23 @@ export default function PayrollAdjustments() {
   const adjustmentTypes = ["Bonus", "Arrears", "Medical", "Overtime", "Deduction", "Other"];
 
   return (
-    <div className="bg-white rounded-2xl border border-black overflow-hidden">
+    <div className="rounded-2xl overflow-hidden relative" style={{
+      background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+      border: `1px solid ${colors.primary}20`
+    }}>
+      <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
+        background: `radial-gradient(circle, ${colors.primary}40 0%, transparent 70%)`,
+        transform: 'translate(30%, -30%)'
+      }}></div>
       {/* Header */}
-      <div className="p-6 border-b border-black">
+      <div className="p-6 relative z-10" style={{
+        borderBottom: `1px solid ${colors.primary}20`
+      }}>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-            <Plus className="w-5 h-5 text-gray-600" />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+            backgroundColor: `${colors.primary}20`
+          }}>
+            <Plus className="w-5 h-5" style={{ color: colors.primary }} />
           </div>
           <div>
             <h2 className="text-lg font-medium text-gray-900">Payroll Adjustments</h2>
@@ -306,17 +317,21 @@ export default function PayrollAdjustments() {
       </div>
 
       {/* Content */}
-      <div className="p-6">
+      <div className="p-6 relative z-10">
         {/* Search and Add Button */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
           <div className="relative max-w-md w-full sm:w-auto">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <input 
               type="text"
               placeholder="Search adjustments..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-12 pr-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent w-full text-sm"
+              className="pl-12 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent w-full text-sm"
+              style={{
+                backgroundColor: `${colors.primary}10`,
+                border: `1px solid ${colors.primary}`
+              }}
             />
           </div>
           {canAdd && (
@@ -324,8 +339,11 @@ export default function PayrollAdjustments() {
               onClick={() => handleOpenModal()}
               onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
               onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
-              className="px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border border-black w-full sm:w-auto justify-center text-white"
-              style={{ backgroundColor: colors.primary }}
+              className="px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium w-full sm:w-auto justify-center text-white"
+              style={{ 
+                backgroundColor: colors.primary,
+                border: `1px solid ${colors.primary}`
+              }}
             >
               <Plus size={18} />
               Add Adjustment
@@ -334,11 +352,15 @@ export default function PayrollAdjustments() {
         </div>
 
         {/* Table */}
-        <div className="bg-white rounded-2xl border border-black overflow-hidden">
+        <div className="rounded-2xl overflow-hidden" style={{
+          border: `1px solid ${colors.primary}20`
+        }}>
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-100 border-b border-black">
+              <thead className="bg-gray-100" style={{
+                borderBottom: `1px solid ${colors.primary}20`
+              }}>
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Month</th>
@@ -366,7 +388,13 @@ export default function PayrollAdjustments() {
                       <div className="text-sm text-gray-900">{adjustment.month}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                        adjustment.adjustment_type === 'Bonus' ? 'bg-green-100 text-green-800 border-green-300' : 
+                        adjustment.adjustment_type === 'Deduction' ? 'bg-red-100 text-red-800 border-red-300' : 
+                        adjustment.adjustment_type === 'Arrears' ? 'bg-blue-100 text-blue-800 border-blue-300' : 
+                        adjustment.adjustment_type === 'Overtime' ? 'bg-purple-100 text-purple-800 border-purple-300' :
+                        'bg-yellow-100 text-yellow-800 border-yellow-300'
+                      }`}>
                         {adjustment.adjustment_type}
                       </span>
                     </td>
@@ -380,13 +408,14 @@ export default function PayrollAdjustments() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center gap-1 flex-wrap">
-                        <button className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400">
+                        <button className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors" aria-label={`View adjustment for ${getEmployeeName(adjustment.employee_id)}`}>
                           <Eye size={16} />
                         </button>
                         {canEdit && (
                           <button 
                             onClick={() => handleOpenModal(adjustment)}
-                            className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                            className="p-2 text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50 rounded-lg transition-colors"
+                            aria-label={`Edit adjustment for ${getEmployeeName(adjustment.employee_id)}`}
                           >
                             <Edit size={16} />
                           </button>
@@ -394,7 +423,8 @@ export default function PayrollAdjustments() {
                         {canDelete && (
                           <button 
                             onClick={() => handleDelete(adjustment.id)}
-                            className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                            className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                            aria-label={`Delete adjustment for ${getEmployeeName(adjustment.employee_id)}`}
                           >
                             <Trash2 size={16} />
                           </button>
@@ -416,17 +446,27 @@ export default function PayrollAdjustments() {
               </div>
             ) : (
               filteredAdjustments.map((adjustment) => (
-                <div key={adjustment.id} className="p-4 border-b-0 hover:bg-gray-50">
-                  <div className="flex items-center justify-between mb-3">
+                <div key={adjustment.id} className="p-4 border-b-0 hover:bg-gray-50 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
+                    backgroundColor: colors.primary,
+                    transform: 'translate(30%, -30%)'
+                  }}></div>
+                  <div className="flex items-center justify-between mb-3 relative z-10">
                     <div>
                       <div className="text-sm font-medium text-gray-900">{getEmployeeName(adjustment.employee_id)}</div>
                       <div className="text-sm text-gray-500">Code: {getEmployeeCode(adjustment.employee_id)}</div>
                     </div>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                      adjustment.adjustment_type === 'Bonus' ? 'bg-green-100 text-green-800 border-green-300' : 
+                      adjustment.adjustment_type === 'Deduction' ? 'bg-red-100 text-red-800 border-red-300' : 
+                      adjustment.adjustment_type === 'Arrears' ? 'bg-blue-100 text-blue-800 border-blue-300' : 
+                      adjustment.adjustment_type === 'Overtime' ? 'bg-purple-100 text-purple-800 border-purple-300' :
+                      'bg-yellow-100 text-yellow-800 border-yellow-300'
+                    }`}>
                       {adjustment.adjustment_type}
                     </span>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2 relative z-10">
                     <div className="flex justify-between">
                       <span className="text-sm font-medium text-gray-900">Month:</span>
                       <span className="text-sm text-gray-600">{adjustment.month}</span>
@@ -442,8 +482,8 @@ export default function PayrollAdjustments() {
                       <span className="text-sm text-gray-600 max-w-xs truncate">{adjustment.description}</span>
                     </div>
                   </div>
-                  <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
-                    <button className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm">
+                  <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100 relative z-10">
+                    <button className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm" aria-label={`View adjustment for ${getEmployeeName(adjustment.employee_id)}`}>
                       <Eye size={14} />
                       View
                     </button>
@@ -451,6 +491,7 @@ export default function PayrollAdjustments() {
                       <button 
                         onClick={() => handleOpenModal(adjustment)}
                         className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                        aria-label={`Edit adjustment for ${getEmployeeName(adjustment.employee_id)}`}
                       >
                         <Edit size={14} />
                         Edit
@@ -460,6 +501,7 @@ export default function PayrollAdjustments() {
                       <button 
                         onClick={() => handleDelete(adjustment.id)}
                         className="flex items-center gap-1 text-red-600 hover:text-red-900 px-3 py-1 rounded-lg hover:bg-red-50 transition-colors text-sm"
+                        aria-label={`Delete adjustment for ${getEmployeeName(adjustment.employee_id)}`}
                       >
                         <Trash2 size={14} />
                         Delete
@@ -473,7 +515,9 @@ export default function PayrollAdjustments() {
         </div>
 
         {/* Stats Footer */}
-        <div className="px-6 py-4 bg-gray-50 border border-black border-t-0 rounded-b-2xl">
+        <div className="px-6 py-4 bg-gray-50 rounded-b-2xl" style={{
+          borderTop: `1px solid ${colors.primary}20`
+        }}>
           <div className="flex justify-between items-center text-sm text-gray-600">
             <span>Total Adjustments: {adjustments.length}</span>
             <span>This Month: {adjustments.filter(a => a.month === new Date().toLocaleString('default', { month: 'long' })).length}</span>
@@ -485,18 +529,24 @@ export default function PayrollAdjustments() {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg border border-black p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto" style={{
+            border: `1px solid ${colors.primary}20`
+          }}>
             <h3 className="text-lg font-semibold mb-4">
               {editingAdjustment ? "Edit Adjustment" : "Add Adjustment"}
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select 
                   value={formData.employee_id}
                   onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                  className="w-full border border-black rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
+                  className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
                   required
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 >
                   <option value="">Select Employee</option>
                   {employees.map(employee => (
@@ -508,11 +558,15 @@ export default function PayrollAdjustments() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Month</label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select 
                   value={formData.month}
                   onChange={(e) => setFormData({...formData, month: e.target.value})}
-                  className="w-full border border-black rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
+                  className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
                   required
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 >
                   <option value="">Select Month</option>
                   {["January", "February", "March", "April", "May", "June",
@@ -523,11 +577,15 @@ export default function PayrollAdjustments() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Adjustment Type</label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select 
                   value={formData.adjustment_type}
                   onChange={(e) => setFormData({...formData, adjustment_type: e.target.value})}
-                  className="w-full border border-black rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
+                  className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
                   required
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 >
                   <option value="">Select Type</option>
                   {adjustmentTypes.map(type => (
@@ -537,12 +595,16 @@ export default function PayrollAdjustments() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input 
                   type="number"
                   value={formData.amount}
                   onChange={(e) => setFormData({...formData, amount: parseFloat(e.target.value) || 0})}
-                  className="w-full border border-black rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
+                  className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
                   required
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 />
               </div>
               <div>
@@ -558,7 +620,10 @@ export default function PayrollAdjustments() {
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="flex-1 px-4 py-2 border border-black rounded-xl text-gray-700 hover:bg-gray-50 text-sm font-medium"
+                  className="flex-1 px-4 py-2 rounded-xl text-gray-700 hover:bg-gray-50 text-sm font-medium"
+                  style={{
+                    border: `1px solid ${colors.primary}20`
+                  }}
                 >
                   Cancel
                 </button>
@@ -567,8 +632,11 @@ export default function PayrollAdjustments() {
                   disabled={loading}
                   onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
                   onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
-                  className="flex-1 px-4 py-2 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium border border-black"
-                  style={{ backgroundColor: colors.primary }}
+                  className="flex-1 px-4 py-2 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium transition-colors"
+                  style={{
+                    backgroundColor: colors.primary,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 >
                   {loading ? "Saving..." : (editingAdjustment ? "Update" : "Create")}
                 </button>

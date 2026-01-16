@@ -367,14 +367,21 @@ const QualityIndicators = () => {
 
           {/* Quality Indicators Form */}
           {showIndicatorForm && (
-            <div className="bg-white p-6 rounded-lg  mb-6">
+            <div className="bg-white p-6 rounded-lg mb-6 relative overflow-hidden" style={{
+              background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
+              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+            }}>
+              <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
+                background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}40 0%, transparent 70%)`,
+                transform: 'translate(40%, -40%)'
+              }}></div>
               <h3 className="text-lg font-medium mb-4">
                 {editingIndicator ? 'Edit Quality Indicator' : 'Add Quality Indicator'}
               </h3>
               <form onSubmit={handleIndicatorSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">KPI Name *</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="text"
                     value={indicatorForm.kpi_name}
                     onChange={(e) => setIndicatorForm({...indicatorForm, kpi_name: e.target.value})}
@@ -384,7 +391,7 @@ const QualityIndicators = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     value={indicatorForm.kpi_category}
                     onChange={(e) => setIndicatorForm({...indicatorForm, kpi_category: e.target.value})}
                     className="w-full p-2  rounded-md"
@@ -397,7 +404,7 @@ const QualityIndicators = () => {
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     value={indicatorForm.description}
                     onChange={(e) => setIndicatorForm({...indicatorForm, description: e.target.value})}
                     className="w-full p-2  rounded-md"
@@ -406,7 +413,7 @@ const QualityIndicators = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Target Value *</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="number"
                     step="0.01"
                     value={indicatorForm.target_value}
@@ -417,7 +424,7 @@ const QualityIndicators = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Unit of Measure *</label>
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     value={indicatorForm.unit_of_measure}
                     onChange={(e) => setIndicatorForm({...indicatorForm, unit_of_measure: e.target.value})}
                     className="w-full p-2  rounded-md"
@@ -430,7 +437,7 @@ const QualityIndicators = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Frequency *</label>
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     value={indicatorForm.frequency}
                     onChange={(e) => setIndicatorForm({...indicatorForm, frequency: e.target.value})}
                     className="w-full p-2  rounded-md"
@@ -443,7 +450,7 @@ const QualityIndicators = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="text"
                     value={indicatorForm.department}
                     onChange={(e) => setIndicatorForm({...indicatorForm, department: e.target.value})}
@@ -475,7 +482,14 @@ const QualityIndicators = () => {
           )}
 
           {/* Quality Indicators Table */}
-          <div className="bg-white rounded-lg  overflow-hidden">
+          <div className="bg-white rounded-lg overflow-hidden relative" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+          }}>
+            <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
+              background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}40 0%, transparent 70%)`,
+              transform: 'translate(40%, -40%)'
+            }}></div>
             {/* Desktop Table View */}
             <div className="hidden md:block">
               <table className="min-w-full divide-y divide-gray-200">
@@ -676,14 +690,21 @@ const QualityIndicators = () => {
 
           {/* KPI Records Form */}
           {showRecordForm && (
-            <div className="bg-white p-6 rounded-lg  mb-6">
+            <div className="bg-white p-6 rounded-lg mb-6 relative overflow-hidden" style={{
+              background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
+              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+            }}>
+              <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
+                background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}40 0%, transparent 70%)`,
+                transform: 'translate(40%, -40%)'
+              }}></div>
               <h3 className="text-lg font-medium mb-4">
                 {editingRecord ? 'Edit KPI Record' : 'Add KPI Record'}
               </h3>
               <form onSubmit={handleRecordSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Quality Indicator *</label>
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     value={recordForm.quality_indicator_id}
                     onChange={(e) => setRecordForm({...recordForm, quality_indicator_id: e.target.value})}
                     className="w-full p-2  rounded-md"
@@ -699,7 +720,7 @@ const QualityIndicators = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Recorded Date *</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="date"
                     value={recordForm.recorded_date}
                     onChange={(e) => setRecordForm({...recordForm, recorded_date: e.target.value})}
@@ -709,7 +730,7 @@ const QualityIndicators = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Actual Value *</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="number"
                     step="0.01"
                     value={recordForm.actual_value}
@@ -720,7 +741,7 @@ const QualityIndicators = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Recorded By *</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="text"
                     value={recordForm.recorded_by}
                     onChange={(e) => setRecordForm({...recordForm, recorded_by: e.target.value})}
@@ -730,7 +751,7 @@ const QualityIndicators = () => {
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Remarks</label>
-                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     value={recordForm.remarks}
                     onChange={(e) => setRecordForm({...recordForm, remarks: e.target.value})}
                     className="w-full p-2  rounded-md"
@@ -758,7 +779,14 @@ const QualityIndicators = () => {
           )}
 
           {/* KPI Records Table */}
-          <div className="bg-white rounded-lg  overflow-hidden">
+          <div className="bg-white rounded-lg overflow-hidden relative" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+          }}>
+            <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
+              background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}40 0%, transparent 70%)`,
+              transform: 'translate(40%, -40%)'
+            }}></div>
             {/* Desktop Table View */}
             <div className="hidden md:block">
               <table className="min-w-full divide-y divide-gray-200">

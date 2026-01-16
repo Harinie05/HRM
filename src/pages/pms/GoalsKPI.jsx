@@ -136,7 +136,14 @@ export default function GoalsKPI() {
       </div>
 
       {/* KPI Dashboard */}
-      <div className="bg-white rounded-2xl shadow-lg border-0">
+      <div className="rounded-2xl shadow-lg relative overflow-hidden" style={{
+        background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
+        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+      }}>
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 pointer-events-none" style={{
+          background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'} 0%, transparent 70%)`,
+          transform: 'translate(40%, -40%)'
+        }}></div>
         <div className="px-4 sm:px-6 py-4 border-0 rounded-t-2xl bg-gray-50">
           <h3 className="text-lg font-semibold text-gray-900">Employee KPI Dashboard</h3>
           <p className="text-sm text-gray-600">Real-time performance scores based on work assignment completion</p>
@@ -265,7 +272,14 @@ export default function GoalsKPI() {
 
       {/* Assignment Details */}
       {kpiData.length > 0 && (
-        <div className="bg-white rounded-2xl shadow-lg border-0">
+        <div className="rounded-2xl shadow-lg relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 pointer-events-none" style={{
+            background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'} 0%, transparent 70%)`,
+            transform: 'translate(40%, -40%)'
+          }}></div>
           <div className="px-4 sm:px-6 py-4 border-0 rounded-t-2xl bg-gray-50">
             <h3 className="text-lg font-semibold text-gray-900">Assignment Breakdown</h3>
             <p className="text-sm text-gray-600">Detailed view of work assignments contributing to KPI scores</p>

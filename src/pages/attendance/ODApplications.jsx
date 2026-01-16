@@ -184,7 +184,14 @@ export default function ODApplications() {
     <Layout>
       <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
         {/* Key Performance Indicators matching Dashboard */}
-        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+        <div className="rounded-xl shadow-sm overflow-hidden relative border" style={{
+          background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+          borderColor: `${colors.primary}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(30%, -30%)'
+          }}></div>
           {/* Header */}
           <div className="p-5 border-b-0">
             <div className="flex items-center gap-3">
@@ -204,8 +211,15 @@ export default function ODApplications() {
           
           <div className="p-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
-            <div className="flex items-center justify-between">
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+            borderColor: `${colors.primary}20`
+          }}>
+            <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-2xl opacity-10" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(25%, -25%)'
+            }}></div>
+            <div className="flex items-center justify-between relative z-10">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Applications</p>
                 <p className="text-2xl font-bold text-gray-900">{applications.length}</p>
@@ -221,8 +235,15 @@ export default function ODApplications() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
-            <div className="flex items-center justify-between">
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+            borderColor: `${colors.primary}20`
+          }}>
+            <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-2xl opacity-10" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(25%, -25%)'
+            }}></div>
+            <div className="flex items-center justify-between relative z-10">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Pending</p>
                 <p className="text-2xl font-bold text-gray-900">{applications.filter(app => app.status === 'pending').length}</p>
@@ -238,8 +259,15 @@ export default function ODApplications() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
-            <div className="flex items-center justify-between">
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+            borderColor: `${colors.primary}20`
+          }}>
+            <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-2xl opacity-10" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(25%, -25%)'
+            }}></div>
+            <div className="flex items-center justify-between relative z-10">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Approved</p>
                 <p className="text-2xl font-bold text-gray-900">{applications.filter(app => app.status === 'approved').length}</p>
@@ -255,8 +283,15 @@ export default function ODApplications() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
-            <div className="flex items-center justify-between">
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+            borderColor: `${colors.primary}20`
+          }}>
+            <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-2xl opacity-10" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(25%, -25%)'
+            }}></div>
+            <div className="flex items-center justify-between relative z-10">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Rejected</p>
                 <p className="text-2xl font-bold text-gray-900">{applications.filter(app => app.status === 'rejected').length}</p>
@@ -276,7 +311,14 @@ export default function ODApplications() {
         </div>
 
         {/* Applications Management */}
-        <div className="bg-white rounded-xl border-0 shadow-sm">
+        <div className="rounded-xl shadow-sm relative overflow-hidden border" style={{
+          background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+          borderColor: `${colors.primary}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(30%, -30%)'
+          }}></div>
           <div className="p-5 border-b-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">

@@ -7,7 +7,30 @@ import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function LeaveTypes({ activeView = "types" }) {
   const { toast, showToast, hideToast } = useToast();
-  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
+  const [colors, setColors] = useState({
+    primary: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+    secondary: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'
+  });
+  
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+          document.documentElement.style.setProperty('--primary-color', newColors.primary);
+          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
   
   // Check permissions for the current view
   const canViewTypes = isAdmin() || hasPermission("view_leave_types");
@@ -64,26 +87,6 @@ export default function LeaveTypes({ activeView = "types" }) {
       fetchLeavePolicies();
     }
   }, [statusFilter, canViewTypes, canViewPolicies, activeView]);
-
-  const fetchColors = async () => {
-    try {
-      const tenantCode = localStorage.getItem('tenantCode');
-      if (tenantCode) {
-        const response = await api.get(`/auth/branding/${tenantCode}`);
-        if (response.data.primary_color && response.data.secondary_color) {
-          const newColors = {
-            primary: response.data.primary_color,
-            secondary: response.data.secondary_color
-          };
-          setColors(newColors);
-          document.documentElement.style.setProperty('--primary-color', newColors.primary);
-          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching colors:', error);
-    }
-  };
 
   const fetchLeaveTypes = async () => {
     if (!canViewTypes) return;
@@ -272,8 +275,12 @@ export default function LeaveTypes({ activeView = "types" }) {
       <div className="p-8 border-b-0">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-              <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+              backgroundColor: `${colors.primary}20`
+            }}>
+              <svg className="w-5 h-5" style={{
+                color: colors.primary
+              }} fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
               </svg>
             </div>
@@ -286,13 +293,16 @@ export default function LeaveTypes({ activeView = "types" }) {
               </p>
             </div>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-3 relative z-10">
+            <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full blur-3xl opacity-30" style={{
+              backgroundColor: colors.primary
+            }}></div>
             {((activeView === "types" && (isAdmin() || hasPermission("add_leave_type"))) || 
               (activeView === "policies" && (isAdmin() || hasPermission("add_leave_policy")))) && (
               <button 
                 onClick={() => activeView === "types" ? handleOpenModal() : handleOpenPolicyModal()}
                 style={{ backgroundColor: colors.primary }}
-                className="text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                className="text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 relative z-20"
                 onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
                 onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
               >
@@ -306,13 +316,20 @@ export default function LeaveTypes({ activeView = "types" }) {
 
       {/* Search and Filters */}
       <div className="p-8 border-b-0">
-          <div className="flex flex-col sm:flex-row gap-4 mb-6">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row gap-4 mb-6 relative">
+            <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-3xl opacity-25" style={{
+              backgroundColor: colors.primary
+            }}></div>
+            <div className="flex items-center gap-2 relative z-10">
               <span className="text-sm text-gray-600">Status</span>
-              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+              <select 
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                style={{
+                  backgroundColor: `${colors.primary}10`,
+                  border: `1px solid ${colors.primary}`
+                }}
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -322,7 +339,10 @@ export default function LeaveTypes({ activeView = "types" }) {
             {activeView === "types" && (
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-600">Category</span>
-                <div className="flex items-center bg-gray-100 rounded-full p-1 border border-black">
+                <div className="flex items-center rounded-full p-1" style={{
+                  backgroundColor: `${colors.primary}05`,
+                  border: `1px solid ${colors.primary}`
+                }}>
                   <button 
                     onClick={() => setCategoryFilter("all")}
                     className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
@@ -369,21 +389,29 @@ export default function LeaveTypes({ activeView = "types" }) {
             <div className="flex items-center gap-3 sm:ml-auto">
               <div className="relative flex-1 max-w-md">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input 
                   type="text"
                   placeholder={`Search ${activeView === "types" ? "leave types" : "leave policies"}...`}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-12 pr-4 py-3 border border-black rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full bg-gray-50 hover:bg-white transition-colors"
+                  className="pl-12 pr-4 py-3 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full hover:bg-white transition-colors"
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                 />
               </div>
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <div className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 text-sm text-gray-600 border border-black">
+            <div className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 text-sm text-gray-600" style={{
+              border: `1px solid ${colors.primary}`
+            }}>
               Total: {activeView === "types" ? leaveTypes.length : leavePolicies.length}
             </div>
-            <div className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 text-sm text-gray-600 border border-black">
+            <div className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 text-sm text-gray-600" style={{
+              border: `1px solid ${colors.primary}`
+            }}>
               Showing: {activeView === "types" ? filteredTypes.length : filteredPolicies.length}
             </div>
           </div>
@@ -393,7 +421,18 @@ export default function LeaveTypes({ activeView = "types" }) {
       {activeView === "types" ? (
         (isAdmin() || hasPermission("view_leave_types")) && (
         /* Leave Types Table */
-        <div className="bg-white rounded-2xl border border-black overflow-hidden">
+        <div className="rounded-2xl shadow-sm overflow-hidden relative border" style={{
+          background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+          borderColor: `${colors.primary}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(-40%, 40%)'
+          }}></div>
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full table-fixed">
@@ -427,7 +466,9 @@ export default function LeaveTypes({ activeView = "types" }) {
                   </tr>
                 ) : (
                   filteredTypes.map((type, index) => (
-                    <tr key={type.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors`}>
+                    <tr key={type.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} transition-colors`} style={{
+                      ':hover': { backgroundColor: `${colors.primary}10` }
+                    }}>
                       <td className="px-6 py-4">
                         <div>
                           <div className="text-sm font-semibold text-gray-900 truncate">{type.name}</div>
@@ -530,7 +571,7 @@ export default function LeaveTypes({ activeView = "types" }) {
               </div>
             ) : (
               filteredTypes.map((type, index) => (
-                <div key={type.id} className="p-4 border-b-0 hover:bg-gray-50">
+                <div key={type.id} className="p-4 hover:bg-gray-50">
                   <div className="flex items-center justify-between mb-3">
                     <div>
                       <div className="text-sm font-semibold text-gray-900">{type.name}</div>
@@ -605,7 +646,18 @@ export default function LeaveTypes({ activeView = "types" }) {
       ) : (
         (isAdmin() || hasPermission("view_leave_policies")) && (
         /* Leave Policies Table */
-        <div className="bg-white rounded-2xl border border-black overflow-hidden">
+        <div className="rounded-2xl shadow-sm overflow-hidden relative border" style={{
+          background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+          borderColor: `${colors.primary}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(-40%, 40%)'
+          }}></div>
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full table-fixed">
@@ -636,7 +688,9 @@ export default function LeaveTypes({ activeView = "types" }) {
                   </tr>
                 ) : (
                   filteredPolicies.map((policy, index) => (
-                    <tr key={policy.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors`}>
+                    <tr key={policy.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} transition-colors`} style={{
+                      ':hover': { backgroundColor: `${colors.primary}10` }
+                    }}>
                       <td className="px-6 py-4">
                         <div className="text-sm font-semibold text-gray-900 truncate">{policy.name}</div>
                         <div className="text-sm text-gray-500 truncate">{policy.rule}</div>
@@ -737,7 +791,7 @@ export default function LeaveTypes({ activeView = "types" }) {
               </div>
             ) : (
               filteredPolicies.map((policy, index) => (
-                <div key={policy.id} className="p-4 border-b-0 hover:bg-gray-50">
+                <div key={policy.id} className="p-4 hover:bg-gray-50">
                   <div className="flex items-center justify-between mb-3">
                     <div>
                       <div className="text-sm font-semibold text-gray-900">{policy.name}</div>
@@ -848,7 +902,9 @@ export default function LeaveTypes({ activeView = "types" }) {
       {/* Leave Type Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl shadow-2xl border border-black w-full max-w-lg max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" style={{
+            border: `1px solid ${colors.primary}`
+          }}>
             <div className="p-8 border-b-0">
               <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                 {editingType ? "Edit Leave Type" : "Add Leave Type"}
@@ -857,33 +913,45 @@ export default function LeaveTypes({ activeView = "types" }) {
             <form onSubmit={handleSubmit} className="p-8 space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Name</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input style={{backgroundColor: `${colors.primary}10`}} 
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full border border-black rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
+                  className="w-full rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                   placeholder="e.g., Annual Leave, Sick Leave"
                   required
                 />
               </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Code</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input 
                   type="text"
                   value={formData.code}
                   onChange={(e) => setFormData({...formData, code: e.target.value})}
-                  className="w-full border border-black rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
+                  className="w-full rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                   placeholder="e.g., AL, SL, CL"
                   required
                 />
               </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Category</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input 
                   type="text"
                   value={formData.category}
                   onChange={(e) => setFormData({...formData, category: e.target.value})}
-                  className="w-full border border-black rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
+                  className="w-full rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                   placeholder="e.g., Medical, Personal, Vacation"
                 />
               </div>
@@ -899,7 +967,7 @@ export default function LeaveTypes({ activeView = "types" }) {
                     return (isFixedPolicyType || isDynamicPolicyType) ? 'Default Limit (for non-policy leaves)' : 'Annual Limit (days)';
                   })()} 
                 </label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input 
                   type="number"
                   value={formData.annual_limit}
                   onChange={(e) => setFormData({...formData, annual_limit: parseInt(e.target.value) || 0})}
@@ -912,15 +980,19 @@ export default function LeaveTypes({ activeView = "types" }) {
                     );
                     return isFixedPolicyType || isDynamicPolicyType;
                   })()}
-                  className={`w-full border rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${(() => {
+                  className={`w-full rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${(() => {
                     const isFixedPolicyType = formData.code && ['AL', 'ANNUAL', 'SL', 'SICK', 'CL', 'CASUAL'].includes(formData.code.toUpperCase());
                     const isDynamicPolicyType = formData.code && leavePolicies.some(policy => 
                       policy.status === 'Active' && 
                       policy.leave_allocations && 
                       policy.leave_allocations[formData.code?.toUpperCase()]
                     );
-                    return (isFixedPolicyType || isDynamicPolicyType) ? 'border-gray-200 bg-gray-100 text-gray-500 cursor-not-allowed' : 'border-gray-200 bg-gray-50 hover:bg-white';
+                    return (isFixedPolicyType || isDynamicPolicyType) ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : 'bg-gray-50 hover:bg-white';
                   })()}`}
+                  style={{
+                    backgroundColor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}`
+                  }}
                   placeholder={(() => {
                     const isFixedPolicyType = formData.code && ['AL', 'ANNUAL', 'SL', 'SICK', 'CL', 'CASUAL'].includes(formData.code.toUpperCase());
                     const isDynamicPolicyType = formData.code && leavePolicies.some(policy => 
@@ -947,20 +1019,28 @@ export default function LeaveTypes({ activeView = "types" }) {
               </div>
               <div className="flex items-center gap-6">
                 <label className="flex items-center">
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="checkbox"
                     checked={formData.is_paid}
                     onChange={(e) => setFormData({...formData, is_paid: e.target.checked})}
-                    className="mr-3 w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                    className="mr-3 w-4 h-4 rounded focus:ring-2"
+                    style={{
+                      accentColor: colors.primary,
+                      '--tw-ring-color': colors.primary
+                    }}
                   />
                   <span className="text-sm font-medium text-gray-700">Paid Leave</span>
                 </label>
                 <label className="flex items-center">
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="checkbox"
                     checked={formData.carry_forward}
                     onChange={(e) => setFormData({...formData, carry_forward: e.target.checked})}
-                    className="mr-3 w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                    className="mr-3 w-4 h-4 rounded focus:ring-2"
+                    style={{
+                      accentColor: colors.primary,
+                      '--tw-ring-color': colors.primary
+                    }}
                   />
                   <span className="text-sm font-medium text-gray-700">Carry Forward</span>
                 </label>
@@ -969,7 +1049,10 @@ export default function LeaveTypes({ activeView = "types" }) {
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="flex-1 px-6 py-3 border border-black rounded-2xl text-gray-700 hover:bg-gray-50 font-semibold transition-colors"
+                  className="flex-1 px-6 py-3 rounded-2xl text-gray-700 hover:bg-gray-50 font-semibold transition-colors"
+                  style={{
+                    border: `1px solid ${colors.primary}`
+                  }}
                 >
                   Cancel
                 </button>
@@ -991,7 +1074,9 @@ export default function LeaveTypes({ activeView = "types" }) {
       {/* Leave Policy Modal */}
       {showPolicyModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl shadow-2xl border border-black w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto" style={{
+            border: `1px solid ${colors.primary}`
+          }}>
             <div className="p-8 border-b-0">
               <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                 {editingPolicy ? "Edit Leave Policy" : "Add Leave Policy"}
@@ -1001,57 +1086,81 @@ export default function LeaveTypes({ activeView = "types" }) {
               <div className="grid grid-cols-2 gap-6">
                 <div className="col-span-2">
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Policy Name</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="text"
                     value={policyFormData.name}
                     onChange={(e) => setPolicyFormData({...policyFormData, name: e.target.value})}
-                    className="w-full border border-black rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
+                    className="w-full rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                     required
                   />
                 </div>
                 <div className="col-span-2">
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Policy Rule</label>
-                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <textarea 
                     value={policyFormData.rule}
                     onChange={(e) => setPolicyFormData({...policyFormData, rule: e.target.value})}
-                    className="w-full border border-black rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
+                    className="w-full rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                     rows="3"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Annual Leave (days)</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="number"
                     value={policyFormData.annual}
                     onChange={(e) => setPolicyFormData({...policyFormData, annual: parseInt(e.target.value) || 0})}
-                    className="w-full border border-black rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
+                    className="w-full rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Sick Leave (days)</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="number"
                     value={policyFormData.sick}
                     onChange={(e) => setPolicyFormData({...policyFormData, sick: parseInt(e.target.value) || 0})}
-                    className="w-full border border-black rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
+                    className="w-full rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Casual Leave (days)</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="number"
                     value={policyFormData.casual}
                     onChange={(e) => setPolicyFormData({...policyFormData, casual: parseInt(e.target.value) || 0})}
-                    className="w-full border border-black rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
+                    className="w-full rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Max Carry Forward</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="number"
                     value={policyFormData.max_carry}
                     onChange={(e) => setPolicyFormData({...policyFormData, max_carry: parseInt(e.target.value) || 0})}
-                    className="w-full border border-black rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
+                    className="w-full rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 </div>
               </div>
@@ -1062,10 +1171,14 @@ export default function LeaveTypes({ activeView = "types" }) {
                 
                 {/* Add New Leave Type */}
                 <div className="flex gap-3 mb-4">
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <select 
                     value={selectedLeaveType}
                     onChange={(e) => setSelectedLeaveType(e.target.value)}
-                    className="flex-1 border border-black rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 bg-gray-50 hover:bg-white transition-colors"
+                    className="flex-1 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 bg-gray-50 hover:bg-white transition-colors"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   >
                     <option value="">Select Leave Type</option>
                     {leaveTypes.filter(lt => 
@@ -1077,12 +1190,16 @@ export default function LeaveTypes({ activeView = "types" }) {
                       </option>
                     ))}
                   </select>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="number"
                     placeholder="Days"
                     value={allocationDays}
                     onChange={(e) => setAllocationDays(e.target.value)}
-                    className="w-24 border border-black rounded-2xl px-3 py-3 text-sm focus:ring-2 focus:ring-blue-500 bg-gray-50 hover:bg-white transition-colors"
+                    className="w-24 rounded-2xl px-3 py-3 text-sm focus:ring-2 focus:ring-blue-500 bg-gray-50 hover:bg-white transition-colors"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                   <button
                     type="button"
@@ -1113,7 +1230,9 @@ export default function LeaveTypes({ activeView = "types" }) {
                   {Object.entries(policyFormData.leave_allocations).map(([code, days]) => {
                     const leaveType = leaveTypes.find(lt => lt.code?.toUpperCase() === code);
                     return (
-                      <div key={code} className="flex items-center justify-between bg-gray-50 p-4 rounded-2xl border-0">
+                      <div key={code} className="flex items-center justify-between bg-gray-50 p-4 rounded-2xl" style={{
+                        border: `1px solid ${colors.primary}`
+                      }}>
                         <span className="text-sm font-semibold text-gray-900">{code} - {leaveType?.name}</span>
                         <div className="flex items-center gap-3">
                           <span className="text-sm text-gray-600 font-medium">{days} days</span>
@@ -1136,20 +1255,28 @@ export default function LeaveTypes({ activeView = "types" }) {
               </div>
               <div className="flex items-center gap-6">
                 <label className="flex items-center">
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="checkbox"
                     checked={policyFormData.carry_forward}
                     onChange={(e) => setPolicyFormData({...policyFormData, carry_forward: e.target.checked})}
-                    className="mr-3 w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                    className="mr-3 w-4 h-4 rounded focus:ring-2"
+                    style={{
+                      accentColor: colors.primary,
+                      '--tw-ring-color': colors.primary
+                    }}
                   />
                   <span className="text-sm font-medium text-gray-700">Allow Carry Forward</span>
                 </label>
                 <label className="flex items-center">
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="checkbox"
                     checked={policyFormData.encashment}
                     onChange={(e) => setPolicyFormData({...policyFormData, encashment: e.target.checked})}
-                    className="mr-3 w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                    className="mr-3 w-4 h-4 rounded focus:ring-2"
+                    style={{
+                      accentColor: colors.primary,
+                      '--tw-ring-color': colors.primary
+                    }}
                   />
                   <span className="text-sm font-medium text-gray-700">Allow Encashment</span>
                 </label>
@@ -1158,7 +1285,10 @@ export default function LeaveTypes({ activeView = "types" }) {
                 <button
                   type="button"
                   onClick={handleClosePolicyModal}
-                  className="flex-1 px-6 py-3 border border-black rounded-2xl text-gray-700 hover:bg-gray-50 font-semibold transition-colors"
+                  className="flex-1 px-6 py-3 rounded-2xl text-gray-700 hover:bg-gray-50 font-semibold transition-colors"
+                  style={{
+                    border: `1px solid ${colors.primary}`
+                  }}
                 >
                   Cancel
                 </button>

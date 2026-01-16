@@ -91,8 +91,15 @@ export default function TrainingProgramApplication() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
         {/* Program Header */}
-        <div className="bg-white rounded-lg shadow-sm border-0 p-8 mb-8">
-          <div className="text-center mb-6">
+        <div className="rounded-lg shadow-sm p-8 mb-8 relative overflow-hidden" style={{ 
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 pointer-events-none" style={{
+            background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'} 0%, transparent 70%)`,
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="text-center mb-6 relative z-10">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">{program.title}</h1>
             <p className="text-lg text-gray-600">{program.description}</p>
           </div>
@@ -142,29 +149,38 @@ export default function TrainingProgramApplication() {
         </div>
 
         {/* Application Form */}
-        <div className="bg-white rounded-lg shadow-sm border-0 p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Apply for this Program</h2>
+        <div className="rounded-lg shadow-sm p-8 relative overflow-hidden" style={{ 
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 pointer-events-none" style={{
+            background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'} 0%, transparent 70%)`,
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 relative z-10">Apply for this Program</h2>
           
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                   placeholder="Enter your full name"
                   required
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                   placeholder="Enter your email"
                   required
                 />
@@ -174,21 +190,23 @@ export default function TrainingProgramApplication() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input
                   type="tel"
                   value={formData.phone}
                   onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                   placeholder="Enter your phone number"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID (if applicable)</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input
                   type="text"
                   value={formData.employee_id}
                   onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                   placeholder="Enter your employee ID"
                 />
               </div>
@@ -196,21 +214,23 @@ export default function TrainingProgramApplication() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Department/Organization</label>
-              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+              <input
                 type="text"
                 value={formData.department}
                 onChange={(e) => setFormData({...formData, department: e.target.value})}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                 placeholder="Enter your department or organization"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Relevant Experience</label>
-              <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+              <textarea
                 value={formData.experience}
                 onChange={(e) => setFormData({...formData, experience: e.target.value})}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                 rows="3"
                 placeholder="Briefly describe your relevant experience or background"
               />
@@ -218,10 +238,11 @@ export default function TrainingProgramApplication() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Why do you want to join this program? *</label>
-              <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+              <textarea
                 value={formData.motivation}
                 onChange={(e) => setFormData({...formData, motivation: e.target.value})}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                 rows="4"
                 placeholder="Tell us why you're interested in this training program and what you hope to achieve"
                 required

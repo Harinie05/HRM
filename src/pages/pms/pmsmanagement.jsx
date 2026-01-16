@@ -96,7 +96,14 @@ export default function PMSManagement() {
           </div>
         </div>
 
-          <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-xl shadow-sm overflow-hidden relative" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+          }}>
+            <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
+              background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}40 0%, transparent 70%)`,
+              transform: 'translate(40%, -40%)'
+            }}></div>
             {/* Content */}
             <div className="p-4 sm:p-6">
               {/* Tab Navigation */}

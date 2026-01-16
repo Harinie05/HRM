@@ -68,17 +68,14 @@ export default function Grievances() {
 
   const fetchColors = async () => {
     try {
-      const tenantCode = localStorage.getItem('tenantCode');
+      const tenantCode = localStorage.getItem('tenant_code');
       if (tenantCode) {
         const response = await api.get(`/auth/branding/${tenantCode}`);
         if (response.data.primary_color && response.data.secondary_color) {
-          const newColors = {
+          setColors({
             primary: response.data.primary_color,
             secondary: response.data.secondary_color
-          };
-          setColors(newColors);
-          document.documentElement.style.setProperty('--primary-color', newColors.primary);
-          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+          });
         }
       }
     } catch (error) {
@@ -234,11 +231,18 @@ export default function Grievances() {
   return (
     <div className="space-y-6">
       {/* Grievance Form */}
-      <div className="rounded-lg shadow-sm  bg-white">
-        <div className="px-6 py-4 border-b border-black">
+      <div className="rounded-lg shadow-sm bg-white relative overflow-hidden" style={{
+        background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+        border: `1px solid ${colors.primary}20`
+      }}>
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
+          background: `radial-gradient(circle, ${colors.primary}40 0%, transparent 70%)`,
+          transform: 'translate(40%, -40%)'
+        }}></div>
+        <div className="px-6 py-4 border-b border-gray-200 relative z-10">
           <h3 className="text-lg font-semibold text-gray-900">Submit Grievance</h3>
         </div>
-        <form onSubmit={handleSubmit} className="p-4 sm:p-6">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 relative z-10">
           {!canAdd ? (
             <div className="text-center py-8">
               <p className="text-gray-500">You don't have permission to create grievances.</p>
@@ -249,10 +253,14 @@ export default function Grievances() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
                   {isAdmin() ? (
-                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                    <select 
                       value={formData.employeeId}
                       onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                      className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      style={{
+                        backgroundColor: `${colors.primary}10`,
+                        border: `1px solid ${colors.primary}`
+                      }}
                     >
                       <option value="">Select Employee</option>
                       {employees.map((emp) => (
@@ -278,10 +286,14 @@ export default function Grievances() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Grievance Type</label>
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                  <select 
                     value={formData.grievanceType}
                     onChange={(e) => setFormData({...formData, grievanceType: e.target.value})}
-                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   >
                     <option value="">Select Type</option>
                     <option value="harassment">Harassment</option>
@@ -296,10 +308,14 @@ export default function Grievances() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                  <select 
                     value={formData.priority}
                     onChange={(e) => setFormData({...formData, priority: e.target.value})}
-                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   >
                     <option value="">Select Priority</option>
                     <option value="low">Low</option>
@@ -310,31 +326,43 @@ export default function Grievances() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Date of Occurrence</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                  <input 
                     type="date"
                     value={formData.dateOccurred}
                     onChange={(e) => setFormData({...formData, dateOccurred: e.target.value})}
-                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 </div>
                 <div className="sm:col-span-2 lg:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                  <input 
                     type="text"
                     value={formData.subject}
                     onChange={(e) => setFormData({...formData, subject: e.target.value})}
-                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                     placeholder="Brief subject of the grievance"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 </div>
                 <div className="sm:col-span-2 lg:col-span-3">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                  <textarea 
                     value={formData.description}
                     onChange={(e) => setFormData({...formData, description: e.target.value})}
                     rows={4}
-                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                     placeholder="Detailed description of the grievance..."
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 </div>
               </div>
@@ -358,15 +386,22 @@ export default function Grievances() {
       </div>
 
       {/* Grievances List */}
-      <div className="rounded-lg shadow-sm  bg-white">
-        <div className="px-6 py-4 border-b border-black">
+      <div className="rounded-lg shadow-sm bg-white relative overflow-hidden" style={{
+        background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+        border: `1px solid ${colors.primary}20`
+      }}>
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
+          background: `radial-gradient(circle, ${colors.primary}40 0%, transparent 70%)`,
+          transform: 'translate(40%, -40%)'
+        }}></div>
+        <div className="px-6 py-4 border-b border-gray-200 relative z-10">
           <h3 className="text-lg font-semibold text-gray-900">Grievances Management</h3>
         </div>
         
         {/* Desktop Table View */}
-        <div className="hidden md:block overflow-x-auto">
+        <div className="hidden md:block overflow-x-auto relative z-10">
           <table className="min-w-full divide-y divide-gray-200 ">
-            <thead className="bg-gray-50 border-b border-black">
+            <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Category</th>
@@ -393,8 +428,10 @@ export default function Grievances() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{grievance.category || 'N/A'}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${
-                        grievance.priority === 'high' ? 'bg-gray-100 text-gray-800 border-gray-300' : 
-                        grievance.priority === 'medium' ? 'bg-gray-50 text-gray-700 border-gray-200' : 'bg-gray-100 text-gray-600 border-gray-300'
+                        grievance.priority === 'critical' ? 'bg-red-100 text-red-800 border-red-300' : 
+                        grievance.priority === 'high' ? 'bg-orange-100 text-orange-800 border-orange-300' : 
+                        grievance.priority === 'medium' ? 'bg-yellow-100 text-yellow-800 border-yellow-300' : 
+                        'bg-green-100 text-green-800 border-green-300'
                       }`}>
                         {grievance.priority || 'Medium'}
                       </span>
@@ -404,8 +441,10 @@ export default function Grievances() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${
-                        grievance.status === 'Resolved' ? 'bg-gray-100 text-gray-800 border-gray-300' : 
-                        grievance.status === 'Under Investigation' ? 'bg-gray-50 text-gray-700 border-gray-200' : 'bg-gray-100 text-gray-600 border-gray-300'
+                        grievance.status === 'Resolved' ? 'bg-green-100 text-green-800 border-green-300' : 
+                        grievance.status === 'Under Investigation' ? 'bg-yellow-100 text-yellow-800 border-yellow-300' : 
+                        grievance.status === 'Pending' ? 'bg-orange-100 text-orange-800 border-orange-300' :
+                        'bg-blue-100 text-blue-800 border-blue-300'
                       }`}>
                         {grievance.status || 'Under Investigation'}
                       </span>
@@ -454,7 +493,7 @@ export default function Grievances() {
         </div>
 
         {/* Mobile Card View */}
-        <div className="md:hidden">
+        <div className="md:hidden relative z-10">
           {grievances.length === 0 ? (
             <div className="p-6 text-center text-gray-500">
               <p>No grievances found</p>
@@ -468,8 +507,10 @@ export default function Grievances() {
                     <div className="text-sm text-gray-500">{grievance.employee_code || 'N/A'}</div>
                   </div>
                   <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${
-                    grievance.status === 'Resolved' ? 'bg-gray-100 text-gray-800 border-gray-300' : 
-                    grievance.status === 'Under Investigation' ? 'bg-gray-50 text-gray-700 border-gray-200' : 'bg-gray-100 text-gray-600 border-gray-300'
+                    grievance.status === 'Resolved' ? 'bg-green-100 text-green-800 border-green-300' : 
+                    grievance.status === 'Under Investigation' ? 'bg-yellow-100 text-yellow-800 border-yellow-300' : 
+                    grievance.status === 'Pending' ? 'bg-orange-100 text-orange-800 border-orange-300' :
+                    'bg-blue-100 text-blue-800 border-blue-300'
                   }`}>
                     {grievance.status || 'Under Investigation'}
                   </span>
@@ -482,8 +523,10 @@ export default function Grievances() {
                   <div className="flex justify-between">
                     <span className="text-sm font-medium text-gray-900">Priority:</span>
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${
-                      grievance.priority === 'high' ? 'bg-gray-100 text-gray-800 border-gray-300' : 
-                      grievance.priority === 'medium' ? 'bg-gray-50 text-gray-700 border-gray-200' : 'bg-gray-100 text-gray-600 border-gray-300'
+                      grievance.priority === 'critical' ? 'bg-red-100 text-red-800 border-red-300' : 
+                      grievance.priority === 'high' ? 'bg-orange-100 text-orange-800 border-orange-300' : 
+                      grievance.priority === 'medium' ? 'bg-yellow-100 text-yellow-800 border-yellow-300' : 
+                      'bg-green-100 text-green-800 border-green-300'
                     }`}>
                       {grievance.priority || 'Medium'}
                     </span>

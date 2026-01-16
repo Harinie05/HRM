@@ -6,6 +6,7 @@ import useToast from "../../utils/useToast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function PayrollReports() {
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   const [employees, setEmployees] = useState([]);
   const [payrollRuns, setPayrollRuns] = useState([]);
   const [selectedPeriod, setSelectedPeriod] = useState("current-month");
@@ -45,8 +46,24 @@ export default function PayrollReports() {
   }
 
   useEffect(() => {
+    fetchColors();
     fetchData();
   }, [selectedPeriod]);
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenant_code');
+      if (tenantCode) {
+        const res = await api.get(`/auth/branding/${tenantCode}`);
+        setColors({
+          primary: res.data.primary_color || '#2862e9',
+          secondary: res.data.secondary_color || '#474e71'
+        });
+      }
+    } catch (err) {
+      console.error('Failed to fetch colors:', err);
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -218,12 +235,23 @@ export default function PayrollReports() {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-black overflow-hidden">
+    <div className="rounded-2xl overflow-hidden relative" style={{
+      background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+      border: `1px solid ${colors.primary}20`
+    }}>
+      <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+        backgroundColor: colors.primary,
+        transform: 'translate(40%, -40%)'
+      }}></div>
       {/* Header */}
-      <div className="p-6 border-b border-black">
+      <div className="p-6 relative z-10" style={{
+        borderBottom: `1px solid ${colors.primary}20`
+      }}>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-            <BarChart3 className="w-5 h-5 text-gray-600" />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+            backgroundColor: `${colors.primary}20`
+          }}>
+            <BarChart3 className="w-5 h-5" style={{ color: colors.primary }} />
           </div>
           <div>
             <h2 className="text-lg font-medium text-gray-900">Reports & Compliance</h2>
@@ -237,7 +265,11 @@ export default function PayrollReports() {
         {/* Period Selection and Export */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
           <span className="text-sm text-gray-600">Period & Export</span>
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center bg-gray-100 rounded-full p-1 overflow-x-auto scrollbar-hide border border-black gap-2 sm:gap-0" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center bg-gray-100 rounded-full p-1 overflow-x-auto scrollbar-hide gap-2 sm:gap-0" style={{
+            scrollbarWidth: 'none', 
+            msOverflowStyle: 'none',
+            border: `1px solid ${colors.primary}20`
+          }}>
             <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               value={selectedPeriod}
               onChange={(e) => setSelectedPeriod(e.target.value)}
@@ -255,69 +287,93 @@ export default function PayrollReports() {
         {/* Stats Overview */}
         <div className="mb-6">
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div className="bg-white rounded-2xl border border-black p-4 shadow-sm">
+            <div className="rounded-2xl p-4 shadow-sm" style={{
+              border: `1px solid ${colors.primary}20`
+            }}>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">Employees</p>
                   <p className="text-2xl font-bold text-gray-900">{stats.totalEmployees}</p>
                 </div>
-                <div className="p-2 bg-gray-100 rounded-2xl">
-                  <Users className="h-8 w-8 text-gray-600" />
+                <div className="p-2 rounded-2xl" style={{
+                  backgroundColor: `${colors.primary}20`
+                }}>
+                  <Users className="h-8 w-8" style={{ color: colors.primary }} />
                 </div>
               </div>
             </div>
-            <div className="bg-white rounded-2xl border border-black p-4 shadow-sm">
+            <div className="rounded-2xl p-4 shadow-sm" style={{
+              border: `1px solid ${colors.primary}20`
+            }}>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">Total Payroll</p>
                   <p className="text-2xl font-bold text-gray-900">₹{(stats.totalPayroll / 100000).toFixed(1)}L</p>
                 </div>
-                <div className="p-2 bg-gray-100 rounded-2xl">
-                  <DollarSign className="h-8 w-8 text-gray-600" />
+                <div className="p-2 rounded-2xl" style={{
+                  backgroundColor: `${colors.primary}20`
+                }}>
+                  <DollarSign className="h-8 w-8" style={{ color: colors.primary }} />
                 </div>
               </div>
             </div>
-            <div className="bg-white rounded-2xl border border-black p-4 shadow-sm">
+            <div className="rounded-2xl p-4 shadow-sm" style={{
+              border: `1px solid ${colors.primary}20`
+            }}>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">Avg Salary</p>
                   <p className="text-2xl font-bold text-gray-900">₹{(stats.avgSalary / 1000).toFixed(0)}K</p>
                 </div>
-                <div className="p-2 bg-gray-100 rounded-2xl">
-                  <TrendingUp className="h-8 w-8 text-gray-600" />
+                <div className="p-2 rounded-2xl" style={{
+                  backgroundColor: `${colors.primary}20`
+                }}>
+                  <TrendingUp className="h-8 w-8" style={{ color: colors.primary }} />
                 </div>
               </div>
             </div>
-            <div className="bg-white rounded-2xl border border-black p-4 shadow-sm">
+            <div className="rounded-2xl p-4 shadow-sm" style={{
+              border: `1px solid ${colors.primary}20`
+            }}>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">PF Contribution</p>
                   <p className="text-2xl font-bold text-gray-900">₹{(stats.pfContribution / 1000).toFixed(0)}K</p>
                 </div>
-                <div className="p-2 bg-gray-100 rounded-2xl">
-                  <BarChart3 className="h-8 w-8 text-gray-600" />
+                <div className="p-2 rounded-2xl" style={{
+                  backgroundColor: `${colors.primary}20`
+                }}>
+                  <BarChart3 className="h-8 w-8" style={{ color: colors.primary }} />
                 </div>
               </div>
             </div>
-            <div className="bg-white rounded-2xl border border-black p-4 shadow-sm">
+            <div className="rounded-2xl p-4 shadow-sm" style={{
+              border: `1px solid ${colors.primary}20`
+            }}>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">ESI Contribution</p>
                   <p className="text-2xl font-bold text-gray-900">₹{(stats.esiContribution / 1000).toFixed(0)}K</p>
                 </div>
-                <div className="p-2 bg-gray-100 rounded-2xl">
-                  <FileText className="h-8 w-8 text-gray-600" />
+                <div className="p-2 rounded-2xl" style={{
+                  backgroundColor: `${colors.primary}20`
+                }}>
+                  <FileText className="h-8 w-8" style={{ color: colors.primary }} />
                 </div>
               </div>
             </div>
-            <div className="bg-white rounded-2xl border border-black p-4 shadow-sm">
+            <div className="rounded-2xl p-4 shadow-sm" style={{
+              border: `1px solid ${colors.primary}20`
+            }}>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">TDS Deducted</p>
                   <p className="text-2xl font-bold text-gray-900">₹{(stats.tdsDeducted / 1000).toFixed(0)}K</p>
                 </div>
-                <div className="p-2 bg-gray-100 rounded-2xl">
-                  <Calendar className="h-8 w-8 text-gray-600" />
+                <div className="p-2 rounded-2xl" style={{
+                  backgroundColor: `${colors.primary}20`
+                }}>
+                  <Calendar className="h-8 w-8" style={{ color: colors.primary }} />
                 </div>
               </div>
             </div>
@@ -327,13 +383,17 @@ export default function PayrollReports() {
         {/* Report Sections */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* Compliance Reports */}
-          <div className="bg-white rounded-2xl border border-black p-6 shadow-sm">
+          <div className="bg-white rounded-2xl p-6 shadow-sm" style={{
+            border: `1px solid ${colors.primary}20`
+          }}>
             <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
               <FileText size={20} />
               Compliance Reports
             </h3>
             <div className="space-y-3">
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg" style={{
+                border: `1px solid ${colors.primary}20`
+              }}>
                 <div>
                   <p className="font-medium text-gray-900">PF Challan Report</p>
                   <p className="text-sm text-gray-600">Monthly PF contribution summary</p>
@@ -341,13 +401,16 @@ export default function PayrollReports() {
                 {canGenerateCompliance && (
                   <button 
                     onClick={() => handleDownloadReport('pf-challan')}
-                    className="p-2 rounded-lg transition-colors text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                    className="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors"
+                    aria-label="Download PF Challan Report"
                   >
                     <Download size={16} />
                   </button>
                 )}
               </div>
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg" style={{
+                border: `1px solid ${colors.primary}20`
+              }}>
                 <div>
                   <p className="font-medium text-gray-900">ESI Challan Report</p>
                   <p className="text-sm text-gray-600">Monthly ESI contribution summary</p>
@@ -355,13 +418,16 @@ export default function PayrollReports() {
                 {canGenerateCompliance && (
                   <button 
                     onClick={() => handleDownloadReport('esi-challan')}
-                    className="p-2 rounded-lg transition-colors text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                    className="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors"
+                    aria-label="Download ESI Challan Report"
                   >
                     <Download size={16} />
                   </button>
                 )}
               </div>
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg" style={{
+                border: `1px solid ${colors.primary}20`
+              }}>
                 <div>
                   <p className="font-medium text-gray-900">TDS Report</p>
                   <p className="text-sm text-gray-600">Tax deduction summary</p>
@@ -369,13 +435,16 @@ export default function PayrollReports() {
                 {canGenerateCompliance && (
                   <button 
                     onClick={() => handleDownloadReport('tds')}
-                    className="p-2 rounded-lg transition-colors text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                    className="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors"
+                    aria-label="Download TDS Report"
                   >
                     <Download size={16} />
                   </button>
                 )}
               </div>
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg" style={{
+                border: `1px solid ${colors.primary}20`
+              }}>
                 <div>
                   <p className="font-medium text-gray-900">Form 16 Generation</p>
                   <p className="text-sm text-gray-600">Annual tax certificate</p>
@@ -383,7 +452,8 @@ export default function PayrollReports() {
                 {canGenerateCompliance && (
                   <button 
                     onClick={() => handleDownloadReport('form16')}
-                    className="p-2 rounded-lg transition-colors text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                    className="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors"
+                    aria-label="Download Form 16"
                   >
                     <Download size={16} />
                   </button>
@@ -393,13 +463,17 @@ export default function PayrollReports() {
           </div>
 
           {/* Payroll Summary */}
-          <div className="bg-white rounded-2xl border border-black p-6 shadow-sm">
+          <div className="bg-white rounded-2xl p-6 shadow-sm" style={{
+            border: `1px solid ${colors.primary}20`
+          }}>
             <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
               <BarChart3 size={20} />
               Payroll Summary
             </h3>
             <div className="space-y-3">
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg" style={{
+                border: `1px solid ${colors.primary}20`
+              }}>
                 <div>
                   <p className="font-medium text-gray-900">Department-wise Report</p>
                   <p className="text-sm text-gray-600">Payroll breakdown by department</p>
@@ -407,13 +481,16 @@ export default function PayrollReports() {
                 {canGenerate && (
                   <button 
                     onClick={() => handleDownloadReport('department-wise')}
-                    className="p-2 rounded-lg transition-colors text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                    className="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors"
+                    aria-label="Download Department-wise Report"
                   >
                     <Download size={16} />
                   </button>
                 )}
               </div>
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg" style={{
+                border: `1px solid ${colors.primary}20`
+              }}>
                 <div>
                   <p className="font-medium text-gray-900">Grade-wise Report</p>
                   <p className="text-sm text-gray-600">Salary distribution by grade</p>
@@ -421,13 +498,16 @@ export default function PayrollReports() {
                 {canGenerate && (
                   <button 
                     onClick={() => handleDownloadReport('grade-wise')}
-                    className="p-2 rounded-lg transition-colors text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                    className="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors"
+                    aria-label="Download Grade-wise Report"
                   >
                     <Download size={16} />
                   </button>
                 )}
               </div>
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg" style={{
+                border: `1px solid ${colors.primary}20`
+              }}>
                 <div>
                   <p className="font-medium text-gray-900">Bank Transfer Report</p>
                   <p className="text-sm text-gray-600">Salary transfer summary</p>
@@ -435,13 +515,16 @@ export default function PayrollReports() {
                 {canGenerate && (
                   <button 
                     onClick={() => handleDownloadReport('bank-transfer')}
-                    className="p-2 rounded-lg transition-colors text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                    className="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors"
+                    aria-label="Download Bank Transfer Report"
                   >
                     <Download size={16} />
                   </button>
                 )}
               </div>
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg" style={{
+                border: `1px solid ${colors.primary}20`
+              }}>
                 <div>
                   <p className="font-medium text-gray-900">Attendance vs Payroll</p>
                   <p className="text-sm text-gray-600">Attendance impact analysis</p>
@@ -449,7 +532,8 @@ export default function PayrollReports() {
                 {canGenerate && (
                   <button 
                     onClick={() => handleDownloadReport('attendance-payroll')}
-                    className="p-2 rounded-lg transition-colors text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                    className="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors"
+                    aria-label="Download Attendance vs Payroll Report"
                   >
                     <Download size={16} />
                   </button>
@@ -460,12 +544,18 @@ export default function PayrollReports() {
         </div>
 
         {/* Summary Data */}
-        <div className="bg-white rounded-2xl border border-black shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-black bg-gray-50">
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{
+          border: `1px solid ${colors.primary}20`
+        }}>
+          <div className="p-6 bg-gray-50" style={{
+            borderBottom: `1px solid ${colors.primary}20`
+          }}>
             <h3 className="text-lg font-medium text-gray-900">Current Period Summary</h3>
           </div>
           <div className="p-6">
-            <div className="bg-gray-50 rounded-2xl border border-black p-4">
+            <div className="bg-gray-50 rounded-2xl p-4" style={{
+              border: `1px solid ${colors.primary}20`
+            }}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                 <div>
                   <p><strong>Active Employees:</strong> {stats.totalEmployees}</p>
@@ -483,7 +573,9 @@ export default function PayrollReports() {
         </div>
 
         {/* Footer */}
-        <div className="bg-gray-50 rounded-2xl border border-black p-6">
+        <div className="bg-gray-50 rounded-2xl p-6" style={{
+          border: `1px solid ${colors.primary}20`
+        }}>
           <div className="text-sm text-gray-600">
             <p>All reports are generated based on processed payroll data. Ensure payroll is processed before generating compliance reports.</p>
           </div>

@@ -342,7 +342,14 @@ export default function Appraisal() {
 
       {/* Add Appraisal Form */}
       {showForm && (
-        <div className="bg-white rounded-lg shadow-sm ">
+        <div className="rounded-lg shadow-sm relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 pointer-events-none" style={{
+            background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'} 0%, transparent 70%)`,
+            transform: 'translate(40%, -40%)'
+          }}></div>
           <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
             <h3 className="text-base sm:text-lg font-semibold text-gray-900">{editingAppraisal ? 'Edit Performance Appraisal' : 'Create Performance Appraisal'}</h3>
           </div>
@@ -350,7 +357,7 @@ export default function Appraisal() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select
                   value={formData.employee}
                   onChange={(e) => {
                     const selectedEmp = employees.find(emp => emp.name === e.target.value);
@@ -361,7 +368,8 @@ export default function Appraisal() {
                       position: selectedEmp?.position || ""
                     });
                   }}
-                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                   required
                 >
                   <option value="">Select Employee</option>
@@ -373,22 +381,24 @@ export default function Appraisal() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Review Period</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input
                   type="text"
                   value={formData.reviewPeriod}
                   onChange={(e) => setFormData({...formData, reviewPeriod: e.target.value})}
                   placeholder="e.g., 2024 Annual Review, Q4 2024"
-                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                   required
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Appraiser</label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select
                   value={formData.appraiser}
                   onChange={(e) => setFormData({...formData, appraiser: e.target.value})}
-                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                   required
                 >
                   <option value="">Select Appraiser</option>
@@ -400,10 +410,11 @@ export default function Appraisal() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Review Type</label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select
                   value={formData.reviewType}
                   onChange={(e) => setFormData({...formData, reviewType: e.target.value})}
-                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                 >
                   {reviewTypes.map(type => (
                     <option key={type} value={type}>{type}</option>
@@ -413,10 +424,11 @@ export default function Appraisal() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Overall Rating</label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select
                   value={formData.overallRating}
                   onChange={(e) => setFormData({...formData, overallRating: parseInt(e.target.value)})}
-                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                 >
                   {ratings.map(rating => (
                     <option key={rating} value={rating}>{rating} - {rating === 5 ? 'Excellent' : rating === 4 ? 'Good' : rating === 3 ? 'Average' : rating === 2 ? 'Below Average' : 'Poor'}</option>
@@ -426,77 +438,84 @@ export default function Appraisal() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Performance Score (%)</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input
                   type="number"
                   min="0"
                   max="100"
                   value={formData.performanceScore}
                   onChange={(e) => setFormData({...formData, performanceScore: e.target.value})}
-                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                 />
               </div>
 
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Key Strengths</label>
-                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <textarea
                   value={formData.strengths}
                   onChange={(e) => setFormData({...formData, strengths: e.target.value})}
                   rows={3}
-                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                   placeholder="List key strengths and achievements..."
                 />
               </div>
 
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Areas for Improvement</label>
-                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <textarea
                   value={formData.improvements}
                   onChange={(e) => setFormData({...formData, improvements: e.target.value})}
                   rows={3}
-                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                   placeholder="Identify areas that need improvement..."
                 />
               </div>
 
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Development Plan</label>
-                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <textarea
                   value={formData.developmentPlan}
                   onChange={(e) => setFormData({...formData, developmentPlan: e.target.value})}
                   rows={3}
-                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                   placeholder="Outline development plan and training needs..."
                 />
               </div>
 
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Comments</label>
-                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <textarea
                   value={formData.comments}
                   onChange={(e) => setFormData({...formData, comments: e.target.value})}
                   rows={4}
-                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                   placeholder="Additional comments and observations..."
                 />
               </div>
 
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Recommendations</label>
-                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <textarea
                   value={formData.recommendations}
                   onChange={(e) => setFormData({...formData, recommendations: e.target.value})}
                   rows={2}
-                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                   placeholder="Recommendations for promotion, role changes, etc..."
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select
                   value={formData.status}
                   onChange={(e) => setFormData({...formData, status: e.target.value})}
-                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                 >
                   {statuses.map(status => (
                     <option key={status} value={status}>{status}</option>
@@ -612,7 +631,14 @@ export default function Appraisal() {
       )}
 
       {/* Appraisals List */}
-      <div className="bg-white rounded-lg shadow-sm ">
+      <div className="rounded-lg shadow-sm relative overflow-hidden" style={{
+        background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
+        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+      }}>
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 pointer-events-none" style={{
+          background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'} 0%, transparent 70%)`,
+          transform: 'translate(40%, -40%)'
+        }}></div>
         <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
           <h3 className="text-base sm:text-lg font-semibold text-gray-900">Performance Appraisals</h3>
         </div>

@@ -63,17 +63,14 @@ export default function Communication() {
 
   const fetchColors = async () => {
     try {
-      const tenantCode = localStorage.getItem('tenantCode');
+      const tenantCode = localStorage.getItem('tenant_code');
       if (tenantCode) {
         const response = await api.get(`/auth/branding/${tenantCode}`);
         if (response.data.primary_color && response.data.secondary_color) {
-          const newColors = {
+          setColors({
             primary: response.data.primary_color,
             secondary: response.data.secondary_color
-          };
-          setColors(newColors);
-          document.documentElement.style.setProperty('--primary-color', newColors.primary);
-          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+          });
         }
       }
     } catch (error) {
@@ -553,11 +550,18 @@ export default function Communication() {
   return (
     <div className="space-y-6">
       {/* Letter Creation Form */}
-      <div className="rounded-lg shadow-sm  bg-white">
-        <div className="px-6 py-4 border-b border-black">
+      <div className="rounded-lg shadow-sm bg-white relative overflow-hidden" style={{
+        background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+        border: `1px solid ${colors.primary}20`
+      }}>
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
+          background: `radial-gradient(circle, ${colors.primary}40 0%, transparent 70%)`,
+          transform: 'translate(40%, -40%)'
+        }}></div>
+        <div className="px-6 py-4 border-b border-gray-200 relative z-10">
           <h3 className="text-lg font-semibold text-gray-900">Create HR Letter</h3>
         </div>
-        <form className="p-4 sm:p-6">
+        <form className="p-4 sm:p-6 relative z-10">
           {!canAdd ? (
             <div className="text-center py-8">
               <p className="text-gray-500">You don't have permission to create HR letters.</p>
@@ -568,10 +572,14 @@ export default function Communication() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
                   {isAdmin() ? (
-                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                    <select 
                       value={formData.employeeId}
                       onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                      className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      style={{
+                        backgroundColor: `${colors.primary}10`,
+                        border: `1px solid ${colors.primary}`
+                      }}
                     >
                       <option value="">Select Employee</option>
                       {employees.map((emp) => (
@@ -597,10 +605,14 @@ export default function Communication() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Letter Type</label>
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                  <select 
                     value={formData.letterType}
                     onChange={(e) => setFormData({...formData, letterType: e.target.value})}
-                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   >
                     <option value="">Select Type</option>
                     <option value="offer">Offer Letter</option>
@@ -616,10 +628,14 @@ export default function Communication() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                  <select 
                     value={formData.priority}
                     onChange={(e) => setFormData({...formData, priority: e.target.value})}
-                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   >
                     <option value="">Select Priority</option>
                     <option value="low">Low</option>
@@ -630,22 +646,30 @@ export default function Communication() {
                 </div>
                 <div className="sm:col-span-2 lg:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                  <input 
                     type="text"
                     value={formData.subject}
                     onChange={(e) => setFormData({...formData, subject: e.target.value})}
-                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                     placeholder="Letter subject"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 </div>
                 <div className="sm:col-span-2 lg:col-span-3">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Content</label>
-                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                  <textarea 
                     value={formData.content}
                     onChange={(e) => setFormData({...formData, content: e.target.value})}
                     rows={6}
-                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                     placeholder="Letter content..."
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 </div>
               </div>
@@ -686,8 +710,15 @@ export default function Communication() {
       </div>
 
       {/* Letters History */}
-      <div className="rounded-lg shadow-sm  bg-white">
-        <div className="px-6 py-4 border-b border-black">
+      <div className="rounded-lg shadow-sm bg-white relative overflow-hidden" style={{
+        background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+        border: `1px solid ${colors.primary}20`
+      }}>
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
+          background: `radial-gradient(circle, ${colors.primary}40 0%, transparent 70%)`,
+          transform: 'translate(40%, -40%)'
+        }}></div>
+        <div className="px-6 py-4 border-b border-gray-200 relative z-10">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-semibold text-gray-900">
               {showDeleted ? 'Deleted HR Letters' : 'Recent Letters'}
@@ -711,9 +742,9 @@ export default function Communication() {
         </div>
         
         {/* Desktop Table View */}
-        <div className="hidden md:block overflow-x-auto">
+        <div className="hidden md:block overflow-x-auto relative z-10">
           <table className="min-w-full divide-y divide-gray-200 ">
-            <thead className="bg-gray-50 border-b border-black">
+            <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Type</th>
@@ -826,7 +857,7 @@ export default function Communication() {
         </div>
 
         {/* Mobile Card View */}
-        <div className="md:hidden">
+        <div className="md:hidden relative z-10">
           {(showDeleted ? deletedLetters : letters).length === 0 ? (
             <div className="p-6 text-center text-gray-500">
               <p>{showDeleted ? 'No deleted letters found' : 'No letters found'}</p>
@@ -956,10 +987,14 @@ export default function Communication() {
                 {modalMode === 'view' ? (
                   <p className="text-sm text-primary">{selectedLetter.letter_type}</p>
                 ) : (
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <select 
                     value={selectedLetter.letter_type}
                     onChange={(e) => setSelectedLetter({...selectedLetter, letter_type: e.target.value})}
-                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   >
                     <option value="offer">Offer Letter</option>
                     <option value="appointment">Appointment Letter</option>
@@ -979,11 +1014,15 @@ export default function Communication() {
                 {modalMode === 'view' ? (
                   <p className="text-sm text-primary">{selectedLetter.subject}</p>
                 ) : (
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input 
                     type="text"
                     value={selectedLetter.subject}
                     onChange={(e) => setSelectedLetter({...selectedLetter, subject: e.target.value})}
-                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 )}
               </div>
@@ -995,11 +1034,15 @@ export default function Communication() {
                     {selectedLetter.content}
                   </div>
                 ) : (
-                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <textarea 
                     value={selectedLetter.content}
                     onChange={(e) => setSelectedLetter({...selectedLetter, content: e.target.value})}
                     rows={8}
-                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{
+                      backgroundColor: `${colors.primary}10`,
+                      border: `1px solid ${colors.primary}`
+                    }}
                   />
                 )}
               </div>

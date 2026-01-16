@@ -69,11 +69,23 @@ export default function TrainingManagement() {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Header */}
-        <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="rounded-3xl shadow-sm p-6 relative overflow-hidden" style={{ 
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 pointer-events-none" style={{
+            background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'} 0%, transparent 70%)`,
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 relative z-10">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-              <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center border-2 border-black">
-                <BookOpen className="w-8 h-8 text-gray-700" />
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`,
+                border: `2px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+              }}>
+                <BookOpen className="w-8 h-8" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'
+                }} />
               </div>
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Training Management System</h1>
@@ -135,8 +147,15 @@ export default function TrainingManagement() {
         </div>
 
         {/* Active Module Content */}
-        <div className="bg-white rounded-2xl border-2 border-black overflow-hidden">
-          <div className="p-6">
+        <div className="rounded-2xl overflow-hidden relative" style={{ 
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 pointer-events-none" style={{
+            background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'} 0%, transparent 70%)`,
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="p-6 relative z-10">
             <div className="flex items-center gap-3 mb-6">
               {(() => {
                 const activeModuleData = modules.find(m => m.name === activeModule);
