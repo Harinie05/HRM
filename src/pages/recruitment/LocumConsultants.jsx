@@ -397,7 +397,7 @@ const LocumConsultants = () => {
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-600">Consultant Management</span>
-                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border-0">
+                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                   {(isAdmin() || hasPermission('view_consultants')) && (
                     <button
                       onClick={() => setActiveTab('list')}
@@ -559,7 +559,7 @@ const LocumConsultants = () => {
                   </div>
                 </div>
                 {/* Desktop Table View */}
-                <div className="hidden md:block overflow-x-auto">
+                <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 <table className="min-w-full">
                   <thead className="bg-gray-50">
                     <tr>
@@ -777,7 +777,7 @@ const LocumConsultants = () => {
                   )}
                 </div>
                 {/* Desktop Table View */}
-                <div className="hidden md:block overflow-x-auto">
+                <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                   <table className="min-w-full">
                     <thead className="bg-gray-50">
                       <tr>
@@ -888,7 +888,7 @@ const LocumConsultants = () => {
                   )}
                 </div>
                 {/* Desktop Table View */}
-                <div className="hidden md:block overflow-x-auto">
+                <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                   <table className="min-w-full">
                     <thead className="bg-gray-50">
                       <tr>
@@ -1089,6 +1089,10 @@ const LocumConsultants = () => {
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-2xl shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto border" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
               borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
             }}>
               <div className="p-6">
@@ -1330,6 +1334,10 @@ const LocumConsultants = () => {
         {showAvailabilityModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-2xl shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto border" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
               borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
             }}>
               <div className="p-6">
@@ -1478,6 +1486,10 @@ const LocumConsultants = () => {
         {showPayoutModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-2xl shadow-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto border" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
               borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
             }}>
               <div className="p-6">

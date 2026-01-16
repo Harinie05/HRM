@@ -522,7 +522,7 @@ export default function Offer() {
 
               {/* Desktop Table View */}
             <div className="p-6 relative z-10">
-              <div className="hidden md:block overflow-x-auto">
+              <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 <table className="min-w-full">
                   <thead className="bg-gray-50 border-b-0">
                     <tr>
@@ -1008,7 +1008,7 @@ export default function Offer() {
             ) : (
             <>
               {/* Desktop Table View */}
-              <div className="hidden md:block overflow-x-auto">
+              <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 <table className="min-w-full">
                   <thead className="bg-gray-50 border-b-0">
                   <tr>
@@ -1560,6 +1560,10 @@ export default function Offer() {
           {showDocuments && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
               <div className="bg-white p-6 rounded-xl w-[600px] shadow-xl max-h-[80vh] overflow-y-auto relative border" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
                 background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
                 borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
               }}>
@@ -1627,6 +1631,10 @@ export default function Offer() {
           {showOnboardingForm && selectedOnboardingCandidate && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
               <div className="bg-white p-6 w-[900px] max-h-[90vh] overflow-y-auto rounded-xl shadow-xl relative border" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
                 background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
                 borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
               }}>
@@ -1978,7 +1986,7 @@ export default function Offer() {
           {/* ================================================================== */}
           {showDocVerificationModal && selectedOfferForVerification && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-              <div className="bg-white p-6 rounded-xl w-[500px] shadow-xl max-h-[80vh] overflow-y-auto">
+              <div className="bg-white p-6 rounded-xl w-[500px] shadow-xl max-h-[80vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 <h2 className="text-lg font-semibold mb-4">
                   📄 Document Verification - {selectedOfferForVerification.candidate_name}
                 </h2>

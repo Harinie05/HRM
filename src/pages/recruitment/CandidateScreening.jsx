@@ -246,7 +246,7 @@ export default function CandidateScreening() {
           ) : (
             <>
               {/* Desktop Table View */}
-              <div className="hidden md:block overflow-x-auto relative z-10">
+              <div className="hidden md:block overflow-x-auto relative z-10" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 <table className="min-w-full">
                   <thead className="bg-gray-100 text-gray-600 text-sm border-b-0">
                     <tr>
@@ -437,6 +437,8 @@ export default function CandidateScreening() {
       {showScheduleModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
           <div className="bg-white p-4 sm:p-6 rounded-lg w-full max-w-lg sm:max-w-2xl max-h-[80vh] overflow-y-auto relative border hide-scrollbar" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`,
             scrollbarWidth: 'none',
             msOverflowStyle: 'none'

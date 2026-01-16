@@ -126,28 +126,64 @@ export default function AuditLogs() {
     <Layout>
       <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
         {/* Header */}
-        <div className="bg-white rounded-xl border border-black shadow-lg p-4 sm:p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-gray-100 rounded-xl">
-                <Database className="h-6 w-6 text-gray-700" />
+        <div className="rounded-2xl shadow-sm p-4 sm:p-6 relative overflow-hidden border" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 relative z-10">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <Database className="h-5 w-5 sm:h-6 sm:w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
-              <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Audit Logs</h1>
-                <p className="text-sm sm:text-base text-gray-600">Track all system activities and changes</p>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1 truncate">Audit Logs</h1>
+                <p className="text-gray-600 text-xs sm:text-sm mb-1">Track all system activities and changes</p>
+                <p className="text-gray-500 text-xs hidden sm:block">System Activity Monitoring</p>
               </div>
             </div>
-            <div className="text-left sm:text-right">
-              <p className="text-sm text-gray-600">Total Records</p>
-              <p className="text-xl sm:text-2xl font-bold text-gray-900">{pagination.total}</p>
+            <div className="flex gap-2 sm:gap-3 flex-shrink-0">
+              <div className="bg-white rounded-lg p-2 sm:p-3 shadow-sm border" style={{
+                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
+                  <Activity className="h-3 w-3" />
+                  <span className="text-xs font-medium">Records</span>
+                </div>
+                <p className="text-sm font-semibold text-gray-900">{pagination.total}</p>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-xl border border-black shadow-lg p-4 sm:p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Filter className="h-5 w-5 text-gray-600" />
+        <div className="bg-white rounded-xl shadow-sm relative overflow-hidden border p-4 sm:p-6" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="flex items-center gap-2 mb-4 relative z-10">
+            <div className="p-2 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <Filter className="h-5 w-5" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
+            </div>
             <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
           </div>
           
@@ -208,9 +244,25 @@ export default function AuditLogs() {
         </div>
 
         {/* Audit Logs Table */}
-        <div className="bg-white rounded-xl border border-black shadow-lg overflow-hidden">
-          <div className="p-4 sm:p-6 border-b-0">
-            <h3 className="text-lg font-semibold text-gray-900">Audit Trail</h3>
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden relative border" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="p-4 sm:p-6 border-b-0 relative z-10">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <Database className="h-5 w-5" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900">Audit Trail</h3>
+            </div>
           </div>
           
           {loading ? (
@@ -226,7 +278,7 @@ export default function AuditLogs() {
           ) : (
             <>
               {/* Desktop Table View */}
-              <div className="hidden lg:block overflow-x-auto">
+              <div className="hidden lg:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
@@ -395,7 +447,7 @@ export default function AuditLogs() {
       {/* Modal */}
       {showModal && selectedLog && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <div className="flex items-center justify-between p-6 border-b-0">
               <h3 className="text-lg font-semibold text-gray-900">Audit Log Details</h3>
               <button

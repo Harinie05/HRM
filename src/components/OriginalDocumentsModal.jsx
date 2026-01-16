@@ -119,7 +119,7 @@ const OriginalDocumentsModal = ({ isOpen, onClose, employee }) => {
           </div>
 
           {/* Content */}
-          <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
+          <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)]" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {/* Add Custom Document */}
             <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
               <h3 className="text-sm font-medium text-gray-700 mb-3">Add Custom Document Type</h3>

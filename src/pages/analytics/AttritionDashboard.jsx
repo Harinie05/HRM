@@ -270,7 +270,7 @@ const AttritionDashboard = () => {
           {/* Department Wise Attrition */}
           <div className="rounded-xl shadow-sm p-6 mb-8" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
             <h3 className="text-lg font-semibold text-[#0D3B66] mb-4">Department Wise Attrition</h3>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
                 <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                   <tr>

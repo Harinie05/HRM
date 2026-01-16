@@ -465,7 +465,7 @@ export default function ReviewCycle() {
         </div>
         
         {/* Desktop Table View */}
-        <div className="hidden md:block overflow-x-auto">
+        <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           <table className="min-w-full divide-y divide-gray-200 ">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>

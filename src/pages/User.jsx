@@ -361,7 +361,7 @@ export default function Users() {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600 whitespace-nowrap">Filter</span>
-                  <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border-0">
+                  <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                     <button 
                       onClick={() => setFilter("all")}
                       className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
@@ -619,7 +619,7 @@ export default function Users() {
       {/* Create Modal matching Department/Roles page */}
       {showCreateModal && canAdd && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto border-0">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto border-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-medium text-gray-900">Create User</h3>
@@ -758,7 +758,7 @@ export default function Users() {
 
                 <div>
                   <h3 className="text-sm font-medium text-gray-700 mb-3">Roles ({roles.length} available)</h3>
-                  <div className="grid grid-cols-2 gap-3 max-h-32 overflow-y-auto">
+                  <div className="grid grid-cols-2 gap-3 max-h-32 overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                     {roles.map((r) => (
                       <div key={r.id} className="flex items-center gap-2">
                         <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
@@ -814,7 +814,7 @@ export default function Users() {
       {/* Edit Modal matching Department/Roles page */}
       {editing && canEdit && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto border-0">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto border-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-medium text-gray-900">Edit User</h3>
@@ -944,7 +944,7 @@ export default function Users() {
 
                 <div>
                   <h3 className="text-sm font-medium text-gray-700 mb-3">Roles ({roles.length} available)</h3>
-                  <div className="grid grid-cols-2 gap-3 max-h-32 overflow-y-auto">
+                  <div className="grid grid-cols-2 gap-3 max-h-32 overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                     {roles.map((r) => (
                       <div key={r.id} className="flex items-center gap-2">
                         <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 

@@ -30,7 +30,7 @@ const ManpowerDashboard = () => {
       {/* Department Wise Planning */}
       <div className="p-6 rounded-lg shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         <h3 className="text-lg font-semibold mb-4">Department Wise Manpower Planning</h3>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
             <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
               <tr>

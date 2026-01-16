@@ -362,7 +362,7 @@ const ResignationTracking = () => {
       {/* Apply Resignation Modal */}
       {showApplyForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white p-6 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+          <div className="bg-white p-6 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-primary">Apply Resignation</h2>
               <button 
@@ -497,7 +497,7 @@ const ResignationTracking = () => {
         </div>
         
         {/* Desktop Table View */}
-        <div className="hidden md:block overflow-x-auto">
+        <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           <table className="w-full border-collapse">
             <thead className="bg-gray-50">
               <tr>

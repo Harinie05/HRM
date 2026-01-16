@@ -129,6 +129,8 @@ export default function PayrollLayout() {
         {/* Tab Navigation */}
         <div className="mb-6 px-4">
           <div className="rounded-full p-1.5 inline-flex space-x-1 overflow-x-auto scrollbar-hide w-full sm:w-auto relative overflow-hidden" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
             backgroundColor: `${colors.primary}10`,
             border: `1px solid ${colors.primary}20`
           }}>

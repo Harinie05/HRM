@@ -67,9 +67,19 @@ export default function Roles() {
       name: "Employee",
       description: "Basic employee access for self-service",
       permissions: [
-        "view_self", "view_employee_profile", "edit_employee_profile", "view_employee_documents",
-        "upload_employee_documents", "apply_leave", "edit_leave_application", 
-        "view_leave_calendar", "view_leave_balance", "view_salary_slips", "download_salary_slips"
+        "view_self", "view_employees", "view_employee_profile", "view_holidays",
+        "view_candidate", "generate_job_link", "view_resignations", "apply_resignation",
+        "view_exit_interviews", "view_kt_plans", "add_kt_plan", "create_kt_plan", "complete_kt_items",
+        "view_settlements", "download_settlement_pdf", "generate_experience_letter",
+        "view_training_programs", "view_training_calendar", "add_training_request",
+        "view_training_attendance", "mark_training_attendance", "update_attendance_training",
+        "view_work_assignments", "view_goals_kpi", "view_shifts", "view_weekly_roster",
+        "view_attendance", "mark_attendance", "view_punch_logs", "punch_in", "punch_out",
+        "view_od_applications", "apply_od", "add_attendance_location",
+        "view_attendance_permission", "apply_attendance_permission",
+        "view_daily_updates", "add_daily_update",
+        "view_salary_slips", "download_salary_slips",
+        "view_leave_types", "view_leave_policies", "apply_leave", "view_leave_applications"
       ]
     },
     {
@@ -538,59 +548,82 @@ export default function Roles() {
     } else {
       let newList = [...list, perm];
       
-      // Auto-select view permissions for ALL modules when any permission is selected
-      const getViewPermissionsForAllModules = () => {
-        return [
-          // Global
-          'view_self',
-          // User Management
-          'view_users', 'view_user_roles',
-          // Employee Management
-          'view_employees', 'view_employee_profile', 'view_employee_documents',
-          // Organization Setup
-          'view_company_profile', 'view_branch', 'view_department', 'view_designation',
-          // Reporting Structure
-          'view_reporting_structure', 'view_hierarchy',
-          // Holiday Calendar
-          'view_holidays',
-          // Job Requisition
-          'view_job_requisition',
-          // Recruitment
-          'view_candidates', 'view_candidate', 'view_ats_candidates', 'view_offers_sent', 'view_onboarding_candidates', 'view_consultants',
-          // Exit Management
-          'view_resignations', 'view_kt_plans', 'view_settlements', 'view_exit_interviews',
-          // Compliance
-          'view_statutory_calculations', 'view_labour_register', 'view_leave_compliance', 'view_nabh_compliance',
-          // Training & Development
-          'view_training_programs', 'view_training_calendar', 'view_training_requests', 'view_training_attendance', 'view_training_certificates',
-          // Performance Management
-          'view_work_assignments', 'view_goals_kpi', 'view_review_cycles', 'view_feedback', 'view_appraisals', 'view_quality_indicators',
-          // Shift & Roster Management
-          'view_shifts', 'view_roster', 'view_weekly_roster', 'VIEW_ROSTER', 'MANAGE_ROSTER', 'MANAGE_NIGHT_SHIFT_RULES', 'MANAGE_ON_CALL_DUTY',
-          // Attendance Management
-          'view_attendance', 'view_punch_logs', 'view_od_applications', 'view_attendance_rules', 'view_attendance_locations', 'view_daily_updates', 'view_attendance_permission', 'view_attendance_reports',
-          // HR Operations
-          'view_lifecycle_actions', 'view_hr_letters', 'view_grievances', 'view_assets', 'view_insurance_benefits', 'view_staff_schedules',
-          // Dashboard
-          'view_documents_alerts', 'view_audit_log',
-          // Payroll Management
-          'view_salary_structure', 'view_statutory_rules', 'view_payroll_run', 'view_payroll_adjustments', 'view_salary_slips', 'view_payroll_reports', 'view_compliance_reports', 'view_payment_status',
-          // Leave Management
-          'view_leave_types', 'view_leave_policies', 'view_leave_rules', 'view_leave_applications', 'view_leave_calendar', 'view_leave_reports', 'view_leave_balance', 'view_leave_trends',
-          // Customization
-          'view_customization'
+      // Special handling for view_self - select view_all in modules that have view_self
+      if (perm === 'view_self') {
+        // Define modules that have view_self permission - add view_all for these
+        const modulesWithViewSelf = [
+          'view_all',
+          'view_employee_profile',
+          'view_employee_documents',
+          'view_leave_applications',
+          'view_leave_balance',
+          'view_leave_calendar',
+          'view_salary_slips',
+          'view_attendance',
+          'view_punch_logs'
         ];
-      };
-      
-      // Get all view permissions
-      const allViewPermissions = getViewPermissionsForAllModules();
-      
-      // Add all missing view permissions that exist in the system
-      allViewPermissions.forEach(viewPerm => {
-        if (!newList.includes(viewPerm) && permissions.some(p => p.name === viewPerm)) {
-          newList.push(viewPerm);
-        }
-      });
+        
+        // Add view_all and related permissions for modules with view_self
+        modulesWithViewSelf.forEach(viewPerm => {
+          if (!newList.includes(viewPerm) && permissions.some(p => p.name === viewPerm)) {
+            newList.push(viewPerm);
+          }
+        });
+      } else {
+        // Auto-select view permissions for ALL modules when any other permission is selected
+        const getViewPermissionsForAllModules = () => {
+          return [
+            // Global
+            'view_self',
+            // User Management
+            'view_users', 'view_user_roles',
+            // Employee Management
+            'view_employees', 'view_employee_profile', 'view_employee_documents',
+            // Organization Setup
+            'view_company_profile', 'view_branch', 'view_department', 'view_designation',
+            // Reporting Structure
+            'view_reporting_structure', 'view_hierarchy',
+            // Holiday Calendar
+            'view_holidays',
+            // Job Requisition
+            'view_job_requisition',
+            // Recruitment
+            'view_candidates', 'view_candidate', 'view_ats_candidates', 'view_offers_sent', 'view_onboarding_candidates', 'view_consultants',
+            // Exit Management
+            'view_resignations', 'view_kt_plans', 'view_settlements', 'view_exit_interviews',
+            // Compliance
+            'view_statutory_calculations', 'view_labour_register', 'view_leave_compliance', 'view_nabh_compliance',
+            // Training & Development
+            'view_training_programs', 'view_training_calendar', 'view_training_requests', 'view_training_attendance', 'view_training_certificates',
+            // Performance Management
+            'view_work_assignments', 'view_goals_kpi', 'view_review_cycles', 'view_feedback', 'view_appraisals', 'view_quality_indicators',
+            // Shift & Roster Management
+            'view_shifts', 'view_roster', 'view_weekly_roster', 'VIEW_ROSTER', 'MANAGE_ROSTER', 'MANAGE_NIGHT_SHIFT_RULES', 'MANAGE_ON_CALL_DUTY',
+            // Attendance Management
+            'view_attendance', 'view_punch_logs', 'view_od_applications', 'view_attendance_rules', 'view_attendance_locations', 'view_daily_updates', 'view_attendance_permission', 'view_attendance_reports',
+            // HR Operations
+            'view_lifecycle_actions', 'view_hr_letters', 'view_grievances', 'view_assets', 'view_insurance_benefits', 'view_staff_schedules',
+            // Dashboard
+            'view_documents_alerts', 'view_audit_log',
+            // Payroll Management
+            'view_salary_structure', 'view_statutory_rules', 'view_payroll_run', 'view_payroll_adjustments', 'view_salary_slips', 'view_payroll_reports', 'view_compliance_reports', 'view_payment_status',
+            // Leave Management
+            'view_leave_types', 'view_leave_policies', 'view_leave_rules', 'view_leave_applications', 'view_leave_calendar', 'view_leave_reports', 'view_leave_balance', 'view_leave_trends',
+            // Customization
+            'view_customization'
+          ];
+        };
+        
+        // Get all view permissions
+        const allViewPermissions = getViewPermissionsForAllModules();
+        
+        // Add all missing view permissions that exist in the system
+        allViewPermissions.forEach(viewPerm => {
+          if (!newList.includes(viewPerm) && permissions.some(p => p.name === viewPerm)) {
+            newList.push(viewPerm);
+          }
+        });
+      }
       
       // Existing auto-selecting dependent permissions
       if (perm === 'view_employees' && !newList.includes('mark_onboarded')) {
@@ -1067,7 +1100,7 @@ export default function Roles() {
       {/* Create Modal */}
       {showCreateModal && canAdd && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto border-0">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto border-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-bold text-gray-900">Create New Role</h3>
@@ -1232,7 +1265,7 @@ export default function Roles() {
                     </div>
                   </div>
                   
-                  <div className="max-h-96 overflow-y-auto border border-gray-300 rounded-lg p-4 space-y-4">
+                  <div className="max-h-96 overflow-y-auto border border-gray-300 rounded-lg p-4 space-y-4" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                     {getFilteredPermissions(permissionSearch, moduleFilter).length === 0 ? (
                       <div className="text-center py-8">
                         <p className="text-gray-500 text-sm">No permissions found matching your search criteria.</p>
@@ -3109,7 +3142,7 @@ export default function Roles() {
       {/* Edit Modal */}
       {editing && canEdit && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto border-2 border-black">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto border-2 border-black" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-bold text-gray-900">Edit Role</h3>
@@ -3267,7 +3300,7 @@ export default function Roles() {
                     </div>
                   </div>
                   
-                  <div className="max-h-96 overflow-y-auto border border-gray-300 rounded-lg p-4 space-y-2">
+                  <div className="max-h-96 overflow-y-auto border border-gray-300 rounded-lg p-4 space-y-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                     {editModuleFilter && (
                       <div className="mb-4 pb-2 border-b-0">
                         <h4 className="text-sm font-semibold text-gray-800">{getModuleHeading(editModuleFilter)}</h4>

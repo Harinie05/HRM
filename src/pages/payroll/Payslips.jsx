@@ -607,7 +607,7 @@ export default function Payslips() {
           border: `1px solid ${colors.primary}20`
         }}>
           {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto">
+          <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <table className="w-full">
               <thead className="bg-gray-100" style={{
                 borderBottom: `1px solid ${colors.primary}20`
@@ -930,6 +930,8 @@ export default function Payslips() {
             paddingBottom: '20px'
           }}>
             <div className="bg-white rounded-xl p-4 w-full max-w-2xl max-h-full overflow-y-auto relative scrollbar-hide" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
               border: `1px solid ${colors.primary}20`,
               scrollbarWidth: 'none',
               msOverflowStyle: 'none'

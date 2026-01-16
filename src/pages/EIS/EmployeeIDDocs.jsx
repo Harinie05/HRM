@@ -261,7 +261,7 @@ export default function EmployeeIDDocs() {
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
             transform: 'translate(30%, -30%)'
           }}></div>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <table className="min-w-full">
               <thead className="bg-gray-50 border-b-0">
                 <tr>

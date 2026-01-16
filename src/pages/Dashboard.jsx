@@ -1408,7 +1408,7 @@ export default function Dashboard() {
             </div>
 
             {/* Modal Content */}
-            <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               {/* Medical License Alerts */}
               {licenseAlerts.length > 0 && (
                 <div className="mb-8">

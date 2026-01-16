@@ -273,7 +273,7 @@ export default function EmployeeExperience() {
             transform: 'translate(30%, -30%)'
           }}></div>
           {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto">
+          <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <table className="min-w-full">
               <thead className="bg-gray-50 border-b-0">
                 <tr>
@@ -487,6 +487,10 @@ export default function EmployeeExperience() {
         {showForm && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto border" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
               borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
             }}>
               <div className="flex items-center gap-3 mb-6">

@@ -409,7 +409,7 @@ export default function TrainingApplications() {
               </p>
             </div>
             
-            <div className="px-6 py-4 max-h-96 overflow-y-auto">
+            <div className="px-6 py-4 max-h-96 overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>

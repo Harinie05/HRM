@@ -210,7 +210,7 @@ export default function AttendanceLogs() {
 
   // Check status when employee is selected and logs are available
   useEffect(() => {
-    if (selectedEmployee && logs.length > 0) {
+    if (selectedEmployee) {
       checkTodayStatus();
     }
   }, [selectedEmployee, logs]);
@@ -314,29 +314,7 @@ export default function AttendanceLogs() {
     
     console.log('Checking status for employee:', actualEmployeeId, 'on date:', today);
     
-    // First check local logs
-    const todayLog = logs.find(log => 
-      log.employee_id == actualEmployeeId && log.date === today
-    );
-    
-    console.log('Found local log:', todayLog);
-    
-    if (todayLog) {
-      if (todayLog.out_time) {
-        console.log('Setting status to checked_out');
-        setCurrentStatus('checked_out');
-        setCheckInSource(null);
-        setAttendanceMode('');
-      } else {
-        console.log('Setting status to checked_in with source:', todayLog.source);
-        setCurrentStatus('checked_in');
-        setCheckInSource(todayLog.source);
-        setAttendanceMode(todayLog.source);
-      }
-      return;
-    }
-    
-    // If no local log found, check API
+    // Always check API first for most up-to-date status
     try {
       const statusRes = await api.get(`/api/attendance/punches/check-status/${actualEmployeeId}`);
       const status = statusRes.data;
@@ -359,8 +337,31 @@ export default function AttendanceLogs() {
         setCheckInSource(null);
         setAttendanceMode('');
       }
+      return;
     } catch (err) {
-      console.error('Failed to check status:', err);
+      console.error('Failed to check status from API:', err);
+    }
+    
+    // Fallback to local logs if API fails
+    const todayLog = logs.find(log => 
+      log.employee_id == actualEmployeeId && log.date === today
+    );
+    
+    console.log('Found local log:', todayLog);
+    
+    if (todayLog) {
+      if (todayLog.out_time) {
+        console.log('Setting status to checked_out');
+        setCurrentStatus('checked_out');
+        setCheckInSource(null);
+        setAttendanceMode('');
+      } else {
+        console.log('Setting status to checked_in with source:', todayLog.source);
+        setCurrentStatus('checked_in');
+        setCheckInSource(todayLog.source);
+        setAttendanceMode(todayLog.source);
+      }
+    } else {
       setCurrentStatus('not_checked_in');
       setCheckInSource(null);
       setAttendanceMode('');
@@ -483,8 +484,12 @@ export default function AttendanceLogs() {
       
       setCurrentStatus('checked_in');
       setCheckInSource(source);
-      fetchLogs();
-      checkTodayStatus(); // Refresh status after successful check-in
+      setAttendanceMode(source);
+      await fetchLogs();
+      await checkTodayStatus(); // Refresh status after successful check-in
+      
+      // Notify header to refresh
+      window.dispatchEvent(new Event('attendance-updated'));
       
       const notification = document.createElement('div');
       notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
@@ -805,9 +810,17 @@ export default function AttendanceLogs() {
         
         <div className="p-4 sm:p-6 pt-16 sm:pt-20 lg:pt-24 space-y-4 sm:space-y-6">
           {/* Hero Header matching User.jsx */}
-          <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
+          <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6 relative overflow-hidden" style={{
             background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
           }}>
+            <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+              transform: 'translate(30%, -30%)'
+            }}></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+              transform: 'translate(-30%, 30%)'
+            }}></div>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
@@ -840,7 +853,13 @@ export default function AttendanceLogs() {
           </div>
 
           {/* Tab Navigation matching User.jsx */}
-          <div className="bg-white rounded-xl border-0 shadow-sm">
+          <div className="bg-white rounded-xl border shadow-sm relative overflow-hidden" style={{
+            borderColor: `${colors.primary}20`
+          }}>
+            <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-10" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+              transform: 'translate(30%, -30%)'
+            }}></div>
             <div className="p-5 border-b-0">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -863,7 +882,7 @@ export default function AttendanceLogs() {
                 <div className="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-gray-600">Filter</span>
-                    <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border-0">
+                    <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                       {tabs.map((tab) => (
                         <button
                           key={tab.id}
@@ -902,7 +921,13 @@ export default function AttendanceLogs() {
             {activeTab === 'logs' && (
               <div className="p-4 sm:p-6">
                 {/* Employee Selection */}
-                <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-gray-50 rounded-lg border-0">
+                <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-gray-50 rounded-lg border relative overflow-hidden" style={{
+                  borderColor: `${colors.primary}20`
+                }}>
+                <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-3xl opacity-20" style={{
+                  backgroundColor: colors.primary,
+                  transform: 'translate(40%, -40%)'
+                }}></div>
                   <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6 flex items-center gap-2">
                     <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -913,7 +938,7 @@ export default function AttendanceLogs() {
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
                       {isAdmin() ? (
-                        <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                        <select
                           value={selectedEmployee}
                           onChange={(e) => {
                             setSelectedEmployee(e.target.value);
@@ -921,8 +946,10 @@ export default function AttendanceLogs() {
                               fetchLogs();
                             }
                           }}
-                          className="w-full px-3 sm:px-4 py-2 bg-white border-0 rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 bg-white rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base"
                           style={{
+                            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`,
                             focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                           }}
                           disabled={employeesLoading}
@@ -966,7 +993,7 @@ export default function AttendanceLogs() {
                       <div className="mt-4 sm:mt-6">
                         <label className="block text-sm font-medium text-gray-700 mb-2">Office Location</label>
                         {!showAddLocation ? (
-                          <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                          <select
                             value={selectedLocation}
                             onChange={(e) => {
                               if (e.target.value === 'add_new') {
@@ -975,8 +1002,10 @@ export default function AttendanceLogs() {
                                 setSelectedLocation(e.target.value);
                               }
                             }}
-                            className="w-full px-3 sm:px-4 py-2 bg-white border-0 rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base"
+                            className="w-full px-3 sm:px-4 py-2 bg-white rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base"
                             style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`,
                               focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                             }}
                           >
@@ -989,13 +1018,15 @@ export default function AttendanceLogs() {
                           </select>
                         ) : (
                           <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
-                            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                            <input
                               type="text"
                               value={newLocationName}
                               onChange={(e) => setNewLocationName(e.target.value)}
                               placeholder="Enter location name"
-                              className="flex-1 px-3 sm:px-4 py-2 bg-white border-0 rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base"
+                              className="flex-1 px-3 sm:px-4 py-2 bg-white rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base"
                               style={{
+                                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`,
                                 focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                               }}
                             />
@@ -1048,7 +1079,15 @@ export default function AttendanceLogs() {
                 </div>
 
                 {selectedEmployee && !attendanceMode && currentStatus === 'not_checked_in' && canMarkAttendance && (
-                  <div className="mb-6 sm:mb-8 p-4 sm:p-6 lg:p-8 bg-white rounded-3xl border-0 shadow-xl">
+                  <div className="mb-6 sm:mb-8 p-4 sm:p-6 lg:p-8 bg-white rounded-3xl border-0 shadow-xl relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                    transform: 'translate(30%, -30%)'
+                  }}></div>
+                  <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-xl opacity-10" style={{
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+                    transform: 'translate(-30%, 30%)'
+                  }}></div>
                     <h3 className="text-base sm:text-lg lg:text-xl font-bold mb-4 sm:mb-6 text-gray-900">Choose Attendance Mode</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                       <button
@@ -1171,7 +1210,9 @@ export default function AttendanceLogs() {
                   <div>
                     {currentStatus === 'not_checked_in' && attendanceMode && (
                       <div className="text-center mb-6 sm:mb-8">
-                        <div className="inline-block p-4 sm:p-6 lg:p-8 bg-white rounded-3xl border-0 shadow-2xl">
+                        <div className="inline-block p-4 sm:p-6 lg:p-8 bg-white rounded-3xl shadow-2xl border" style={{
+                          borderColor: `${colors.primary}20`
+                        }}>
                           <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base lg:text-lg">
                             Ready to check in using <span className="font-bold text-gray-900">{attendanceMode}</span> mode
                             {attendanceMode === 'MOBILE' && gpsPermissionGranted && (
@@ -1217,7 +1258,11 @@ export default function AttendanceLogs() {
                     )}
                     
                     {currentStatus === 'checked_in' && (
-                      <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-white rounded-lg border-0">
+                      <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-white rounded-lg border-0 relative overflow-hidden">
+                      <div className="absolute top-0 left-0 w-12 h-12 rounded-full blur-xl opacity-10" style={{
+                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                        transform: 'translate(-25%, -25%)'
+                      }}></div>
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                           <div>
                             <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-1">Check Out</h3>
@@ -1265,7 +1310,9 @@ export default function AttendanceLogs() {
             )}
           </div>
 
-          <div className="bg-white rounded-lg border border-black overflow-hidden">
+          <div className="bg-white rounded-lg border overflow-hidden" style={{
+            borderColor: `${colors.primary}20`
+          }}>
             {activeTab === 'logs' && (
               <div>
                 <div className="px-4 py-3 bg-gray-50 border-b-0">
@@ -1280,7 +1327,7 @@ export default function AttendanceLogs() {
                 </div>
                 
                 {/* Desktop Table View */}
-                <div className="hidden md:block overflow-x-auto">
+                <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                   <table className="w-full">
                     <thead className="bg-gray-50">
                       <tr>
@@ -1432,17 +1479,23 @@ export default function AttendanceLogs() {
             {activeTab === 'regularization' && (
               <div className="p-4 sm:p-6 lg:p-8">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-                  <div className="bg-gray-50 rounded-lg border-0 p-4 sm:p-6 lg:p-8">
+                  <div className="bg-gray-50 rounded-lg border-0 p-4 sm:p-6 lg:p-8 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-xl opacity-10" style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                      transform: 'translate(25%, -25%)'
+                    }}></div>
                     <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Submit Regularization Request</h3>
                     <div className="space-y-4 sm:space-y-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
                         {isAdmin() ? (
-                          <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                          <select
                             value={regularizationForm.employee_id}
                             onChange={(e) => setRegularizationForm({...regularizationForm, employee_id: e.target.value})}
-                            className="w-full px-3 sm:px-4 py-2 bg-white border-0 rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base"
+                            className="w-full px-3 sm:px-4 py-2 bg-white rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base"
                             style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`,
                               focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                             }}
                             disabled={employeesLoading}
@@ -1483,23 +1536,27 @@ export default function AttendanceLogs() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
-                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                        <input
                           type="date"
                           value={regularizationForm.date}
                           onChange={(e) => setRegularizationForm({...regularizationForm, date: e.target.value})}
-                          className="w-full px-3 sm:px-4 py-2 bg-white border-0 rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 bg-white rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base"
                           style={{
+                            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`,
                             focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                           }}
                         />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Issue Type</label>
-                        <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                        <select
                           value={regularizationForm.issue_type}
                           onChange={(e) => setRegularizationForm({...regularizationForm, issue_type: e.target.value})}
-                          className="w-full px-3 sm:px-4 py-2 bg-white border-0 rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 bg-white rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base"
                           style={{
+                            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`,
                             focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                           }}
                         >
@@ -1510,12 +1567,14 @@ export default function AttendanceLogs() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Reason</label>
-                        <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                        <textarea
                           value={regularizationForm.reason}
                           onChange={(e) => setRegularizationForm({...regularizationForm, reason: e.target.value})}
                           rows="4"
-                          className="w-full px-3 sm:px-4 py-2 bg-white border-0 rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base resize-none"
+                          className="w-full px-3 sm:px-4 py-2 bg-white rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base resize-none"
                           style={{
+                            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`,
                             focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                           }}
                           placeholder="Explain the reason for regularization..."
@@ -1533,9 +1592,15 @@ export default function AttendanceLogs() {
                     </div>
                   </div>
 
-                  <div className="bg-white rounded-lg border border-black p-4 sm:p-6 lg:p-8">
+                  <div className="bg-white rounded-lg p-4 sm:p-6 lg:p-8 relative overflow-hidden border" style={{
+                    borderColor: `${colors.primary}20`
+                  }}>
+                    <div className="absolute bottom-0 left-0 w-16 h-16 rounded-full blur-xl opacity-10" style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+                      transform: 'translate(-25%, 25%)'
+                    }}></div>
                     <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Pending Requests</h3>
-                    <div className="space-y-3 sm:space-y-4 max-h-80 sm:max-h-96 overflow-y-auto">
+                    <div className="space-y-3 sm:space-y-4 max-h-80 sm:max-h-96 overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                       {regularizationRequests.map((request) => (
                         <div key={request.id} className="p-3 sm:p-4 border-0 rounded-lg">
                           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-2">
@@ -1582,16 +1647,26 @@ export default function AttendanceLogs() {
             {activeTab === 'od' && (
               <div className="p-4 sm:p-6 lg:p-8">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-                  <div className="bg-gray-50 rounded-lg border border-black p-4 sm:p-6 lg:p-8">
+                  <div className="bg-gray-50 rounded-lg p-4 sm:p-6 lg:p-8 relative overflow-hidden border" style={{
+                    borderColor: `${colors.primary}20`
+                  }}>
+                    <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-xl opacity-10" style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                      transform: 'translate(25%, -25%)'
+                    }}></div>
                     <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Submit OD Application</h3>
                     <div className="space-y-4 sm:space-y-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
                         {isAdmin() ? (
-                          <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                          <select
                             value={odForm.employee_id}
                             onChange={(e) => setOdForm({...odForm, employee_id: e.target.value})}
-                            className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                            className="w-full px-3 sm:px-4 py-2 bg-white rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                            style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                            }}
                             disabled={employeesLoading}
                           >
                             <option value="">{employeesLoading ? 'Loading employees...' : 'Select Employee'}</option>
@@ -1602,7 +1677,9 @@ export default function AttendanceLogs() {
                             ))}
                           </select>
                         ) : (
-                          <div className="w-full px-3 sm:px-4 py-2 bg-gray-50 border border-black rounded-lg text-gray-700 text-sm sm:text-base">
+                          <div className="w-full px-3 sm:px-4 py-2 bg-gray-50 rounded-lg text-gray-700 text-sm sm:text-base border" style={{
+                            borderColor: `${colors.primary}20`
+                          }}>
                             {employeesLoading ? (
                               <div className="flex items-center gap-2">
                                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
@@ -1630,50 +1707,70 @@ export default function AttendanceLogs() {
                     </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">OD Date</label>
-                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                        <input
                           type="date"
                           value={odForm.od_date}
                           onChange={(e) => setOdForm({...odForm, od_date: e.target.value})}
-                          className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 bg-white rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                          style={{
+                            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                          }}
                         />
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">From Time</label>
-                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                          <input
                             type="time"
                             value={odForm.from_time}
                             onChange={(e) => setOdForm({...odForm, from_time: e.target.value})}
-                            className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                            className="w-full px-3 sm:px-4 py-2 bg-white rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                            style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                            }}
                           />
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">To Time</label>
-                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                          <input
                             type="time"
                             value={odForm.to_time}
                             onChange={(e) => setOdForm({...odForm, to_time: e.target.value})}
-                            className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                            className="w-full px-3 sm:px-4 py-2 bg-white rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                            style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                            }}
                           />
                         </div>
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                        <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                        <input
                           type="text"
                           value={odForm.location}
                           onChange={(e) => setOdForm({...odForm, location: e.target.value})}
-                          className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 bg-white rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                          style={{
+                            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                          }}
                           placeholder="Enter OD location"
                         />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Purpose</label>
-                        <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                        <textarea
                           value={odForm.purpose}
                           onChange={(e) => setOdForm({...odForm, purpose: e.target.value})}
                           rows="4"
-                          className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 bg-white rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                          style={{
+                            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                          }}
                           placeholder="Explain the purpose of OD..."
                         ></textarea>
                       </div>
@@ -1686,11 +1783,19 @@ export default function AttendanceLogs() {
                     </div>
                   </div>
 
-                  <div className="bg-white rounded-lg border border-black p-4 sm:p-6 lg:p-8">
+                  <div className="bg-white rounded-lg p-4 sm:p-6 lg:p-8 relative overflow-hidden border" style={{
+                    borderColor: `${colors.primary}20`
+                  }}>
+                    <div className="absolute bottom-0 right-0 w-16 h-16 rounded-full blur-xl opacity-10" style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+                      transform: 'translate(25%, 25%)'
+                    }}></div>
                     <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">OD Applications</h3>
-                    <div className="space-y-3 sm:space-y-4 max-h-80 sm:max-h-96 overflow-y-auto">
+                    <div className="space-y-3 sm:space-y-4 max-h-80 sm:max-h-96 overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                       {odApplications.map((application) => (
-                        <div key={application.id} className="p-3 sm:p-4 border border-black rounded-lg">
+                        <div key={application.id} className="p-3 sm:p-4 rounded-lg border" style={{
+                          borderColor: `${colors.primary}20`
+                        }}>
                           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-2">
                             <div>
                               <p className="font-semibold text-gray-900 text-sm sm:text-base">{application.employee}</p>
@@ -1716,7 +1821,10 @@ export default function AttendanceLogs() {
                               </button>
                               <button
                                 onClick={() => handleOdReject(application.id)}
-                                className="px-3 sm:px-4 py-2 bg-white text-black border border-black rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-100"
+                                className="px-3 sm:px-4 py-2 bg-white text-black rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-100 border"
+                                style={{
+                                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                                }}
                               >
                                 Reject
                               </button>
@@ -1738,15 +1846,25 @@ export default function AttendanceLogs() {
 
             {activeTab === 'reports' && (
               <div className="p-4 sm:p-6 lg:p-8">
-                <div className="bg-gray-50 rounded-lg border border-black p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8">
+                <div className="bg-gray-50 rounded-lg p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 relative overflow-hidden border" style={{
+                  borderColor: `${colors.primary}20`
+                }}>
+                  <div className="absolute top-0 left-0 w-16 h-16 rounded-full blur-xl opacity-10" style={{
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                    transform: 'translate(-25%, -25%)'
+                  }}></div>
                   <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Generate Reports</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Report Type</label>
-                      <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                      <select
                         value={reportFilters.reportType}
                         onChange={(e) => setReportFilters({...reportFilters, reportType: e.target.value})}
-                        className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                        className="w-full px-3 sm:px-4 py-2 bg-white rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                        style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                        }}
                       >
                         <option value="daily">Daily</option>
                         <option value="weekly">Weekly</option>
@@ -1755,28 +1873,40 @@ export default function AttendanceLogs() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">From Date</label>
-                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                      <input
                         type="date"
                         value={reportFilters.fromDate}
                         onChange={(e) => setReportFilters({...reportFilters, fromDate: e.target.value})}
-                        className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                        className="w-full px-3 sm:px-4 py-2 bg-white rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                        style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                        }}
                       />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">To Date</label>
-                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                      <input
                         type="date"
                         value={reportFilters.toDate}
                         onChange={(e) => setReportFilters({...reportFilters, toDate: e.target.value})}
-                        className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                        className="w-full px-3 sm:px-4 py-2 bg-white rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                        style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                        }}
                       />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
-                      <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                      <select
                         value={reportFilters.employeeId}
                         onChange={(e) => setReportFilters({...reportFilters, employeeId: e.target.value})}
-                        className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                        className="w-full px-3 sm:px-4 py-2 bg-white rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                        style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                        }}
                         disabled={employeesLoading}
                       >
                         <option value="">{employeesLoading ? 'Loading employees...' : 'All Employees'}</option>
@@ -1816,7 +1946,19 @@ export default function AttendanceLogs() {
                       Generate Report
                     </button>
                     <button onClick={exportToExcel}
-                      className="px-4 sm:px-6 py-2 sm:py-3 text-white text-black border border-black rounded-lg font-medium hover:bg-gray-100 transition-colors text-sm sm:text-base" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                      className="px-4 sm:px-6 py-2 sm:py-3 text-white rounded-lg font-medium hover:bg-gray-100 transition-colors text-sm sm:text-base" 
+                      style={{ 
+                        backgroundColor: 'var(--primary-color, #4575b5)',
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }} 
+                      onMouseEnter={(e) => { 
+                        e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; 
+                        e.target.style.border = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color')}`;
+                      }} 
+                      onMouseLeave={(e) => { 
+                        e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; 
+                        e.target.style.border = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`;
+                      }}
                     >
                       Export to Excel
                     </button>
@@ -1824,13 +1966,15 @@ export default function AttendanceLogs() {
                 </div>
 
                 {reportData.length > 0 && (
-                  <div className="bg-white rounded-lg border border-black overflow-hidden">
+                  <div className="bg-white rounded-lg overflow-hidden border" style={{
+                    borderColor: `${colors.primary}20`
+                  }}>
                     <div className="px-3 sm:px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
                       <h4 className="font-semibold text-gray-900 text-sm sm:text-base">Report Results ({reportData.length} records)</h4>
                     </div>
                     
                     {/* Desktop Table View */}
-                    <div className="hidden md:block overflow-x-auto">
+                    <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                       <table className="w-full">
                         <thead className="bg-gray-50">
                           <tr>

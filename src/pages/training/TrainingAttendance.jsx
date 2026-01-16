@@ -264,7 +264,7 @@ export default function TrainingAttendance() {
           ) : (
             <>
               {/* Desktop Table View */}
-              <div className="hidden md:block overflow-x-auto">
+              <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
@@ -442,7 +442,7 @@ export default function TrainingAttendance() {
               <h3 className="text-lg font-semibold text-gray-900">{editingRecord ? 'Update' : 'Mark'} Training Attendance</h3>
               <p className="text-sm text-gray-500 mt-1">Record attendance and assessment scores</p>
             </div>
-            <div className="px-6 py-4 overflow-y-auto flex-1">
+            <div className="px-6 py-4 overflow-y-auto flex-1" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Training Program</label>
@@ -490,7 +490,7 @@ export default function TrainingAttendance() {
                   <>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Training Days Attendance</label>
-                      <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto border-0 rounded-lg p-3">
+                      <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto border-0 rounded-lg p-3" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                         {trainingDays.map(day => (
                           <label key={day.date} className="flex items-center cursor-pointer">
                             <input

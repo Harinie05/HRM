@@ -387,11 +387,12 @@ export default function EmployeeListPage() {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="flex items-center gap-4">
               <label className="text-sm font-medium text-gray-700">Status:</label>
-              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+              <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="px-3 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                 style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
                   focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
               >
@@ -403,11 +404,12 @@ export default function EmployeeListPage() {
             </div>
             <div className="relative flex-1 max-w-md w-full">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+              <input
                 type="text"
                 placeholder="Search employees..."
                 className="w-full pl-10 pr-4 py-2 bg-white border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
                 style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
                   focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
               />
@@ -639,7 +641,7 @@ export default function EmployeeListPage() {
       {/* Create Employee Code Modal */}
       {showCreateForm && canCreate && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl border-0 shadow-sm p-4 sm:p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-xl border-0 shadow-sm p-4 sm:p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <div className="flex items-center mb-6">
               <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center mr-3">
                 <Plus className="w-5 h-5 text-indigo-600" />

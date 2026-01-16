@@ -52,7 +52,9 @@ export default function AttendanceLocations() {
               </div>
             </div>
             <div className="flex gap-3">
-              <div className="bg-white rounded-lg p-3 border-0 shadow-sm">
+              <div className="bg-white rounded-lg p-3 border shadow-sm" style={{
+                borderColor: `${colors.primary}20`
+              }}>
                 <div className="flex items-center gap-2 text-gray-600 mb-1">
                   <FiMapPin className="h-3 w-3" />
                   <span className="text-xs font-medium">Locations</span>
@@ -69,9 +71,13 @@ export default function AttendanceLocations() {
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
-            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
+            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-              transform: 'translate(30%, -30%)'
+              transform: 'translate(40%, -40%)'
+            }}></div>
+            <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+              transform: 'translate(-40%, 40%)'
             }}></div>
             <div className="flex items-center justify-between relative z-10">
               <div className="min-w-0 flex-1">
@@ -93,9 +99,13 @@ export default function AttendanceLocations() {
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
-            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
+            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-              transform: 'translate(30%, -30%)'
+              transform: 'translate(40%, -40%)'
+            }}></div>
+            <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+              transform: 'translate(-40%, 40%)'
             }}></div>
             <div className="flex items-center justify-between relative z-10">
               <div className="min-w-0 flex-1">
@@ -117,9 +127,13 @@ export default function AttendanceLocations() {
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
-            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
+            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-              transform: 'translate(30%, -30%)'
+              transform: 'translate(40%, -40%)'
+            }}></div>
+            <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+              transform: 'translate(-40%, 40%)'
             }}></div>
             <div className="flex items-center justify-between relative z-10">
               <div className="min-w-0 flex-1">
@@ -141,9 +155,13 @@ export default function AttendanceLocations() {
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
-            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
+            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-              transform: 'translate(30%, -30%)'
+              transform: 'translate(40%, -40%)'
+            }}></div>
+            <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+              transform: 'translate(-40%, 40%)'
             }}></div>
             <div className="flex items-center justify-between relative z-10">
               <div className="min-w-0 flex-1">
@@ -167,9 +185,13 @@ export default function AttendanceLocations() {
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100())`,
           borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
         }}>
-          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
             transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full blur-2xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+            transform: 'translate(-30%, 30%)'
           }}></div>
           <div className="p-6 border-b-0 relative z-10" style={{
             background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05)`
@@ -211,10 +233,15 @@ export default function AttendanceLocations() {
                     background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
                     borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
                   }}>
-                    <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
+                    <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
                       backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-                      transform: 'translate(30%, -30%)'
+                      transform: 'translate(40%, -40%)'
                     }}></div>
+                    <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                      transform: 'translate(-40%, 40%)'
+                    }}></div>
+                    <div className="relative z-10">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-4">
                         <div className="p-3 rounded-xl transition-all duration-300" style={{
@@ -238,7 +265,13 @@ export default function AttendanceLocations() {
                     </div>
                     
                     <div className="space-y-3">
-                      <div className="bg-gray-50 rounded-lg p-3 border-0">
+                      <div className="bg-gray-50 rounded-lg p-3 border relative overflow-hidden" style={{
+                        borderColor: `${colors.primary}20`
+                      }}>
+                        <div className="absolute top-0 right-0 w-12 h-12 rounded-full blur-3xl opacity-20" style={{
+                          backgroundColor: colors.primary,
+                          transform: 'translate(40%, -40%)'
+                        }}></div>
                         <div className="flex justify-between items-start mb-2">
                           <span className="text-xs text-gray-600">Grace Time</span>
                           <span className="text-sm font-bold text-gray-900 text-right">
@@ -259,6 +292,7 @@ export default function AttendanceLocations() {
                           </div>
                         </div>
                       </div>
+                    </div>
                     </div>
                   </div>
                 ))}

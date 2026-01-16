@@ -401,7 +401,7 @@ export default function SalaryStructure() {
           ) : (
             <>
               {/* Desktop Table View */}
-              <div className="hidden md:block overflow-x-auto">
+              <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 <table className="w-full">
                   <thead className="border-b" style={{
                     backgroundColor: `${colors.primary}10`,
@@ -604,7 +604,7 @@ export default function SalaryStructure() {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg border border-black p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg border border-black p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <h3 className="text-lg font-semibold mb-4">
               {editingStructure ? "Edit Salary Structure" : "Add Salary Structure"}
             </h3>
@@ -716,7 +716,7 @@ export default function SalaryStructure() {
       {/* Link Employees Modal */}
       {showLinkModal && linkingStructure && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg border border-black p-4 sm:p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+          <div className="bg-white rounded-lg border border-black p-4 sm:p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <h3 className="text-lg font-semibold mb-4">
               Link Employees to {linkingStructure.name}
             </h3>

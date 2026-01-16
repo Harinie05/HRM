@@ -150,7 +150,7 @@ export default function GoalsKPI() {
         </div>
         
         {/* Desktop Table View */}
-        <div className="hidden md:block overflow-x-auto">
+        <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           <table className="min-w-full divide-y divide-gray-100">
             <thead className="bg-gray-50">
               <tr>
@@ -289,7 +289,7 @@ export default function GoalsKPI() {
             {kpiData.map((employee) => (
               <div key={employee.employee_id} className="border-0 rounded-lg p-4">
                 <h4 className="font-medium text-gray-900 mb-3">{employee.employee_name}</h4>
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                   <table className="min-w-full text-sm">
                     <thead>
                       <tr className="border-b-0">

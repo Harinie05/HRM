@@ -158,6 +158,10 @@ export default function AttendanceRules() {
             backgroundColor: colors.primary,
             transform: 'translate(30%, -30%)'
           }}></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
+            backgroundColor: colors.secondary,
+            transform: 'translate(-30%, 30%)'
+          }}></div>
           <div className="flex items-center justify-between relative z-10">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
@@ -174,7 +178,9 @@ export default function AttendanceRules() {
               </div>
             </div>
             <div className="flex gap-3">
-              <div className="bg-white rounded-lg p-3 border-0 shadow-sm">
+              <div className="bg-white rounded-lg p-3 border shadow-sm" style={{
+                borderColor: `${colors.primary}20`
+              }}>
                 <div className="flex items-center gap-2 text-gray-600 mb-1">
                   <FiSettings className="h-3 w-3" />
                   <span className="text-xs font-medium">Rules</span>
@@ -187,11 +193,19 @@ export default function AttendanceRules() {
 
         {/* Key Performance Indicators matching Dashboard */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
-            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border relative overflow-hidden" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
             borderColor: `${colors.primary}20`
           }}>
-            <div className="flex items-center justify-between">
+            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(40%, -40%)'
+            }}></div>
+            <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(-40%, 40%)'
+            }}></div>
+            <div className="flex items-center justify-between relative z-10">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Rules</p>
                 <p className="text-2xl font-bold text-gray-900">{rules.length}</p>
@@ -207,11 +221,19 @@ export default function AttendanceRules() {
             </div>
           </div>
 
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
-            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border relative overflow-hidden" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
             borderColor: `${colors.primary}20`
           }}>
-            <div className="flex items-center justify-between">
+            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(40%, -40%)'
+            }}></div>
+            <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(-40%, 40%)'
+            }}></div>
+            <div className="flex items-center justify-between relative z-10">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Active Rules</p>
                 <p className="text-2xl font-bold text-gray-900">{rules.filter(r => r.is_active).length}</p>
@@ -227,11 +249,19 @@ export default function AttendanceRules() {
             </div>
           </div>
 
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
-            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border relative overflow-hidden" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
             borderColor: `${colors.primary}20`
           }}>
-            <div className="flex items-center justify-between">
+            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(40%, -40%)'
+            }}></div>
+            <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(-40%, 40%)'
+            }}></div>
+            <div className="flex items-center justify-between relative z-10">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Locations</p>
                 <p className="text-2xl font-bold text-gray-900">{locations.length}</p>
@@ -247,11 +277,19 @@ export default function AttendanceRules() {
             </div>
           </div>
 
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
-            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border relative overflow-hidden" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
             borderColor: `${colors.primary}20`
           }}>
-            <div className="flex items-center justify-between">
+            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(40%, -40%)'
+            }}></div>
+            <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(-40%, 40%)'
+            }}></div>
+            <div className="flex items-center justify-between relative z-10">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Grace Time</p>
                 <p className="text-2xl font-bold text-gray-900">{locations.length > 0 ? Math.max(...locations.map(l => l.grace_time || 0)) : 0}</p>
@@ -330,6 +368,10 @@ export default function AttendanceRules() {
               backgroundColor: colors.primary,
               transform: 'translate(30%, -30%)'
             }}></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
+              backgroundColor: colors.secondary,
+              transform: 'translate(-30%, 30%)'
+            }}></div>
             <div className="p-4 sm:p-6 border-b-0 bg-gray-50">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
@@ -339,15 +381,18 @@ export default function AttendanceRules() {
                 {(isAdmin() || hasPermission("add_attendance_rule")) && (
                   <button 
                     onClick={() => setShowRuleModal(true)}
-                    className="text-white px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm shadow-sm flex items-center gap-2"
+                    className="text-white px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm shadow-sm flex items-center gap-2 border"
                     style={{ 
-                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                      e.target.style.border = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color')}`;
                     }}
                     onMouseLeave={(e) => {
                       e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                      e.target.style.border = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`;
                     }}
                   >
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -360,7 +405,7 @@ export default function AttendanceRules() {
             </div>
             <div className="p-4 sm:p-6">
               {/* Desktop Table View */}
-              <div className="hidden md:block overflow-x-auto">
+              <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
@@ -443,7 +488,7 @@ export default function AttendanceRules() {
                 {rules.length === 0 ? (
                   <div className="p-8 sm:p-12 text-center text-gray-500">
                     <div className="flex flex-col items-center gap-3 sm:gap-4">
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-lg border border-black flex items-center justify-center">
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-lg border-0 flex items-center justify-center">
                         <svg className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"></path>
                         </svg>
@@ -519,6 +564,10 @@ export default function AttendanceRules() {
               backgroundColor: colors.primary,
               transform: 'translate(30%, -30%)'
             }}></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
+              backgroundColor: colors.secondary,
+              transform: 'translate(-30%, 30%)'
+            }}></div>
             <div className="p-4 sm:p-6 border-b-0 bg-gray-50">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
@@ -528,15 +577,18 @@ export default function AttendanceRules() {
                 {(isAdmin() || hasPermission("add_attendance_location")) && (
                   <button 
                     onClick={() => setShowLocationModal(true)}
-                    className="text-white px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm shadow-sm flex items-center gap-2"
+                    className="text-white px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm shadow-sm flex items-center gap-2 border"
                     style={{ 
-                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                      e.target.style.border = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color')}`;
                     }}
                     onMouseLeave={(e) => {
                       e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                      e.target.style.border = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`;
                     }}
                   >
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -548,7 +600,7 @@ export default function AttendanceRules() {
               </div>
             </div>
             <div className="p-4 sm:p-6">
-              <div className="hidden md:block overflow-x-auto">
+              <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
@@ -600,7 +652,7 @@ export default function AttendanceRules() {
                 {locations.length === 0 ? (
                   <div className="p-8 sm:p-12 text-center text-gray-500">
                     <div className="flex flex-col items-center gap-3 sm:gap-4">
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-lg border border-black flex items-center justify-center">
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-lg border-0 flex items-center justify-center">
                         <svg className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"></path>
                         </svg>
@@ -660,7 +712,9 @@ export default function AttendanceRules() {
         {/* Add Rule Modal */}
         {showRuleModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg border-0 shadow-xl p-6 w-full max-w-md">
+            <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md border" style={{
+              borderColor: `${colors.primary}20`
+            }}>
               <h3 className="text-lg font-semibold mb-4 text-gray-900">Add Attendance Rule</h3>
               <div className="space-y-4">
                 <div>
@@ -740,7 +794,9 @@ export default function AttendanceRules() {
         {/* Add Location Modal */}
         {showLocationModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg border-0 shadow-xl p-6 w-full max-w-md">
+            <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md border" style={{
+              borderColor: `${colors.primary}20`
+            }}>
               <h3 className="text-lg font-semibold mb-4 text-gray-900">Add Attendance Location</h3>
               <div className="space-y-4">
                 <div>

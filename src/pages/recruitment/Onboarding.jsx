@@ -632,7 +632,7 @@ export default function Onboarding() {
           {/* New Comprehensive Onboarding Form */}
           {showNewOnboardingForm && (
             <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-              <div className="bg-white p-6 w-[900px] max-h-[90vh] overflow-y-auto rounded-xl shadow-xl">
+              <div className="bg-white p-6 w-[900px] max-h-[90vh] overflow-y-auto rounded-xl shadow-xl" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 <h2 className="text-2xl font-semibold mb-6 text-center">
                   Employee Onboarding Form
                 </h2>
@@ -1224,7 +1224,11 @@ export default function Onboarding() {
                   </div>
                 </div>
 
-                <div className="p-6 overflow-y-auto" style={{maxHeight: 'calc(90vh - 120px)'}}>
+                <div className="p-6 overflow-y-auto" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',maxHeight: 'calc(90vh - 120px)'}}>
                   {candidateDocuments.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {candidateDocuments.map((doc) => (

@@ -242,12 +242,15 @@ export default function StatutoryRules() {
             transform: 'translate(30%, -30%)'
           }}></div>
           <div className="flex items-center gap-3 mb-5 relative z-10">
-            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <input
               type="checkbox"
               checked={form.pt_enabled}
               onChange={(e) => setForm({ ...form, pt_enabled: e.target.checked })}
               className="w-5 h-5 rounded focus:ring-2"
-              style={{ accentColor: colors.primary }}
+              style={{ 
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                accentColor: colors.primary 
+              }}
             />
             <h3 className="text-base font-semibold text-gray-900">Professional Tax (PT)</h3>
           </div>
@@ -279,12 +282,15 @@ export default function StatutoryRules() {
             transform: 'translate(30%, -30%)'
           }}></div>
           <div className="flex items-center gap-3 mb-5 relative z-10">
-            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <input
               type="checkbox"
               checked={form.tds_enabled}
               onChange={(e) => setForm({ ...form, tds_enabled: e.target.checked })}
               className="w-5 h-5 rounded focus:ring-2"
-              style={{ accentColor: colors.primary }}
+              style={{ 
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                accentColor: colors.primary 
+              }}
             />
             <h3 className="text-base font-semibold text-gray-900">Tax Deducted at Source (TDS)</h3>
           </div>

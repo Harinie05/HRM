@@ -511,7 +511,7 @@ export default function Recruitment() {
             <>
               {/* Desktop Table View */}
             <div className="p-6 relative z-10">
-              <div className="hidden md:block overflow-x-auto">
+              <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 <table className="min-w-full">
                   <thead className="bg-gray-50 border-b-0">
                     <tr>
@@ -1137,7 +1137,7 @@ function JobFormModal({ mode, job, onClose }) {
         </div>
 
         {/* Content */}
-        <div className="p-6 flex-1 overflow-y-auto">
+        <div className="p-6 flex-1 overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
 
           {/* Basic Info Tab */}
           {activeTab === 'basic' && (

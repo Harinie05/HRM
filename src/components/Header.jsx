@@ -216,16 +216,29 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
     }
   };
 
-  // Check today's attendance status - only on page load
+  // Check today's attendance status - on page load and when status changes
   useEffect(() => {
     if (userInfo.id) {
       checkTodayAttendance();
     }
   }, [userInfo.id]);
 
+  // Listen for attendance status updates
+  useEffect(() => {
+    const handleAttendanceUpdate = () => {
+      checkTodayAttendance();
+    };
+    
+    window.addEventListener('attendance-updated', handleAttendanceUpdate);
+    
+    return () => {
+      window.removeEventListener('attendance-updated', handleAttendanceUpdate);
+    };
+  }, [userInfo.id]);
+
   const checkTodayAttendance = async () => {
     try {
-      if (!userInfo.id || !(isAdmin() || hasPermission("view_attendance"))) {
+      if (!userInfo.id) {
         setAttendanceStatus('not_checked_in');
         return;
       }
@@ -315,8 +328,8 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
       
       await api.post('/api/attendance/punches/', punchData);
       
-      // Immediately set status to checked_in
-      setAttendanceStatus('checked_in');
+      // Immediately check status from API to ensure sync
+      await checkTodayAttendance();
       
       // Show success notification
       const notification = document.createElement('div');

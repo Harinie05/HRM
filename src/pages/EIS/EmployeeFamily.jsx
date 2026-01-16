@@ -200,7 +200,7 @@ export default function EmployeeFamily() {
             transform: 'translate(30%, -30%)'
           }}></div>
           {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto">
+          <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <table className="min-w-full">
               <thead className="bg-gray-50 border-b-0">
                 <tr>

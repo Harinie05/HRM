@@ -266,6 +266,8 @@ export default function PayrollReports() {
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
           <span className="text-sm text-gray-600">Period & Export</span>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center bg-gray-100 rounded-full p-1 overflow-x-auto scrollbar-hide gap-2 sm:gap-0" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
             scrollbarWidth: 'none', 
             msOverflowStyle: 'none',
             border: `1px solid ${colors.primary}20`

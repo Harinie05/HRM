@@ -343,7 +343,7 @@ export default function TrainingRequests() {
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           {loading ? (
             <div className="flex justify-center items-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -552,7 +552,7 @@ export default function TrainingRequests() {
               <h3 className="text-lg font-semibold text-gray-900">New Training Request</h3>
               <p className="text-sm text-gray-500 mt-1">Submit a request for training approval</p>
             </div>
-            <div className="px-6 py-4 overflow-y-auto flex-1">
+            <div className="px-6 py-4 overflow-y-auto flex-1" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>

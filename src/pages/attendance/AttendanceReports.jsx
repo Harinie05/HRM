@@ -66,8 +66,13 @@ export default function AttendanceReports() {
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
             backgroundColor: colors.primary,
-            transform: 'translate(30%, -30%)'
+            transform: 'translate(40%, -40%)'
           }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: colors.primary,
+            transform: 'translate(-40%, 40%)'
+          }}></div>
+          <div className="relative z-10">
           {/* Header */}
           <div className="p-5 border-b-0">
             <div className="flex items-center gap-3">
@@ -168,6 +173,7 @@ export default function AttendanceReports() {
           </div>
             </div>
           </div>
+          </div>
         </div>
 
         {/* Report Actions matching Dashboard */}
@@ -177,7 +183,11 @@ export default function AttendanceReports() {
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
             backgroundColor: colors.primary,
-            transform: 'translate(30%, -30%)'
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: colors.secondary,
+            transform: 'translate(-40%, 40%)'
           }}></div>
           <div className="p-5 border-b-0">
             <div className="flex items-center justify-between">
@@ -241,7 +251,11 @@ export default function AttendanceReports() {
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
             backgroundColor: colors.primary,
-            transform: 'translate(30%, -30%)'
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: colors.secondary,
+            transform: 'translate(-40%, 40%)'
           }}></div>
           <div className="p-6 border-b-0" style={{
             background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05)`
@@ -279,10 +293,19 @@ export default function AttendanceReports() {
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {report.map((item, index) => (
-                  <div key={index} className="rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 group border" style={{
-                    background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+                  <div key={index} className="rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 group border relative overflow-hidden" style={{
+                    background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
                     borderColor: `${colors.primary}20`
                   }}>
+                    <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+                      backgroundColor: colors.primary,
+                      transform: 'translate(40%, -40%)'
+                    }}></div>
+                    <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+                      backgroundColor: colors.primary,
+                      transform: 'translate(-40%, 40%)'
+                    }}></div>
+                    <div className="relative z-10">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-4">
                         <div className="p-3 rounded-xl transition-all duration-300" style={{
@@ -300,7 +323,13 @@ export default function AttendanceReports() {
                     </div>
                     
                     <div className="space-y-3">
-                      <div className="bg-gray-50 rounded-lg p-3 border-0">
+                      <div className="bg-gray-50 rounded-lg p-3 border relative overflow-hidden" style={{
+                        borderColor: `${colors.primary}20`
+                      }}>
+                        <div className="absolute top-0 right-0 w-12 h-12 rounded-full blur-3xl opacity-20" style={{
+                          backgroundColor: colors.primary,
+                          transform: 'translate(40%, -40%)'
+                        }}></div>
                         <div className="flex justify-between items-start mb-2">
                           <span className="text-xs text-gray-600">Date</span>
                           <span className="text-sm font-bold text-gray-900 text-right">
@@ -318,6 +347,7 @@ export default function AttendanceReports() {
                           <span className="text-sm font-bold text-gray-900">{item.hours || 'N/A'}</span>
                         </div>
                       </div>
+                    </div>
                     </div>
                   </div>
                 ))}

@@ -633,7 +633,7 @@ export default function ClearanceWorkflow() {
       {/* Exit Interview Form Modal */}
       {showInterviewForm && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white p-6 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border-0">
+          <div className="bg-white p-6 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold text-gray-900">Exit Interview</h3>
               <button
@@ -656,12 +656,13 @@ export default function ClearanceWorkflow() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Overall Workplace Experience Rating (1-5)
                 </label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select
                   required
                   value={interviewForm.rating}
                   onChange={(e) => setInterviewForm({...interviewForm, rating: e.target.value})}
                   className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:border-transparent transition-all duration-200"
                   style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
                     focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
                 >

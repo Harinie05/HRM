@@ -293,7 +293,7 @@ export default function LeaveRules() {
             transform: 'translate(-40%, 40%)'
           }}></div>
           {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto">
+          <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <table className="w-full">
               <thead className="bg-gradient-to-r from-gray-50 to-blue-50">
                 <tr>
@@ -585,7 +585,7 @@ export default function LeaveRules() {
               {formData.encashment_allowed && (
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Encashment Rate (%)</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input
                     type="number"
                     value={formData.encashment_rate || ""}
                     onChange={(e) => setFormData({...formData, encashment_rate: e.target.value ? parseFloat(e.target.value) : null})}

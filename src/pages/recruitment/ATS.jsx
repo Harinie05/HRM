@@ -324,7 +324,7 @@ export default function ATS() {
           ) : (
             <>
               {/* Desktop Table View */}
-              <div className="hidden md:block overflow-x-auto relative z-10">
+              <div className="hidden md:block overflow-x-auto relative z-10" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 <table className="min-w-full">
                   <thead className="bg-gray-50/80 border-b-0">
                     <tr>

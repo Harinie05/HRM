@@ -763,7 +763,7 @@ export default function Statutory() {
             </div>
           </div>
               {/* Desktop Table View */}
-              <div className="hidden md:block overflow-x-auto">
+              <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 <table className="w-full border-collapse">
                   <thead className="bg-gray-50">
                     <tr>

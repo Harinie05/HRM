@@ -691,7 +691,7 @@ export default function LabourRegister() {
               )}
             </div>
           </div>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               {/* Desktop Table View */}
               <div className="hidden md:block">
                 <table className="w-full border-collapse">

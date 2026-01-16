@@ -342,7 +342,7 @@ const EmployeeDetailsModal = ({ isOpen, onClose, employeeDetails }) => {
         </div>
 
         <div className="border-b border-gray-200">
-          <div className="flex overflow-x-auto">
+          <div className="flex overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
@@ -363,7 +363,7 @@ const EmployeeDetailsModal = ({ isOpen, onClose, employeeDetails }) => {
           </div>
         </div>
 
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
+        <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)]" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           {renderTabContent()}
         </div>
 

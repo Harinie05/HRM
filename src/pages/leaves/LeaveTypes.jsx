@@ -434,7 +434,7 @@ export default function LeaveTypes({ activeView = "types" }) {
             transform: 'translate(-40%, 40%)'
           }}></div>
           {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto">
+          <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <table className="min-w-full table-fixed">
               <thead className="bg-gradient-to-r from-gray-50 to-blue-50">
                 <tr>
@@ -659,7 +659,7 @@ export default function LeaveTypes({ activeView = "types" }) {
             transform: 'translate(-40%, 40%)'
           }}></div>
           {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto">
+          <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <table className="min-w-full table-fixed">
               <thead className="bg-gradient-to-r from-gray-50 to-blue-50">
                 <tr>
@@ -903,6 +903,10 @@ export default function LeaveTypes({ activeView = "types" }) {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
             border: `1px solid ${colors.primary}`
           }}>
             <div className="p-8 border-b-0">
@@ -913,7 +917,7 @@ export default function LeaveTypes({ activeView = "types" }) {
             <form onSubmit={handleSubmit} className="p-8 space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Name</label>
-                <input style={{backgroundColor: `${colors.primary}10`}} 
+                <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
@@ -1075,6 +1079,10 @@ export default function LeaveTypes({ activeView = "types" }) {
       {showPolicyModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
             border: `1px solid ${colors.primary}`
           }}>
             <div className="p-8 border-b-0">

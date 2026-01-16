@@ -381,7 +381,7 @@ export default function WorkAssignments() {
         <h3 className="text-lg font-semibold mb-4">My Assignments</h3>
         
         {/* Desktop Table View */}
-        <div className="hidden md:block overflow-x-auto">
+        <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           <table className="w-full text-sm">
             <thead>
               <tr className="-b">
@@ -503,7 +503,7 @@ export default function WorkAssignments() {
         <h3 className="text-lg font-semibold mb-4">All Assignments</h3>
         
         {/* Desktop Table View */}
-        <div className="hidden md:block overflow-x-auto">
+        <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           <table className="w-full text-sm">
             <thead>
               <tr className="-b">
@@ -601,7 +601,7 @@ export default function WorkAssignments() {
       {/* Create Assignment Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <h3 className="text-lg font-semibold mb-4">Create Assignment</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <input
@@ -708,7 +708,7 @@ export default function WorkAssignments() {
       {/* Status Update Modal */}
       {showStatusModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <h3 className="text-lg font-semibold mb-4">Update Status</h3>
             <form onSubmit={handleStatusUpdate} className="space-y-4">
               <select

@@ -206,7 +206,7 @@ const ProbationTracking = () => {
 
 
             {/* Desktop Table View */}
-            <div className="hidden md:block overflow-x-auto">
+            <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
@@ -377,7 +377,7 @@ const ProbationTracking = () => {
         {/* Add Probation Modal */}
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl border-2 border-black shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-2xl border-2 border-black shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <div className="p-6">
                 <h3 className="text-xl font-bold text-gray-900 mb-6 border-b-2 border-black pb-3">Add Probation Period</h3>
                 <form onSubmit={handleSubmit} className="space-y-4">

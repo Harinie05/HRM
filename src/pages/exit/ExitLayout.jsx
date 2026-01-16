@@ -149,6 +149,8 @@ export default function ExitLayout() {
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                 <span className="text-sm text-gray-600 whitespace-nowrap">Exit Management</span>
                 <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border scrollbar-hide" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
                   scrollbarWidth: 'none', 
                   msOverflowStyle: 'none', 
                   borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`

@@ -925,12 +925,12 @@ export default function ShiftRoster() {
       <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
         {/* Hero Header matching Dashboard */}
         <div className="rounded-2xl shadow-sm p-6 relative overflow-hidden border" style={{
-          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
           borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-            transform: 'translate(30%, -30%)'
+            transform: 'translate(40%, -40%)'
           }}></div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -965,9 +965,9 @@ export default function ShiftRoster() {
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
-            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
+            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-              transform: 'translate(30%, -30%)'
+              transform: 'translate(40%, -40%)'
             }}></div>
             <div className="flex items-center justify-between relative z-10">
               <div className="min-w-0 flex-1">
@@ -989,9 +989,9 @@ export default function ShiftRoster() {
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
-            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
+            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-              transform: 'translate(30%, -30%)'
+              transform: 'translate(40%, -40%)'
             }}></div>
             <div className="flex items-center justify-between relative z-10">
               <div className="min-w-0 flex-1">
@@ -1013,9 +1013,9 @@ export default function ShiftRoster() {
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
-            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
+            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-              transform: 'translate(30%, -30%)'
+              transform: 'translate(40%, -40%)'
             }}></div>
             <div className="flex items-center justify-between relative z-10">
               <div className="min-w-0 flex-1">
@@ -1037,9 +1037,9 @@ export default function ShiftRoster() {
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
-            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
+            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-              transform: 'translate(30%, -30%)'
+              transform: 'translate(40%, -40%)'
             }}></div>
             <div className="flex items-center justify-between relative z-10">
               <div className="min-w-0 flex-1">
@@ -1059,7 +1059,18 @@ export default function ShiftRoster() {
         </div>
 
         {/* Shift Management Actions */}
-        <div className="bg-white rounded-xl border-0 shadow-sm">
+        <div className="bg-white rounded-xl border shadow-sm relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
           <div className="p-5 border-b-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -1144,7 +1155,14 @@ export default function ShiftRoster() {
                   };
                   
                   return (
-                    <div key={shift.id} className="bg-white rounded-xl p-6 border-0 shadow-sm hover:shadow-md transition-all duration-300 group">
+                    <div key={shift.id} className="bg-white rounded-xl p-6 border shadow-sm hover:shadow-md transition-all duration-300 group relative overflow-hidden" style={{
+                      background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+                      borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                    }}>
+                      <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-3xl opacity-20" style={{
+                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                        transform: 'translate(40%, -40%)'
+                      }}></div>
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-4">
                           <div className="p-3 rounded-xl transition-all duration-300" style={{
@@ -1202,7 +1220,18 @@ export default function ShiftRoster() {
         </div>
 
         {/* Roster Management Section matching Dashboard */}
-        <div className="bg-white rounded-2xl border-0 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-2xl border shadow-sm overflow-hidden relative" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
           <div className="p-6 border-b-0" style={{
             background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05)`
           }}>
@@ -1225,7 +1254,13 @@ export default function ShiftRoster() {
 
           <div className="p-6">
             {/* Employee Allocation */}
-            <div className="mb-8 p-4 sm:p-6 bg-gray-50 rounded-lg border-0">
+            <div className="mb-8 p-4 sm:p-6 bg-gray-50 rounded-lg border relative overflow-hidden" style={{
+              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-3xl opacity-20" style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                transform: 'translate(40%, -40%)'
+              }}></div>
               <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
                 <Users className="w-5 h-5 text-gray-600" />
                 Add Employee to Roster
@@ -1266,7 +1301,13 @@ export default function ShiftRoster() {
 
             {/* Bulk Shift Allocation */}
             {(isAdmin() || hasPermission("MANAGE_ROSTER")) && (
-              <div className="mb-8 p-4 sm:p-6 bg-gray-50 rounded-lg border-0">
+              <div className="mb-8 p-4 sm:p-6 bg-gray-50 rounded-lg border relative overflow-hidden" style={{
+                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <div className="absolute bottom-0 left-0 w-16 h-16 rounded-full blur-3xl opacity-20" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+                  transform: 'translate(-40%, 40%)'
+                }}></div>
                 <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
                   <Settings className="w-5 h-5 text-gray-600" />
                   Bulk Shift Allocation
@@ -1330,7 +1371,13 @@ export default function ShiftRoster() {
             )}
 
             {/* Calendar Navigation */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 p-4 sm:p-6 bg-gray-50 rounded-lg border-0 gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 p-4 sm:p-6 bg-gray-50 rounded-lg border gap-4 relative overflow-hidden" style={{
+              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <div className="absolute top-0 left-0 w-16 h-16 rounded-full blur-3xl opacity-20" style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                transform: 'translate(-40%, -40%)'
+              }}></div>
               <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
                 <div className="flex bg-white rounded-lg border-0">
                   <button
@@ -1394,20 +1441,41 @@ export default function ShiftRoster() {
 
 
             {/* Elegant Roster Calendar */}
-            <div className="bg-white rounded-lg border-0 overflow-hidden">
-              <div className="px-4 py-3 bg-gray-50 border-b-0">
-                <h3 className="font-semibold text-gray-900">
+            <div className="bg-white rounded-xl border shadow-lg overflow-hidden relative" style={{
+              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
+            }}>
+              <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                transform: 'translate(40%, -40%)'
+              }}></div>
+              <div className="px-6 py-4 border-b" style={{
+                background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}12, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}12)`,
+                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
+              }}>
+                <div className="flex items-center justify-between">
+                  <h3 className="font-bold text-gray-900 text-lg flex items-center gap-2">
+                    <Calendar className="w-5 h-5" style={{
+                      color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }} />
                   {viewMode === "week" ? "Weekly" : "Monthly"} Roster Calendar
                   {allocatedUsers.length > 0 && (
-                    <span className="ml-2 text-sm text-gray-600">({allocatedUsers.length} employees)</span>
+                    <span className="ml-2 px-3 py-1 text-xs rounded-full font-semibold" style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`,
+                      color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}>{allocatedUsers.length} employees</span>
                   )}
-                </h3>
+                  </h3>
+                </div>
               </div>
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 <table className="w-full border-collapse">
                   <thead>
-                    <tr className="bg-gray-50">
-                      <th className="px-2 py-4 text-center font-semibold text-gray-900 w-12 border-r-0">
+                    <tr style={{
+                      background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}15, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}15)`
+                    }}>
+                      <th className="px-3 py-4 text-center font-bold text-gray-900 w-12 border-r" style={{
+                        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
+                      }}>
                         <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           checked={selectedUsersForBulk.length === allocatedUsers.length && allocatedUsers.length > 0}
@@ -1421,7 +1489,9 @@ export default function ShiftRoster() {
                           className="rounded border-0"
                         />
                       </th>
-                      <th className="px-6 py-4 text-left font-semibold text-gray-900 min-w-[200px] border-r-0">
+                      <th className="px-6 py-4 text-left font-bold text-gray-900 min-w-[220px] border-r" style={{
+                        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
+                      }}>
                         Employee
                       </th>
                       {getDateRange().map((date) => {
@@ -1430,19 +1500,24 @@ export default function ShiftRoster() {
                         const isWeekend = ['Sat', 'Sun'].includes(dayName);
                         
                         return (
-                          <th key={date} className={`px-3 py-4 text-center min-w-[130px] border-r-0 ${
-                            isWeekend ? 'bg-gray-100' : ''
-                          }`}>
-                            <div className={`font-semibold ${
+                          <th key={date} className={`px-4 py-4 text-center min-w-[140px] border-r ${
+                            isWeekend ? 'bg-opacity-50' : ''
+                          }`} style={{
+                            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`,
+                            backgroundColor: isWeekend ? `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}08` : 'transparent'
+                          }}>
+                            <div className={`font-bold text-sm ${
                               isWeekend ? 'text-gray-700' : 'text-gray-900'
                             }`}>{dayName}</div>
-                            <div className={`text-sm ${
-                              isWeekend ? 'text-gray-600' : 'text-gray-600'
+                            <div className={`text-xs mt-1 font-medium ${
+                              isWeekend ? 'text-gray-600' : 'text-gray-500'
                             }`}>{dayNum}</div>
                           </th>
                         );
                       })}
-                      <th className="px-4 py-4 text-center font-semibold text-gray-900">Action</th>
+                      <th className="px-4 py-4 text-center font-bold text-gray-900 border-l" style={{
+                        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
+                      }}>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1466,10 +1541,14 @@ export default function ShiftRoster() {
                   </tr>
                 ) : (
                   allocatedUsers.map((user, index) => (
-                    <tr key={user.id} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100 transition-colors ${
-                      user.is_deleted ? 'bg-red-50 border-l-4 border-red-400' : ''
-                    }`}>
-                      <td className="px-2 py-4 text-center border-r-0">
+                    <tr key={user.id} className={`transition-all duration-200 border-b hover:shadow-sm ${
+                      user.is_deleted ? 'bg-red-50 border-l-4 border-red-400' : index % 2 === 0 ? 'bg-white hover:bg-gray-50' : 'bg-gray-50 hover:bg-gray-100'
+                    }`} style={{
+                      borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                    }}>
+                      <td className="px-2 py-4 text-center border-r" style={{
+                        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                      }}>
                         <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
                           checked={selectedUsersForBulk.includes(user.id)}
@@ -1483,7 +1562,9 @@ export default function ShiftRoster() {
                           className="rounded border-0"
                         />
                       </td>
-                      <td className="px-6 py-4 border-r-0">
+                      <td className="px-6 py-4 border-r" style={{
+                        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                      }}>
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 bg-gray-100 rounded-lg border-0 flex items-center justify-center text-gray-700 font-semibold">
                             {user.name.charAt(0).toUpperCase()}
@@ -1505,9 +1586,11 @@ export default function ShiftRoster() {
                         const shift = shifts.find(s => s.id == shiftValue);
                         
                         return (
-                          <td key={date} className={`px-3 py-4 border-r-0 ${
+                          <td key={date} className={`px-3 py-4 border-r ${
                             isWeekend ? 'bg-gray-100' : ''
-                          }`}>
+                          }`} style={{
+                            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                          }}>
                             {editingCell === `${user.id}-${date}` ? (
                               <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                                 value={shiftValue}
@@ -1593,7 +1676,9 @@ export default function ShiftRoster() {
                           </td>
                         );
                       })}
-                      <td className="px-4 py-4 text-center">
+                      <td className="px-4 py-4 text-center border-l" style={{
+                        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                      }}>
                         {(isAdmin() || hasPermission("MANAGE_ROSTER")) && (
                           <button 
                             onClick={() => removeUserFromRoster(user.id)}
@@ -1621,7 +1706,18 @@ export default function ShiftRoster() {
         </div>
 
         {/* On-Call / Emergency Duty Management */}
-        <div className="bg-white rounded-lg p-4 sm:p-6 border-0 mb-6">
+        <div className="bg-white rounded-lg p-4 sm:p-6 border mb-6 relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg sm:text-xl font-semibold text-gray-900 flex items-center gap-2">
               <Phone className="w-5 h-5 text-gray-600" />
@@ -1653,7 +1749,13 @@ export default function ShiftRoster() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {onCallDuties.map((duty) => (
-                  <div key={duty.id} className="bg-gray-50 rounded-lg p-4 border-0">
+                  <div key={duty.id} className="bg-gray-50 rounded-lg p-4 border relative overflow-hidden" style={{
+                    borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
+                    <div className="absolute top-0 right-0 w-12 h-12 rounded-full blur-3xl opacity-20" style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                      transform: 'translate(40%, -40%)'
+                    }}></div>
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
                         <h4 className="font-semibold text-gray-900">{duty.employee_name}</h4>
@@ -1691,7 +1793,18 @@ export default function ShiftRoster() {
         </div>
 
         {/* Night Shift Rules Section */}
-        <div className="bg-white rounded-lg p-4 sm:p-6 border-0">
+        <div className="bg-white rounded-lg p-4 sm:p-6 border relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Night Shift Rules</h2>
             {(isAdmin() || hasPermission("MANAGE_NIGHT_SHIFT_RULES")) && (
@@ -1718,7 +1831,7 @@ export default function ShiftRoster() {
             {allNightShiftRules.length === 0 ? (
               <p className="text-gray-600">No night shift rules found</p>
             ) : (
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 <table className="w-full border-collapse border-0">
                   <thead>
                     <tr className="bg-gray-100">
@@ -1781,7 +1894,11 @@ export default function ShiftRoster() {
         {/* Night Shift Rules Configuration */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-8">
           <div className="space-y-4 sm:space-y-6">
-            <div className="p-4 bg-gray-50 rounded-lg border-0">
+            <div className="p-4 bg-gray-50 rounded-lg border-0 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-12 h-12 rounded-full blur-3xl opacity-20" style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                transform: 'translate(40%, -40%)'
+              }}></div>
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Night shift applicable for Shifts:
               </label>
@@ -1800,7 +1917,11 @@ export default function ShiftRoster() {
               </select>
             </div>
 
-            <div className="p-4 bg-gray-50 rounded-lg border-0">
+            <div className="p-4 bg-gray-50 rounded-lg border-0 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-12 h-12 rounded-full blur-3xl opacity-20" style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                transform: 'translate(40%, -40%)'
+              }}></div>
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Punch Out after midnight counts as:
               </label>
@@ -1814,7 +1935,11 @@ export default function ShiftRoster() {
               </select>
             </div>
 
-            <div className="p-4 bg-gray-50 rounded-lg border-0">
+            <div className="p-4 bg-gray-50 rounded-lg border-0 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-12 h-12 rounded-full blur-3xl opacity-20" style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                transform: 'translate(40%, -40%)'
+              }}></div>
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Minimum hours for night shift credit:
               </label>
@@ -1828,7 +1953,11 @@ export default function ShiftRoster() {
           </div>
 
           <div className="space-y-4 sm:space-y-6">
-            <div className="p-4 bg-gray-50 rounded-lg border-0">
+            <div className="p-4 bg-gray-50 rounded-lg border-0 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-12 h-12 rounded-full blur-3xl opacity-20" style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                transform: 'translate(40%, -40%)'
+              }}></div>
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Night OT bonus rate:
               </label>
@@ -1843,7 +1972,11 @@ export default function ShiftRoster() {
               </select>
             </div>
 
-            <div className="p-4 bg-gray-50 rounded-lg border-0">
+            <div className="p-4 bg-gray-50 rounded-lg border-0 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-12 h-12 rounded-full blur-3xl opacity-20" style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                transform: 'translate(40%, -40%)'
+              }}></div>
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Grace time for night login (minutes):
               </label>
@@ -1899,8 +2032,12 @@ export default function ShiftRoster() {
         {/* Create Shift Modal */}
         {showCreateShift && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
-            <div className="bg-white w-full max-w-2xl rounded-lg border-0">
-              <div className="p-4 sm:p-6 border-b border-black">
+            <div className="bg-white w-full max-w-2xl rounded-lg border" style={{
+              borderColor: `${colors.primary}20`
+            }}>
+              <div className="p-4 sm:p-6 border-b" style={{
+                borderColor: `${colors.primary}20`
+              }}>
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg sm:text-xl font-semibold text-gray-900">Create New Shift</h3>
                   <button
@@ -1950,7 +2087,9 @@ export default function ShiftRoster() {
                 </div>
               </div>
               
-              <div className="p-4 sm:p-6 border-t border-black">
+              <div className="p-4 sm:p-6 border-t" style={{
+                borderColor: `${colors.primary}20`
+              }}>
                 <div className="flex gap-3">
                   <button
                     onClick={() => setShowCreateShift(false)}
@@ -1977,9 +2116,13 @@ export default function ShiftRoster() {
 
         {/* On-Call Duty Modal */}
         {showOnCallForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4 overflow-y-auto">
-            <div className="bg-white w-full max-w-4xl rounded-lg border-0 my-8">
-              <div className="p-4 sm:p-6 border-b border-black">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4 overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <div className="bg-white w-full max-w-4xl rounded-lg border my-8" style={{
+              borderColor: `${colors.primary}20`
+            }}>
+              <div className="p-4 sm:p-6 border-b" style={{
+                borderColor: `${colors.primary}20`
+              }}>
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg sm:text-xl font-semibold text-gray-900">Add On-Call Duty</h3>
                   <button
@@ -1996,7 +2139,7 @@ export default function ShiftRoster() {
                 </div>
               </div>
               
-              <div className="p-4 sm:p-6 max-h-96 overflow-y-auto">
+              <div className="p-4 sm:p-6 max-h-96 overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
@@ -2087,7 +2230,9 @@ export default function ShiftRoster() {
                 </div>
               </div>
               
-              <div className="p-4 sm:p-6 border-t border-black">
+              <div className="p-4 sm:p-6 border-t" style={{
+                borderColor: `${colors.primary}20`
+              }}>
                 <div className="flex gap-3">
                   <button
                     onClick={() => setShowOnCallForm(false)}

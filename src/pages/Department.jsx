@@ -450,7 +450,7 @@ export default function Departments() {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600 whitespace-nowrap">Filter</span>
-                  <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border-0">
+                  <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                     <button 
                       onClick={() => setFilter("all")}
                       className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${

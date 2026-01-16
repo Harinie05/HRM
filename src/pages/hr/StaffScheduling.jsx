@@ -666,7 +666,7 @@ export default function StaffScheduling() {
             <div className="px-6 py-4 border-b border-black">
               <h3 className="text-lg font-medium text-gray-900">Patient Loads</h3>
             </div>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
@@ -723,7 +723,7 @@ export default function StaffScheduling() {
             <div className="px-6 py-4 border-b border-black">
               <h3 className="text-lg font-medium text-gray-900">Staff Allocations</h3>
             </div>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>

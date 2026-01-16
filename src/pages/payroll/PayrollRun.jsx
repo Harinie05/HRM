@@ -439,7 +439,7 @@ export default function PayrollRun() {
           border: `1px solid ${colors.primary}20`
         }}>
           {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto">
+          <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <table className="w-full">
               <thead className="bg-gray-100" style={{
                 borderBottom: `1px solid ${colors.primary}20`
@@ -772,7 +772,7 @@ export default function PayrollRun() {
       {/* View Payroll Modal */}
       {showViewModal && selectedRun && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg border border-black p-4 sm:p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+          <div className="bg-white rounded-lg border border-black p-4 sm:p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-semibold">Payroll Details</h3>
               <button 
@@ -889,7 +889,7 @@ export default function PayrollRun() {
       {/* Validation Results Modal */}
       {showValidationModal && validationResult && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg border border-black p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+          <div className="bg-white rounded-lg border border-black p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-semibold">Payroll Validation Results</h3>
               <button 
@@ -929,7 +929,7 @@ export default function PayrollRun() {
               {validationResult.issues && validationResult.issues.length > 0 && (
                 <div>
                   <h4 className="font-medium mb-3">Issues Found:</h4>
-                  <div className="space-y-2 max-h-60 overflow-y-auto">
+                  <div className="space-y-2 max-h-60 overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                     {validationResult.issues.map((issue, index) => (
                       <div key={index} className={`p-3 rounded-lg border ${
                         issue.severity === 'critical' 

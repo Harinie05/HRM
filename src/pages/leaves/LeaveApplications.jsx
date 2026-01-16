@@ -474,7 +474,7 @@ export default function LeaveApplications() {
             transform: 'translate(-40%, 40%)'
           }}></div>
           {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto">
+          <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <div className="min-w-[800px]">
               <table className="w-full">
                 <thead className="bg-gradient-to-r from-gray-50 to-blue-50">
@@ -691,6 +691,10 @@ export default function LeaveApplications() {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto border" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
             <h3 className="text-lg font-semibold mb-4">New Leave Application</h3>
@@ -858,6 +862,10 @@ export default function LeaveApplications() {
       {showBalanceModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg border p-6 w-full max-w-lg max-h-[80vh] overflow-y-auto" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
           borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
         }}>
             <div className="flex justify-between items-center mb-4">
@@ -949,6 +957,10 @@ export default function LeaveApplications() {
       {showReviewModal && reviewingApplication && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg border p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
           borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
         }}>
             <div className="flex justify-between items-center mb-4">

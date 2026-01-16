@@ -207,7 +207,7 @@ export default function ImportCandidates() {
         {/* MODAL FORM */}
         {showForm && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
-            <div className="bg-white w-full max-w-lg sm:max-w-xl p-4 sm:p-6 rounded-xl shadow-xl border-0 max-h-[90vh] overflow-y-auto">
+            <div className="bg-white w-full max-w-lg sm:max-w-xl p-4 sm:p-6 rounded-xl shadow-xl border-0 max-h-[90vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
 
               <h2 className="text-lg sm:text-xl font-semibold mb-4">Add Candidate</h2>
 

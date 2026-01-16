@@ -556,7 +556,7 @@ export default function TrainingPrograms() {
               </h3>
               <p className="text-sm text-gray-500 mt-1">Fill in the details below</p>
             </div>
-            <div className="px-6 py-4 overflow-y-auto flex-1">
+            <div className="px-6 py-4 overflow-y-auto flex-1" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Program Title</label>

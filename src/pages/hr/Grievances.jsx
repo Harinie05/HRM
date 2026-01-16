@@ -399,7 +399,7 @@ export default function Grievances() {
         </div>
         
         {/* Desktop Table View */}
-        <div className="hidden md:block overflow-x-auto relative z-10">
+        <div className="hidden md:block overflow-x-auto relative z-10" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           <table className="min-w-full divide-y divide-gray-200 ">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
@@ -580,7 +580,7 @@ export default function Grievances() {
 
       {/* View Modal */}
       {viewModal.show && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 p-4">
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 p-4" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           <div className="relative top-20 mx-auto p-4 sm:p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Grievance Details</h3>

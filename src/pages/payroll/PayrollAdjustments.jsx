@@ -356,7 +356,7 @@ export default function PayrollAdjustments() {
           border: `1px solid ${colors.primary}20`
         }}>
           {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto">
+          <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <table className="w-full">
               <thead className="bg-gray-100" style={{
                 borderBottom: `1px solid ${colors.primary}20`
@@ -530,6 +530,10 @@ export default function PayrollAdjustments() {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
             border: `1px solid ${colors.primary}20`
           }}>
             <h3 className="text-lg font-semibold mb-4">

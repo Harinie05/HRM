@@ -319,6 +319,10 @@ export default function ODApplications() {
             backgroundColor: colors.primary,
             transform: 'translate(30%, -30%)'
           }}></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
+            backgroundColor: colors.secondary,
+            transform: 'translate(-30%, 30%)'
+          }}></div>
           <div className="p-5 border-b-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -354,7 +358,7 @@ export default function ODApplications() {
           </div>
           <div className="p-5">
             {/* Desktop Table View */}
-            <div className="hidden md:block overflow-x-auto">
+            <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
@@ -551,16 +555,28 @@ export default function ODApplications() {
       {/* Apply OD Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl border-0 shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto border" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+            borderColor: `${colors.primary}20`
+          }}>
             <h3 className="text-lg font-semibold mb-4">Apply for OD</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">Employee</label>
                 {isAdmin() ? (
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <select
                     value={formData.employee_id}
                     onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                    className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent text-sm"
+                    className="w-full rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent text-sm border"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     required
                     disabled={employeesLoading}
                   >
@@ -570,7 +586,9 @@ export default function ODApplications() {
                     ))}
                   </select>
                 ) : (
-                  <div className="w-full border border-black rounded-lg px-3 py-2 bg-gray-50 text-gray-700 text-sm">
+                  <div className="w-full rounded-lg px-3 py-2 bg-gray-50 text-gray-700 text-sm border" style={{
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                  }}>
                     {employeesLoading ? (
                       <div className="flex items-center gap-2">
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
@@ -594,11 +612,15 @@ export default function ODApplications() {
               
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">OD Date</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input
                   type="date"
                   value={formData.od_date}
                   onChange={(e) => setFormData({...formData, od_date: e.target.value})}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent text-sm"
+                  className="w-full rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent text-sm border"
+                  style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                  }}
                   required
                 />
               </div>
@@ -606,30 +628,42 @@ export default function ODApplications() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-1">From Time</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input
                     type="time"
                     value={formData.from_time}
                     onChange={(e) => setFormData({...formData, from_time: e.target.value})}
-                    className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent text-sm"
+                    className="w-full rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent text-sm border"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-1">To Time</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input
                     type="time"
                     value={formData.to_time}
                     onChange={(e) => setFormData({...formData, to_time: e.target.value})}
-                    className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent text-sm"
+                    className="w-full rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent text-sm border"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                   />
                 </div>
               </div>
               
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">Purpose</label>
-                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <textarea
                   value={formData.purpose}
                   onChange={(e) => setFormData({...formData, purpose: e.target.value})}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent text-sm"
+                  className="w-full rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent text-sm border"
+                  style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                  }}
                   rows="3"
                   placeholder="Reason for OD..."
                   required
@@ -638,11 +672,15 @@ export default function ODApplications() {
               
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">Location</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input
                   type="text"
                   value={formData.location}
                   onChange={(e) => setFormData({...formData, location: e.target.value})}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent text-sm"
+                  className="w-full rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent text-sm border"
+                  style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                  }}
                   placeholder="OD location (optional)"
                 />
               </div>

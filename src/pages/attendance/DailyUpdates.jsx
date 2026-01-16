@@ -368,6 +368,10 @@ const DailyUpdates = () => {
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
             transform: 'translate(30%, -30%)'
           }}></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+            transform: 'translate(-30%, 30%)'
+          }}></div>
           <div className="p-5 border-b-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -404,7 +408,7 @@ const DailyUpdates = () => {
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
             {isAdmin() ? (
-              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+              <select
                 value={selectedEmployee}
                 onChange={(e) => {
                   setSelectedEmployee(e.target.value);
@@ -412,7 +416,11 @@ const DailyUpdates = () => {
                     fetchMyUpdates();
                   }
                 }}
-                className="w-full px-3 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm"
+                className="w-full px-3 py-2 bg-white rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm"
+                style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                }}
                 disabled={employeesLoading}
               >
                 <option value="">{employeesLoading ? 'Loading employees...' : 'Select Employee'}</option>
@@ -423,7 +431,9 @@ const DailyUpdates = () => {
                 ))}
               </select>
             ) : (
-              <div className="w-full px-3 py-2 bg-gray-50 border border-black rounded-lg text-gray-700 text-sm">
+              <div className="w-full px-3 py-2 bg-gray-50 rounded-lg text-gray-700 text-sm border" style={{
+                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}20`
+              }}>
                 {employeesLoading ? (
                   <div className="flex items-center gap-2">
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
@@ -455,8 +465,18 @@ const DailyUpdates = () => {
         {/* Form Modal */}
         {showForm && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl border-2 border-black max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="p-6 border-b border-black">
+            <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}20`
+            }}>
+              <div className="p-6 border-b" style={{
+                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}20`
+              }}>
                 <h2 className="text-xl font-bold text-gray-900">
                   {editingUpdate ? 'Edit Daily Update' : 'New Daily Update'}
                 </h2>
@@ -466,10 +486,14 @@ const DailyUpdates = () => {
                 {isAdmin() && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
-                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <select
                       value={formData.employee_id}
                       onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                      className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full bg-white text-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       required
                     >
                       <option value="">Select Employee</option>
@@ -486,54 +510,70 @@ const DailyUpdates = () => {
                 )}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input
                     type="date"
                     value={formData.date}
                     onChange={(e) => setFormData({...formData, date: e.target.value})}
                     max={new Date().toISOString().split('T')[0]}
-                    className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full bg-white text-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     required
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Work Done Today *</label>
-                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <textarea
                     value={formData.work_done}
                     onChange={(e) => setFormData({...formData, work_done: e.target.value})}
                     placeholder="Describe what you accomplished today..."
                     rows={4}
-                    className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                    className="w-full bg-white text-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     required
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Blockers (Optional)</label>
-                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <textarea
                     value={formData.blockers}
                     onChange={(e) => setFormData({...formData, blockers: e.target.value})}
                     placeholder="Any challenges or blockers you faced..."
                     rows={3}
-                    className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                    className="w-full bg-white text-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Plan for Tomorrow (Optional)</label>
-                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <textarea
                     value={formData.plan_for_tomorrow}
                     onChange={(e) => setFormData({...formData, plan_for_tomorrow: e.target.value})}
                     placeholder="What do you plan to work on tomorrow..."
                     rows={3}
-                    className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                    className="w-full bg-white text-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                   />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Hours Spent (Optional)</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <input
                       type="number"
                       step="0.5"
                       min="0"
@@ -541,16 +581,24 @@ const DailyUpdates = () => {
                       value={formData.hours_spent}
                       onChange={(e) => setFormData({...formData, hours_spent: e.target.value})}
                       placeholder="8.0"
-                      className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full bg-white text-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                     />
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                    <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <select
                       value={formData.status}
                       onChange={(e) => setFormData({...formData, status: e.target.value})}
-                      className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full bg-white text-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                     >
                       <option value="Draft">Draft</option>
                       <option value="Submitted">Submitted</option>
@@ -562,13 +610,26 @@ const DailyUpdates = () => {
                   <button
                     type="button"
                     onClick={() => setShowForm(false)}
-                    className="px-6 py-2 bg-white text-black border border-black rounded-lg hover:bg-gray-100 transition-colors"
+                    className="px-6 py-2 bg-white text-black rounded-lg hover:bg-gray-100 transition-colors border"
+                    style={{
+                      borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-6 py-2 bg-black text-white border border-black rounded-lg hover:bg-gray-800 transition-colors"
+                    className="px-6 py-2 text-white rounded-lg hover:bg-gray-800 transition-colors"
+                    style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    }}
                   >
                     {editingUpdate ? 'Update' : 'Save'}
                   </button>
@@ -610,7 +671,7 @@ const DailyUpdates = () => {
           <div className="p-6">
           
           {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto">
+          <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {updates.length === 0 ? (
               <div className="text-center py-12">
                 <FiEdit className="mx-auto h-12 w-12 text-gray-400 mb-4" />

@@ -464,6 +464,10 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
       <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl relative overflow-hidden border" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
         borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
       }}>
         <div className="absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl opacity-10" style={{

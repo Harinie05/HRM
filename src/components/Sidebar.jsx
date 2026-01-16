@@ -210,9 +210,19 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
     >
 
       {/* Header with Logo, Title and Toggle */}
-      <div className={`flex items-center ${isCollapsed ? 'justify-center mb-4' : 'mb-6'}`}>
+      <div className={`flex items-center ${isCollapsed ? 'justify-center mb-4' : 'mb-6'} relative`}>
+        {/* Blur circle effect */}
+        <div className="absolute w-20 h-20 rounded-full blur-2xl opacity-30" style={{
+          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+          transform: 'translate(-20%, -20%)'
+        }}></div>
+        
         {/* Circular Logo */}
-        <div className={`bg-blue-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0 shadow-lg ${isCollapsed ? 'w-8 h-8 text-xs' : 'w-10 h-10 text-sm mr-3'}`}>
+        <div className={`rounded-full flex items-center justify-center font-bold flex-shrink-0 shadow-lg relative z-10 ${isCollapsed ? 'w-8 h-8 text-xs' : 'w-10 h-10 text-sm mr-3'}`} style={{
+          backgroundColor: 'white',
+          color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+          border: `2px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+        }}>
           {companyInfo.initials}
         </div>
         
