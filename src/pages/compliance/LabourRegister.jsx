@@ -343,7 +343,7 @@ export default function LabourRegister() {
       {/* Form Section */}
       <div className="bg-white rounded-xl shadow-sm overflow-hidden relative border" style={{
         background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
       }}>
         <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
           backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -650,7 +650,7 @@ export default function LabourRegister() {
       {(registers.length > 0 || deletedRegisters.length > 0) && (
         <div className="bg-white rounded-xl shadow-sm overflow-hidden relative border" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',

@@ -174,9 +174,9 @@ export default function EmployeeReporting() {
     <Layout>
       {/* Hero Header matching EmployeeEducation */}
       <div className="p-6 space-y-6">
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl shadow-sm p-4 sm:p-6 border relative overflow-hidden" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl shadow-sm p-4 sm:p-6 relative overflow-hidden" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -219,9 +219,9 @@ export default function EmployeeReporting() {
             Back to Profile
           </button>
         </div>
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden border relative" style={{
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden relative" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -290,7 +290,9 @@ export default function EmployeeReporting() {
                 <h3 className="text-lg font-semibold text-gray-900">Select Reporting Manager</h3>
               </div>
               {form.employee_level_id && hierarchyRule && parentLevelName && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <div className="bg-blue-50 rounded-lg p-4 mb-4" style={{
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+                }}>
                   <p className="text-sm text-blue-800">
                     <strong>Based on hierarchy:</strong> {selectedLevelInfo?.level_name} reports to {parentLevelName}
                   </p>
@@ -362,7 +364,9 @@ export default function EmployeeReporting() {
 
             {/* Simple Reporting Summary */}
             {form.reporting_manager_id && (
-              <div className="bg-gray-100 border-0 rounded-lg p-6">
+              <div className="bg-gray-100 rounded-lg p-6" style={{
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+              }}>
                 <h4 className="font-semibold text-gray-900 mb-4">Reporting Structure</h4>
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-blue-100 border-0 rounded-full flex items-center justify-center">

@@ -188,7 +188,7 @@ const ResignationTracking = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-xl p-5 border shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -216,7 +216,7 @@ const ResignationTracking = () => {
         
         <div className="bg-white rounded-xl p-5 border shadow-sm hover:shadow-md transition-all duration-200" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
@@ -236,7 +236,7 @@ const ResignationTracking = () => {
         
         <div className="bg-white rounded-xl p-5 border shadow-sm hover:shadow-md transition-all duration-200" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
@@ -256,7 +256,7 @@ const ResignationTracking = () => {
         
         <div className="bg-white rounded-xl p-5 border shadow-sm hover:shadow-md transition-all duration-200" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
@@ -278,7 +278,7 @@ const ResignationTracking = () => {
       {/* Controls */}
       <div className="bg-white rounded-xl border shadow-sm relative overflow-hidden" style={{
         background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
       }}>
         <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
           backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -288,18 +288,16 @@ const ResignationTracking = () => {
           backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
           transform: 'translate(-40%, 40%)'
         }}></div>
-        <div className="p-5 border-b-0">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg" style={{
-                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-              }}>
-                <FileText className="h-5 w-5" style={{
-                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-                }} />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900">Resignation Management</h3>
+        <div className="p-5 relative z-10" style={{ borderBottom: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}` }}>
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <FileText className="h-5 w-5" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
             </div>
+            <h3 className="text-lg font-semibold text-gray-900">Resignation Management</h3>
           </div>
         </div>
         
@@ -468,7 +466,7 @@ const ResignationTracking = () => {
       {/* Resignations Table */}
       <div className="bg-white rounded-xl border shadow-sm overflow-hidden relative" style={{
         background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
       }}>
         <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
           backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -478,7 +476,7 @@ const ResignationTracking = () => {
           backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
           transform: 'translate(-40%, 40%)'
         }}></div>
-        <div className="p-5 border-b-0">
+        <div className="p-5 relative z-10" style={{ borderBottom: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}` }}>
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg" style={{
               backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`

@@ -152,7 +152,7 @@ export default function AttendanceRules() {
         {/* Hero Header matching Dashboard */}
         <div className="rounded-2xl shadow-sm p-6 relative overflow-hidden border" style={{
           background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-          borderColor: `${colors.primary}20`
+          border: `1px solid ${colors.primary}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
             backgroundColor: colors.primary,
@@ -196,7 +196,7 @@ export default function AttendanceRules() {
           {(isAdmin() || hasPermission("view_attendance_rules")) && (
             <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border relative overflow-hidden" style={{
               background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-              borderColor: `${colors.primary}20`
+              border: `1px solid ${colors.primary}`
             }}>
               <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
                 backgroundColor: colors.primary,
@@ -226,7 +226,7 @@ export default function AttendanceRules() {
           {(isAdmin() || hasPermission("view_attendance_rules")) && (
             <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border relative overflow-hidden" style={{
               background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-              borderColor: `${colors.primary}20`
+              border: `1px solid ${colors.primary}`
             }}>
               <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
                 backgroundColor: colors.primary,
@@ -256,7 +256,7 @@ export default function AttendanceRules() {
           {(isAdmin() || hasPermission("view_attendance_locations")) && (
             <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border relative overflow-hidden" style={{
               background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-              borderColor: `${colors.primary}20`
+              border: `1px solid ${colors.primary}`
             }}>
               <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
                 backgroundColor: colors.primary,
@@ -286,7 +286,7 @@ export default function AttendanceRules() {
           {(isAdmin() || hasPermission("view_attendance_locations")) && (
             <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border relative overflow-hidden" style={{
               background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-              borderColor: `${colors.primary}20`
+              border: `1px solid ${colors.primary}`
             }}>
               <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
                 backgroundColor: colors.primary,
@@ -505,7 +505,9 @@ export default function AttendanceRules() {
                   </div>
                 ) : (
                   rules.map((r) => (
-                    <div key={r.id} className="p-3 sm:p-4 border-b-0 hover:bg-gray-50">
+                    <div key={r.id} className="p-3 sm:p-4 border-b-0 hover:bg-gray-50 border rounded-lg mb-3" style={{
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+                    }}>
                       <div className="flex items-center justify-between mb-3">
                         <div className="font-semibold text-gray-900 text-sm sm:text-base">{r.rule_name}</div>
                         <button
@@ -663,7 +665,9 @@ export default function AttendanceRules() {
                   </div>
                 ) : (
                   locations.map((l) => (
-                    <div key={l.id} className="p-3 sm:p-4 border-b-0 hover:bg-gray-50">
+                    <div key={l.id} className="p-3 sm:p-4 border-b-0 hover:bg-gray-50 border rounded-lg mb-3" style={{
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+                    }}>
                       <div className="flex items-center justify-between mb-3">
                         <div className="font-semibold text-gray-900 text-sm sm:text-base">{l.location_name}</div>
                         <span className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-medium ${

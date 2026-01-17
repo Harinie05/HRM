@@ -381,7 +381,7 @@ export default function WorkAssignments() {
 
       {/* Current Review Cycle Info */}
       {currentCycle && (
-        <div className="bg-blue-50 rounded-lg p-4 mb-6" style={{
+        <div className="bg-blue-50 rounded-lg p-4 mb-6 border" style={{
           border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="flex items-center justify-between">

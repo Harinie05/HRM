@@ -62,7 +62,7 @@ export default function AttendanceReports() {
         {/* Key Performance Indicators matching Dashboard */}
         <div className="rounded-xl shadow-sm overflow-hidden relative border" style={{
           background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-          borderColor: `${colors.primary}20`
+          border: `1px solid ${colors.primary}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
             backgroundColor: colors.primary,
@@ -179,7 +179,7 @@ export default function AttendanceReports() {
         {/* Report Actions matching Dashboard */}
         <div className="rounded-xl shadow-sm relative border" style={{
           background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-          borderColor: `${colors.primary}20`
+          border: `1px solid ${colors.primary}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
             backgroundColor: colors.primary,
@@ -245,7 +245,7 @@ export default function AttendanceReports() {
         {/* Report Content matching Dashboard */}
         <div className="rounded-xl shadow-sm overflow-hidden relative border" style={{
           background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-          borderColor: `${colors.primary}20`
+          border: `1px solid ${colors.primary}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
             backgroundColor: colors.primary,
@@ -293,7 +293,7 @@ export default function AttendanceReports() {
                 {report.map((item, index) => (
                   <div key={index} className="rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 group border relative overflow-hidden" style={{
                     background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-                    borderColor: `${colors.primary}20`
+                    border: `1px solid ${colors.primary}`
                   }}>
                     <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
                       backgroundColor: colors.primary,

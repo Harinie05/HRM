@@ -156,8 +156,9 @@ export default function CandidateScreening() {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6 mb-6" style={{
-          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl shadow-sm p-4 sm:p-6 mb-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3 sm:gap-4">
@@ -180,7 +181,9 @@ export default function CandidateScreening() {
         </div>
 
         {/* ACTIONS */}
-        <div className="bg-white rounded-2xl border-0 p-6">
+        <div className="bg-white rounded-2xl p-6" style={{
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+        }}>
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
               <button
@@ -231,9 +234,9 @@ export default function CandidateScreening() {
         </div>
 
         {/* APPLICATIONS TABLE */}
-        <div className="bg-white rounded-2xl overflow-hidden relative border" style={{
+        <div className="bg-white rounded-2xl overflow-hidden relative" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -436,10 +439,10 @@ export default function CandidateScreening() {
       {/* INTERVIEW SCHEDULING MODAL */}
       {showScheduleModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
-          <div className="bg-white p-4 sm:p-6 rounded-lg w-full max-w-lg sm:max-w-2xl max-h-[80vh] overflow-y-auto relative border hide-scrollbar" style={{
+          <div className="bg-white p-4 sm:p-6 rounded-lg w-full max-w-lg sm:max-w-2xl max-h-[80vh] overflow-y-auto relative hide-scrollbar" style={{
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`,
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`,
             scrollbarWidth: 'none',
             msOverflowStyle: 'none'
           }}>
@@ -463,9 +466,9 @@ export default function CandidateScreening() {
               {selectedCandidates.map(candidateId => {
                 const candidate = applications.find(app => app.id === candidateId);
                 return (
-                  <div key={candidateId} className="p-3 sm:p-4 rounded bg-gray-50 relative overflow-hidden border" style={{
+                  <div key={candidateId} className="p-3 sm:p-4 rounded bg-gray-50 relative overflow-hidden" style={{
                     background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-                    borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                   }}>
                     <div className="font-medium mb-2 text-sm sm:text-base">{candidate?.name}</div>
                     <div className="text-xs sm:text-sm text-gray-600 mb-2 truncate">{candidate?.email}</div>

@@ -61,8 +61,9 @@ export default function PMSManagement() {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Header with reduced size and proper padding */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
-          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border shadow-sm p-4 sm:p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
         }}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
@@ -82,7 +83,9 @@ export default function PMSManagement() {
               </div>
             </div>
             <div className="flex gap-2 sm:gap-3 flex-shrink-0">
-              <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border shadow-sm" style={{
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+              }}>
                 <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
@@ -96,9 +99,53 @@ export default function PMSManagement() {
           </div>
         </div>
 
-          <div className="bg-white rounded-xl shadow-sm overflow-hidden relative" style={{
+        {/* Tab Navigation */}
+        <div className="mb-6 px-4">
+          <div className="rounded-full p-1.5 inline-flex space-x-1 overflow-x-auto scrollbar-hide w-full sm:w-auto relative overflow-hidden" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}10`,
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+          }}>
+            <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9',
+              transform: 'translate(30%, -30%)'
+            }}></div>
+            <div className="absolute bottom-0 left-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+              transform: 'translate(-30%, 30%)'
+            }}></div>
+            {tabs.map((tabName) => (
+              <button
+                key={tabName}
+                onClick={() => setTab(tabName)}
+                className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 relative z-10`}
+                style={{
+                  backgroundColor: tab === tabName ? 'var(--primary-color)' : 'transparent',
+                  color: tab === tabName ? 'white' : '#6b7280'
+                }}
+                onMouseEnter={(e) => {
+                  if (tab !== tabName) {
+                    e.currentTarget.style.backgroundColor = 'var(--secondary-color)';
+                    e.currentTarget.style.color = 'white';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (tab !== tabName) {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = '#6b7280';
+                  }
+                }}
+              >
+                {tabName}
+              </button>
+            ))}
+          </div>
+        </div>
+
+          <div className="bg-white rounded-xl shadow-sm overflow-hidden relative border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
-            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
           }}>
             <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
               background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}40 0%, transparent 70%)`,
@@ -106,48 +153,6 @@ export default function PMSManagement() {
             }}></div>
             {/* Content */}
             <div className="p-4 sm:p-6">
-              {/* Tab Navigation */}
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-6">
-                <span className="text-sm text-gray-600">Modules</span>
-                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto scrollbar-hide border-0" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
-                  {tabs.map((tabName) => (
-                    <button
-                      key={tabName}
-                      onClick={() => setTab(tabName)}
-                      className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 ${
-                        tab === tabName 
-                          ? "text-white" 
-                          : "text-gray-600 hover:text-gray-900"
-                      }`}
-                      style={{
-                        backgroundColor: tab === tabName ? 'var(--primary-color)' : 'transparent',
-                        color: tab === tabName ? 'white' : '#6b7280'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (tab !== tabName) {
-                          e.currentTarget.style.backgroundColor = 'var(--secondary-color)';
-                          e.currentTarget.style.color = 'white';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (tab !== tabName) {
-                          e.currentTarget.style.backgroundColor = 'transparent';
-                          e.currentTarget.style.color = '#6b7280';
-                        }
-                      }}
-                    >
-                      {tabName}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              {/* Scroll indicator */}
-              <div className="flex justify-center mb-6">
-                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </div>
-
               {/* Tab Content */}
               {tabs.includes("Work Assignments") && tab === "Work Assignments" && <WorkAssignments />}
               {tabs.includes("Goals & KPI") && tab === "Goals & KPI" && <GoalsKPI />}

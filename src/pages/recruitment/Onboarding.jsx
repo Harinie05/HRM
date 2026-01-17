@@ -454,9 +454,9 @@ export default function Onboarding() {
       <Layout>
         <div className="p-6">
         {/* Header */}
-        <div className="rounded-2xl shadow-sm p-4 sm:p-6 mb-6 relative overflow-hidden border" style={{
+        <div className="rounded-2xl shadow-sm p-4 sm:p-6 mb-6 relative overflow-hidden" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -506,9 +506,9 @@ export default function Onboarding() {
         </div>
 
         {/* Onboarded Candidates Cards */}
-        <div className="bg-white rounded-xl p-6 relative overflow-hidden border" style={{
+        <div className="bg-white rounded-xl p-6 relative overflow-hidden" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -548,9 +548,9 @@ export default function Onboarding() {
                   c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
                 )
                 .map((c) => (
-                <div key={c.id} className="bg-white rounded-xl p-4 hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+                <div key={c.id} className="bg-white rounded-xl p-4 hover:shadow-md transition-all duration-200 relative overflow-hidden" style={{
                   background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-                  borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                 }}>
                   <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',

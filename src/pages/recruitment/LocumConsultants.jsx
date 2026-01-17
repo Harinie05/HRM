@@ -358,8 +358,9 @@ const LocumConsultants = () => {
       `}</style>
       <div className="p-6 space-y-6">
         {/* Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6 mb-6" style={{
-          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl shadow-sm p-4 sm:p-6 mb-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div className="flex items-center gap-3 sm:gap-4">
@@ -384,107 +385,108 @@ const LocumConsultants = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl overflow-hidden relative border" style={{
-          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-        }}>
-          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
-            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-            transform: 'translate(30%, -30%)'
-          }}></div>
-          <div className="p-4 sm:p-6 relative z-10">
-            {/* Tab Navigation */}
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">Consultant Management</span>
-                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                  {(isAdmin() || hasPermission('view_consultants')) && (
-                    <button
-                      onClick={() => setActiveTab('list')}
-                      className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
-                        activeTab === 'list' 
-                          ? "bg-white text-gray-900 shadow-sm" 
-                          : "text-gray-600 hover:text-gray-900"
-                      }`}
-                      style={{
-                        backgroundColor: activeTab === 'list' ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
-                        color: activeTab === 'list' ? 'white' : '#6b7280'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (activeTab !== 'list') {
-                          e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                          e.currentTarget.style.color = 'white';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (activeTab !== 'list') {
-                          e.currentTarget.style.backgroundColor = 'transparent';
-                          e.currentTarget.style.color = '#6b7280';
-                        }
-                      }}
-                    >
-                      Consultant List
-                    </button>
-                  )}
-                  {(isAdmin() || hasPermission('view_availability')) && (
-                    <button
-                      onClick={() => setActiveTab('availability')}
-                      className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
-                        activeTab === 'availability' 
-                          ? "bg-white text-gray-900 shadow-sm" 
-                          : "text-gray-600 hover:text-gray-900"
-                      }`}
-                      style={{
-                        backgroundColor: activeTab === 'availability' ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
-                        color: activeTab === 'availability' ? 'white' : '#6b7280'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (activeTab !== 'availability') {
-                          e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                          e.currentTarget.style.color = 'white';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (activeTab !== 'availability') {
-                          e.currentTarget.style.backgroundColor = 'transparent';
-                          e.currentTarget.style.color = '#6b7280';
-                        }
-                      }}
-                    >
-                      Availability
-                    </button>
-                  )}
-                  {(isAdmin() || hasPermission('view_payouts')) && (
-                    <button
-                      onClick={() => setActiveTab('payouts')}
-                      className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
-                        activeTab === 'payouts' 
-                          ? "bg-white text-gray-900 shadow-sm" 
-                          : "text-gray-600 hover:text-gray-900"
-                      }`}
-                      style={{
-                        backgroundColor: activeTab === 'payouts' ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
-                        color: activeTab === 'payouts' ? 'white' : '#6b7280'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (activeTab !== 'payouts') {
-                          e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                          e.currentTarget.style.color = 'white';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (activeTab !== 'payouts') {
-                          e.currentTarget.style.backgroundColor = 'transparent';
-                          e.currentTarget.style.color = '#6b7280';
-                        }
-                      }}
-                    >
-                      Payouts
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
+        {/* Tab Navigation */}
+        <div className="mb-6 px-4">
+          <div className="rounded-full p-1.5 inline-flex space-x-1 overflow-x-auto scrollbar-hide w-full sm:w-auto relative overflow-hidden" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+          }}>
+            <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+              transform: 'translate(30%, -30%)'
+            }}></div>
+            <div className="absolute bottom-0 left-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+              transform: 'translate(-30%, 30%)'
+            }}></div>
+            {(isAdmin() || hasPermission('view_consultants')) && (
+              <button
+                onClick={() => setActiveTab('list')}
+                className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 relative z-10`}
+                style={{
+                  backgroundColor: activeTab === 'list' ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
+                  color: activeTab === 'list' ? 'white' : '#6b7280'
+                }}
+                onMouseEnter={(e) => {
+                  if (activeTab !== 'list') {
+                    e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                    e.currentTarget.style.color = 'white';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeTab !== 'list') {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = '#6b7280';
+                  }
+                }}
+              >
+                Consultant List
+              </button>
+            )}
+            {(isAdmin() || hasPermission('view_availability')) && (
+              <button
+                onClick={() => setActiveTab('availability')}
+                className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 relative z-10`}
+                style={{
+                  backgroundColor: activeTab === 'availability' ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
+                  color: activeTab === 'availability' ? 'white' : '#6b7280'
+                }}
+                onMouseEnter={(e) => {
+                  if (activeTab !== 'availability') {
+                    e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                    e.currentTarget.style.color = 'white';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeTab !== 'availability') {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = '#6b7280';
+                  }
+                }}
+              >
+                Availability
+              </button>
+            )}
+            {(isAdmin() || hasPermission('view_payouts')) && (
+              <button
+                onClick={() => setActiveTab('payouts')}
+                className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 relative z-10`}
+                style={{
+                  backgroundColor: activeTab === 'payouts' ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
+                  color: activeTab === 'payouts' ? 'white' : '#6b7280'
+                }}
+                onMouseEnter={(e) => {
+                  if (activeTab !== 'payouts') {
+                    e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                    e.currentTarget.style.color = 'white';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeTab !== 'payouts') {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = '#6b7280';
+                  }
+                }}
+              >
+                Payouts
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="px-4">
+          <div className="rounded-3xl shadow-xl overflow-hidden relative" style={{
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`,
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`
+          }}>
+            <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+              transform: 'translate(30%, -30%)'
+            }}></div>
+            <div className="px-4 pt-6 relative z-10">
 
             {/* Tab Content */}
             {activeTab === 'list' && (isAdmin() || hasPermission('view_consultants')) && (
@@ -676,7 +678,9 @@ const LocumConsultants = () => {
                   ) : (
                     <div className="grid grid-cols-1 gap-4">
                       {filteredConsultants.map((consultant) => (
-                        <div key={consultant.id} className="bg-white rounded-xl border border-black p-4 hover:shadow-sm transition-shadow">
+                        <div key={consultant.id} className="bg-white rounded-xl p-4 hover:shadow-sm transition-shadow" style={{
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+                        }}>
                           <div className="flex items-start justify-between mb-3">
                             <div className="flex-1">
                               <h3 className="text-lg font-medium text-gray-900 mb-1">{consultant.name}</h3>
@@ -831,7 +835,9 @@ const LocumConsultants = () => {
                   ) : (
                     <div className="grid grid-cols-1 gap-4">
                       {availability.map((avail) => (
-                        <div key={avail.id} className="bg-white rounded-xl border border-black p-4 hover:shadow-sm transition-shadow">
+                        <div key={avail.id} className="bg-white rounded-xl p-4 hover:shadow-sm transition-shadow" style={{
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+                        }}>
                           <div className="flex items-start justify-between mb-3">
                             <div className="flex-1">
                               <h3 className="text-lg font-medium text-gray-900 mb-1">{getConsultantName(avail.consultant_id)}</h3>
@@ -990,7 +996,9 @@ const LocumConsultants = () => {
                   ) : (
                     <div className="grid grid-cols-1 gap-4">
                       {payouts.map((payout) => (
-                        <div key={payout.id} className="bg-white rounded-xl border border-black p-4 hover:shadow-sm transition-shadow">
+                        <div key={payout.id} className="bg-white rounded-xl p-4 hover:shadow-sm transition-shadow" style={{
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+                        }}>
                           <div className="flex items-start justify-between mb-3">
                             <div className="flex-1">
                               <h3 className="text-lg font-medium text-gray-900 mb-1">{getConsultantName(payout.consultant_id)}</h3>
@@ -1072,18 +1080,19 @@ const LocumConsultants = () => {
                 </div>
               </div>
             )}
+            </div>
           </div>
         </div>
 
         {/* Modal */}
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto border" style={{
+            <div className="bg-white rounded-2xl shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto" style={{
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
-              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
             }}>
               <div className="p-6">
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">
@@ -1094,9 +1103,9 @@ const LocumConsultants = () => {
                 <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Basic Information */}
-                    <div className="rounded-xl p-6 relative overflow-hidden border" style={{
+                    <div className="rounded-xl p-6 relative overflow-hidden" style={{
                       background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-                      borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                     }}>
                       <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
                         backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -1212,9 +1221,9 @@ const LocumConsultants = () => {
                     </div>
 
                     {/* Contact Details */}
-                    <div className="rounded-xl p-6 relative overflow-hidden border" style={{
+                    <div className="rounded-xl p-6 relative overflow-hidden" style={{
                       background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-                      borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                     }}>
                       <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
                         backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -1321,21 +1330,21 @@ const LocumConsultants = () => {
         {/* Availability Modal */}
         {showAvailabilityModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto border" style={{
+            <div className="bg-white rounded-2xl shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto" style={{
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
-              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
             }}>
               <div className="p-6">
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Add Availability</h3>
                 <p className="text-sm text-gray-600 mb-6">Schedule consultant availability for OPD, Surgery, or On-call</p>
                 
                 <form onSubmit={handleAvailabilitySubmit}>
-                  <div className="rounded-xl p-6 relative overflow-hidden border mb-6" style={{
+                  <div className="rounded-xl p-6 relative overflow-hidden mb-6" style={{
                     background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-                    borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                   }}>
                     <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
                       backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -1471,12 +1480,12 @@ const LocumConsultants = () => {
         {/* Payout Modal */}
         {showPayoutModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl shadow-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto border" style={{
+            <div className="bg-white rounded-2xl shadow-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto" style={{
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
-              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
             }}>
               <div className="p-6">
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Add Payout</h3>
@@ -1485,9 +1494,9 @@ const LocumConsultants = () => {
                 <form onSubmit={handlePayoutSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Period & Consultant */}
-                    <div className="rounded-xl p-6 relative overflow-hidden border" style={{
+                    <div className="rounded-xl p-6 relative overflow-hidden" style={{
                       background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-                      borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                     }}>
                       <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
                         backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -1555,9 +1564,9 @@ const LocumConsultants = () => {
                     </div>
 
                     {/* Financial Details */}
-                    <div className="rounded-xl p-6 relative overflow-hidden border" style={{
+                    <div className="rounded-xl p-6 relative overflow-hidden" style={{
                       background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-                      borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                     }}>
                       <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
                         backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',

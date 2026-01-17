@@ -273,7 +273,7 @@ export default function LeaveReports() {
       {/* Header */}
       <div className="rounded-2xl shadow-sm p-4 sm:p-6 relative overflow-hidden border" style={{
         background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-        borderColor: `${colors.primary}20`
+        borderColor: colors.primary
       }}>
         <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
           backgroundColor: colors.primary,
@@ -322,7 +322,7 @@ export default function LeaveReports() {
       {hasPermission("view_leave_reports") && (
         <div className="rounded-2xl shadow-sm p-6 relative overflow-hidden border" style={{
           background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-          borderColor: `${colors.primary}20`
+          borderColor: colors.primary
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: colors.primary,
@@ -453,7 +453,7 @@ export default function LeaveReports() {
       {hasPermission("view_leave_reports") && (
         <div className="rounded-2xl shadow-sm overflow-hidden relative border" style={{
           background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-          borderColor: `${colors.primary}20`
+          borderColor: colors.primary
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: colors.primary,

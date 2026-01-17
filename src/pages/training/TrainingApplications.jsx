@@ -167,8 +167,9 @@ export default function TrainingApplications() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
-        background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+      <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border shadow-sm p-4 sm:p-6" style={{
+        background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
+        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
       }}>
         <div className="flex items-center gap-4">
           <button 
@@ -227,7 +228,9 @@ export default function TrainingApplications() {
 
       {/* Actions Bar */}
       {selectedApplications.length > 0 && (hasPermission('select_send_training_emails') || isAdmin()) && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="bg-blue-50 border rounded-lg p-4" style={{
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+        }}>
           <div className="flex justify-between items-center">
             <span className="text-sm font-medium text-blue-900">
               {selectedApplications.length} candidate(s) selected
@@ -302,11 +305,21 @@ export default function TrainingApplications() {
                     style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}` }}
                   />
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border-0">Applicant</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border-0">Contact</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border-0">Applied Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border-0">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border-0">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border" style={{
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+                }}>Applicant</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border" style={{
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+                }}>Contact</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border" style={{
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+                }}>Applied Date</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border" style={{
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+                }}>Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border" style={{
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+                }}>Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">

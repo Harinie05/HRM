@@ -169,7 +169,7 @@ export default function LeaveRules() {
       {/* Header */}
       <div className="rounded-2xl shadow-sm p-4 sm:p-6 relative overflow-hidden border" style={{
         background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-        borderColor: `${colors.primary}20`
+        borderColor: colors.primary
       }}>
         <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
           backgroundColor: colors.primary,
@@ -215,7 +215,7 @@ export default function LeaveRules() {
       {hasPermission("view_leave_rules") && (
         <div className="rounded-2xl shadow-sm p-6 relative overflow-hidden border" style={{
           background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-          borderColor: `${colors.primary}20`
+          borderColor: colors.primary
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: colors.primary,
@@ -282,7 +282,7 @@ export default function LeaveRules() {
       {hasPermission("view_leave_rules") && (
         <div className="rounded-2xl shadow-sm overflow-hidden relative border" style={{
           background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-          borderColor: `${colors.primary}20`
+          borderColor: colors.primary
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: colors.primary,
@@ -505,7 +505,7 @@ export default function LeaveRules() {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-3xl shadow-2xl border w-full max-w-lg" style={{
-            borderColor: `${colors.primary}20`
+            borderColor: colors.primary
           }}>
             <div className="p-8 border-b-0">
               <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
@@ -603,7 +603,7 @@ export default function LeaveRules() {
                   onClick={handleCloseModal}
                   className="flex-1 px-6 py-3 border rounded-2xl text-gray-700 hover:bg-gray-50 font-semibold transition-colors"
                   style={{
-                    borderColor: `${colors.primary}20`
+                    borderColor: colors.primary
                   }}
                 >
                   Cancel

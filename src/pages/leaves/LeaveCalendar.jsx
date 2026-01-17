@@ -18,8 +18,7 @@ export default function LeaveCalendar() {
         {/* Hero Header matching User Management */}
         <div className="rounded-2xl shadow-sm p-4 sm:p-6 relative overflow-hidden border" style={{
           background: `linear-gradient(to right, ${colors.primary}10, ${colors.secondary}10)`,
-          borderColor: colors.primary,
-          borderWidth: '1px'
+          borderColor: colors.primary
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
             backgroundColor: colors.primary,

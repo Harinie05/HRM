@@ -252,7 +252,7 @@ export default function Assets() {
       {/* Asset Assignment Form */}
       <div className="rounded-lg shadow-sm bg-white relative overflow-hidden" style={{
         background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-        border: `1px solid ${colors.primary}20`
+        border: `1px solid ${colors.primary}`
       }}>
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
           background: `radial-gradient(circle, ${colors.primary}40 0%, transparent 70%)`,
@@ -470,7 +470,7 @@ export default function Assets() {
       {pendingAssets.length > 0 && (
         <div className="rounded-lg shadow-sm bg-white relative overflow-hidden" style={{
           background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-          border: `1px solid ${colors.primary}20`
+          border: `1px solid ${colors.primary}`
         }}>
           <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
             background: `radial-gradient(circle, ${colors.primary}40 0%, transparent 70%)`,
@@ -647,7 +647,7 @@ export default function Assets() {
       {/* Assets List */}
       <div className="rounded-lg shadow-sm bg-white relative overflow-hidden" style={{
         background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-        border: `1px solid ${colors.primary}20`
+        border: `1px solid ${colors.primary}`
       }}>
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
           background: `radial-gradient(circle, ${colors.primary}40 0%, transparent 70%)`,

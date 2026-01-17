@@ -195,7 +195,7 @@ export default function EmployeeProfile() {
       <div className="mb-4 p-4 sm:p-6">
         <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl shadow-sm p-4 sm:p-8 relative overflow-hidden" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -239,7 +239,9 @@ export default function EmployeeProfile() {
               </div>
             </div>
             <div className="text-center sm:text-right flex-shrink-0">
-              <div className="bg-white rounded-lg p-3 border-0 shadow-sm text-center">
+              <div className="bg-white rounded-lg p-3 shadow-sm text-center" style={{
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+              }}>
                 <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
                   <span className="text-xs font-medium">Status</span>
                 </div>
@@ -255,7 +257,7 @@ export default function EmployeeProfile() {
         {/* Action Buttons */}
         <div className="bg-white rounded-xl shadow-sm p-4 relative overflow-hidden" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -297,7 +299,7 @@ export default function EmployeeProfile() {
         {/* Employment Details */}
         <div className="bg-white rounded-xl shadow-sm overflow-hidden relative" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -316,7 +318,9 @@ export default function EmployeeProfile() {
           </div>
           <div className="p-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              <div className="flex items-start gap-3 p-4 bg-white rounded-xl border-0">
+              <div className="flex items-start gap-3 p-4 bg-white rounded-xl" style={{
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+              }}>
                 <div className="p-2 bg-gray-100 rounded-lg mt-0.5">
                   <FiMail className="text-gray-600 w-4 h-4" />
                 </div>
@@ -325,7 +329,9 @@ export default function EmployeeProfile() {
                   <p className="text-gray-900 font-medium text-sm sm:text-base truncate">{employee.candidate_email || 'N/A'}</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 p-4 bg-white rounded-xl border-0">
+              <div className="flex items-start gap-3 p-4 bg-white rounded-xl" style={{
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+              }}>
                 <div className="p-2 bg-gray-100 rounded-lg mt-0.5">
                   <FiMapPin className="text-gray-600 w-4 h-4" />
                 </div>
@@ -334,7 +340,9 @@ export default function EmployeeProfile() {
                   <p className="text-gray-900 font-medium text-sm sm:text-base">{employee.work_location}</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 p-4 bg-white rounded-xl border-0">
+              <div className="flex items-start gap-3 p-4 bg-white rounded-xl" style={{
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+              }}>
                 <div className="p-2 bg-gray-100 rounded-lg mt-0.5">
                   <FiUsers className="text-gray-600 w-4 h-4" />
                 </div>
@@ -343,7 +351,9 @@ export default function EmployeeProfile() {
                   <p className="text-gray-900 font-medium text-sm sm:text-base">{employee.reporting_manager}</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 p-4 bg-white rounded-xl border-0">
+              <div className="flex items-start gap-3 p-4 bg-white rounded-xl" style={{
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+              }}>
                 <div className="p-2 bg-gray-100 rounded-lg mt-0.5">
                   <FiClock className="text-gray-600 w-4 h-4" />
                 </div>
@@ -352,7 +362,9 @@ export default function EmployeeProfile() {
                   <p className="text-gray-900 font-medium text-sm sm:text-base">{employee.work_shift}</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 p-4 bg-white rounded-xl border-0">
+              <div className="flex items-start gap-3 p-4 bg-white rounded-xl" style={{
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+              }}>
                 <div className="p-2 bg-gray-100 rounded-lg mt-0.5">
                   <FiCalendar className="text-gray-600 w-4 h-4" />
                 </div>
@@ -372,7 +384,7 @@ export default function EmployeeProfile() {
         {/* Employee Information Modules */}
         <div className="bg-white rounded-xl shadow-sm overflow-hidden relative" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -396,7 +408,7 @@ export default function EmployeeProfile() {
                 className="group p-4 sm:p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
                 style={{
                   background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                 }}
               >
                 <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
@@ -421,7 +433,7 @@ export default function EmployeeProfile() {
                 className="group p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
                 style={{
                   background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                 }}
               >
                 <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
@@ -446,7 +458,7 @@ export default function EmployeeProfile() {
                 className="group p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
                 style={{
                   background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                 }}
               >
                 <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
@@ -471,7 +483,7 @@ export default function EmployeeProfile() {
                 className="group p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
                 style={{
                   background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                 }}
               >
                 <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
@@ -496,7 +508,7 @@ export default function EmployeeProfile() {
                 className="group p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
                 style={{
                   background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                 }}
               >
                 <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
@@ -521,7 +533,7 @@ export default function EmployeeProfile() {
                 className="group p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
                 style={{
                   background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                 }}
               >
                 <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
@@ -546,7 +558,7 @@ export default function EmployeeProfile() {
                 className="group p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
                 style={{
                   background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                 }}
               >
                 <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
@@ -571,7 +583,7 @@ export default function EmployeeProfile() {
                 className="group p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
                 style={{
                   background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                 }}
               >
                 <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
@@ -596,7 +608,7 @@ export default function EmployeeProfile() {
                 className="group p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
                 style={{
                   background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                 }}
               >
                 <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
@@ -621,7 +633,7 @@ export default function EmployeeProfile() {
                 className="group p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
                 style={{
                   background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                 }}
               >
                 <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
@@ -646,7 +658,7 @@ export default function EmployeeProfile() {
                 className="group p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
                 style={{
                   background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                 }}
               >
                 <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
@@ -673,7 +685,11 @@ export default function EmployeeProfile() {
         {/* Edit Profile Modal */}
         {showEditModal && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl border-0 shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto" style={{ 
+              scrollbarWidth: 'none', 
+              msOverflowStyle: 'none',
+              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+            }}>
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -847,7 +863,11 @@ export default function EmployeeProfile() {
         {/* Photo Upload Modal */}
         {showPhotoUpload && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl border-0 shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto" style={{ 
+              scrollbarWidth: 'none', 
+              msOverflowStyle: 'none',
+              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+            }}>
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
                   <FiCamera className="text-gray-600 w-5 h-5" />
@@ -965,12 +985,26 @@ export default function EmployeeProfile() {
   );
 }
 
-<style jsx>{`
+<style jsx global>{`
   * {
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
   *::-webkit-scrollbar {
+    display: none;
+  }
+  .overflow-y-auto {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .overflow-y-auto::-webkit-scrollbar {
+    display: none;
+  }
+  .overflow-x-auto {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .overflow-x-auto::-webkit-scrollbar {
     display: none;
   }
 `}</style>

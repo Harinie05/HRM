@@ -293,7 +293,9 @@ export default function ReportingStructure() {
           </div>
 
           {(showCreateLevel || editingLevel) && (
-            <div className="bg-gray-50 rounded-xl p-6 mb-6">
+            <div className="bg-gray-50 rounded-xl p-6 mb-6" style={{
+              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+            }}>
               <h4 className="text-lg font-medium text-gray-900 mb-4">
                 {editingLevel ? 'Edit Level' : 'Create New Level'}
               </h4>
@@ -498,7 +500,9 @@ export default function ReportingStructure() {
           </div>
 
           {(showCreateHierarchy || editingHierarchy) && (
-            <div className="bg-gray-50 rounded-xl p-6 mb-6">
+            <div className="bg-gray-50 rounded-xl p-6 mb-6" style={{
+              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+            }}>
               <h4 className="text-lg font-medium text-gray-900 mb-4">
                 {editingHierarchy ? 'Edit Hierarchy Rule' : 'Create Hierarchy Rule'}
               </h4>

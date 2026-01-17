@@ -237,7 +237,7 @@ export default function PayrollReports() {
   return (
     <div className="rounded-2xl overflow-hidden relative" style={{
       background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-      border: `1px solid ${colors.primary}20`
+      border: `1px solid ${colors.primary}`
     }}>
       <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
         backgroundColor: colors.primary,
@@ -245,7 +245,7 @@ export default function PayrollReports() {
       }}></div>
       {/* Header */}
       <div className="p-6 relative z-10" style={{
-        borderBottom: `1px solid ${colors.primary}20`
+        borderBottom: `1px solid ${colors.primary}`
       }}>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
@@ -270,7 +270,7 @@ export default function PayrollReports() {
               msOverflowStyle: 'none',
             scrollbarWidth: 'none', 
             msOverflowStyle: 'none',
-            border: `1px solid ${colors.primary}20`
+            border: `1px solid ${colors.primary}`
           }}>
             <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
               value={selectedPeriod}
@@ -289,8 +289,8 @@ export default function PayrollReports() {
         {/* Stats Overview */}
         <div className="mb-6">
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div className="rounded-2xl p-4 shadow-sm" style={{
-              border: `1px solid ${colors.primary}20`
+            <div className="bg-white rounded-2xl p-4 shadow-sm" style={{
+              border: `1px solid ${colors.primary}`
             }}>
               <div className="flex items-center justify-between">
                 <div>
@@ -304,8 +304,8 @@ export default function PayrollReports() {
                 </div>
               </div>
             </div>
-            <div className="rounded-2xl p-4 shadow-sm" style={{
-              border: `1px solid ${colors.primary}20`
+            <div className="bg-white rounded-2xl p-4 shadow-sm" style={{
+              border: `1px solid ${colors.primary}`
             }}>
               <div className="flex items-center justify-between">
                 <div>
@@ -319,8 +319,8 @@ export default function PayrollReports() {
                 </div>
               </div>
             </div>
-            <div className="rounded-2xl p-4 shadow-sm" style={{
-              border: `1px solid ${colors.primary}20`
+            <div className="bg-white rounded-2xl p-4 shadow-sm" style={{
+              border: `1px solid ${colors.primary}`
             }}>
               <div className="flex items-center justify-between">
                 <div>
@@ -334,8 +334,8 @@ export default function PayrollReports() {
                 </div>
               </div>
             </div>
-            <div className="rounded-2xl p-4 shadow-sm" style={{
-              border: `1px solid ${colors.primary}20`
+            <div className="bg-white rounded-2xl p-4 shadow-sm" style={{
+              border: `1px solid ${colors.primary}`
             }}>
               <div className="flex items-center justify-between">
                 <div>
@@ -349,8 +349,8 @@ export default function PayrollReports() {
                 </div>
               </div>
             </div>
-            <div className="rounded-2xl p-4 shadow-sm" style={{
-              border: `1px solid ${colors.primary}20`
+            <div className="bg-white rounded-2xl p-4 shadow-sm" style={{
+              border: `1px solid ${colors.primary}`
             }}>
               <div className="flex items-center justify-between">
                 <div>
@@ -364,8 +364,8 @@ export default function PayrollReports() {
                 </div>
               </div>
             </div>
-            <div className="rounded-2xl p-4 shadow-sm" style={{
-              border: `1px solid ${colors.primary}20`
+            <div className="bg-white rounded-2xl p-4 shadow-sm" style={{
+              border: `1px solid ${colors.primary}`
             }}>
               <div className="flex items-center justify-between">
                 <div>
@@ -386,7 +386,7 @@ export default function PayrollReports() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* Compliance Reports */}
           <div className="bg-white rounded-2xl p-6 shadow-sm" style={{
-            border: `1px solid ${colors.primary}20`
+            border: `1px solid ${colors.primary}`
           }}>
             <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
               <FileText size={20} />
@@ -394,7 +394,7 @@ export default function PayrollReports() {
             </h3>
             <div className="space-y-3">
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg" style={{
-                border: `1px solid ${colors.primary}20`
+                border: `1px solid ${colors.primary}`
               }}>
                 <div>
                   <p className="font-medium text-gray-900">PF Challan Report</p>
@@ -411,7 +411,7 @@ export default function PayrollReports() {
                 )}
               </div>
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg" style={{
-                border: `1px solid ${colors.primary}20`
+                border: `1px solid ${colors.primary}`
               }}>
                 <div>
                   <p className="font-medium text-gray-900">ESI Challan Report</p>
@@ -428,7 +428,7 @@ export default function PayrollReports() {
                 )}
               </div>
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg" style={{
-                border: `1px solid ${colors.primary}20`
+                border: `1px solid ${colors.primary}`
               }}>
                 <div>
                   <p className="font-medium text-gray-900">TDS Report</p>
@@ -445,7 +445,7 @@ export default function PayrollReports() {
                 )}
               </div>
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg" style={{
-                border: `1px solid ${colors.primary}20`
+                border: `1px solid ${colors.primary}`
               }}>
                 <div>
                   <p className="font-medium text-gray-900">Form 16 Generation</p>
@@ -466,7 +466,7 @@ export default function PayrollReports() {
 
           {/* Payroll Summary */}
           <div className="bg-white rounded-2xl p-6 shadow-sm" style={{
-            border: `1px solid ${colors.primary}20`
+            border: `1px solid ${colors.primary}`
           }}>
             <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
               <BarChart3 size={20} />
@@ -474,7 +474,7 @@ export default function PayrollReports() {
             </h3>
             <div className="space-y-3">
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg" style={{
-                border: `1px solid ${colors.primary}20`
+                border: `1px solid ${colors.primary}`
               }}>
                 <div>
                   <p className="font-medium text-gray-900">Department-wise Report</p>
@@ -491,7 +491,7 @@ export default function PayrollReports() {
                 )}
               </div>
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg" style={{
-                border: `1px solid ${colors.primary}20`
+                border: `1px solid ${colors.primary}`
               }}>
                 <div>
                   <p className="font-medium text-gray-900">Grade-wise Report</p>
@@ -508,7 +508,7 @@ export default function PayrollReports() {
                 )}
               </div>
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg" style={{
-                border: `1px solid ${colors.primary}20`
+                border: `1px solid ${colors.primary}`
               }}>
                 <div>
                   <p className="font-medium text-gray-900">Bank Transfer Report</p>
@@ -525,7 +525,7 @@ export default function PayrollReports() {
                 )}
               </div>
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg" style={{
-                border: `1px solid ${colors.primary}20`
+                border: `1px solid ${colors.primary}`
               }}>
                 <div>
                   <p className="font-medium text-gray-900">Attendance vs Payroll</p>
@@ -547,16 +547,16 @@ export default function PayrollReports() {
 
         {/* Summary Data */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{
-          border: `1px solid ${colors.primary}20`
+          border: `1px solid ${colors.primary}`
         }}>
           <div className="p-6 bg-gray-50" style={{
-            borderBottom: `1px solid ${colors.primary}20`
+            borderBottom: `1px solid ${colors.primary}`
           }}>
             <h3 className="text-lg font-medium text-gray-900">Current Period Summary</h3>
           </div>
           <div className="p-6">
             <div className="bg-gray-50 rounded-2xl p-4" style={{
-              border: `1px solid ${colors.primary}20`
+              border: `1px solid ${colors.primary}`
             }}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                 <div>
@@ -576,7 +576,7 @@ export default function PayrollReports() {
 
         {/* Footer */}
         <div className="bg-gray-50 rounded-2xl p-6" style={{
-          border: `1px solid ${colors.primary}20`
+          border: `1px solid ${colors.primary}`
         }}>
           <div className="text-sm text-gray-600">
             <p>All reports are generated based on processed payroll data. Ensure payroll is processed before generating compliance reports.</p>

@@ -135,7 +135,9 @@ export default function ImportCandidates() {
           {/* CARDS GRID */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {candidates.map((c) => (
-              <div key={c.id} className="bg-white rounded-xl shadow-sm border-0 p-4 hover:shadow-md transition-shadow">
+              <div key={c.id} className="bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow border" style={{
+              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
                 <div className="flex items-start space-x-3">
                   {/* Avatar */}
                   <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold text-lg flex-shrink-0 border-0" style={{

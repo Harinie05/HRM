@@ -175,7 +175,7 @@ export default function PayrollDashboard() {
         {/* Hero Header matching User Management */}
         <div className="rounded-2xl shadow-sm p-4 sm:p-6 relative overflow-hidden border" style={{
           background: `linear-gradient(to right, ${colors.primary}10, ${colors.secondary}10)`,
-          borderColor: `${colors.primary}20`
+          borderColor: colors.primary
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
             backgroundColor: colors.primary,
@@ -195,14 +195,14 @@ export default function PayrollDashboard() {
                 }} />
               </div>
               <div className="min-w-0 flex-1">
-
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1">Payroll Management</h1>
                 <p className="text-gray-600 text-xs sm:text-sm mb-1">Manage salary structures, statutory rules, payroll processing, payslips, and compliance reports</p>
-                <p className="text-gray-500 text-xs hidden sm:block">Employee Compensation</p>
+                <p className="text-gray-500 text-xs hidden sm:block">Employee Compensation - payroll management</p>
               </div>
             </div>
             <div className="flex gap-2 sm:gap-3 flex-shrink-0">
               <div className="bg-white rounded-lg p-2 sm:p-3 shadow-sm border" style={{
-                borderColor: `${colors.primary}20`
+                borderColor: colors.primary
               }}>
                 <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <Users className="h-3 w-3" />
@@ -218,7 +218,7 @@ export default function PayrollDashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-            borderColor: `${colors.primary}20`
+            borderColor: colors.primary
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -238,7 +238,7 @@ export default function PayrollDashboard() {
 
           <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-            borderColor: `${colors.primary}20`
+            borderColor: colors.primary
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -258,7 +258,7 @@ export default function PayrollDashboard() {
 
           <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-            borderColor: `${colors.primary}20`
+            borderColor: colors.primary
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -278,7 +278,7 @@ export default function PayrollDashboard() {
 
           <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-            borderColor: `${colors.primary}20`
+            borderColor: colors.primary
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -300,7 +300,7 @@ export default function PayrollDashboard() {
         {/* Quick Actions Section */}
         <div className="bg-white rounded-xl shadow-sm relative overflow-hidden border" style={{
           background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
-          borderColor: `${colors.primary}20`
+          borderColor: colors.primary
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: colors.primary,
@@ -324,7 +324,7 @@ export default function PayrollDashboard() {
               {quickActions.map((action, index) => (
                 <div key={index} className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-300 group relative overflow-hidden border cursor-pointer" style={{
                   background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-                  borderColor: `${colors.primary}20`
+                  borderColor: colors.primary
                 }}>
                   <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
                     backgroundColor: colors.primary,
@@ -352,8 +352,9 @@ export default function PayrollDashboard() {
         {/* Charts Section - Enhanced with Real Data */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {/* Monthly Payroll Trends */}
-          <div className="rounded-lg shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden" style={{
-            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`
+          <div className="rounded-lg shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+            borderColor: colors.primary
           }}>
             <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-10" style={{
               backgroundColor: colors.primary,
@@ -413,8 +414,9 @@ export default function PayrollDashboard() {
           </div>
 
           {/* Salary Distribution */}
-          <div className="rounded-lg shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden" style={{
-            background: `linear-gradient(135deg, white 0%, ${colors.secondary}03 100%)`
+          <div className="rounded-lg shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.secondary}03 100%)`,
+            borderColor: colors.primary
           }}>
             <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-10" style={{
               backgroundColor: colors.secondary,
@@ -464,8 +466,9 @@ export default function PayrollDashboard() {
         {/* Additional Charts */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {/* Department Payroll */}
-          <div className="rounded-lg shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden" style={{
-            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`
+          <div className="rounded-lg shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+            borderColor: colors.primary
           }}>
             <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-10" style={{
               backgroundColor: colors.primary,
@@ -512,8 +515,9 @@ export default function PayrollDashboard() {
           </div>
 
           {/* Payroll Processing Trends */}
-          <div className="rounded-lg shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden" style={{
-            background: `linear-gradient(135deg, white 0%, ${colors.secondary}03 100%)`
+          <div className="rounded-lg shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.secondary}03 100%)`,
+            borderColor: colors.primary
           }}>
             <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-10" style={{
               backgroundColor: colors.secondary,
@@ -568,7 +572,7 @@ export default function PayrollDashboard() {
           {/* Recent Activities */}
           <div className="bg-white rounded-xl shadow-sm border" style={{
             background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
-            borderColor: `${colors.primary}20`
+            borderColor: colors.primary
           }}>
             <div className="p-5 border-b border-gray-100">
               <div className="flex items-center gap-3">
@@ -609,7 +613,7 @@ export default function PayrollDashboard() {
           {/* Payroll Status */}
           <div className="bg-white rounded-xl shadow-sm border" style={{
             background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
-            borderColor: `${colors.primary}20`
+            borderColor: colors.primary
           }}>
             <div className="p-5 border-b border-gray-100">
               <div className="flex items-center gap-3">

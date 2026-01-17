@@ -65,7 +65,7 @@ export default function PayrollLayout() {
 
   if (tabs.length === 0) {
     return (
-      <Layout breadcrumb="Payroll Management">
+      <Layout>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -80,13 +80,13 @@ export default function PayrollLayout() {
   }
 
   return (
-    <Layout breadcrumb="Payroll Management">
-      <div className="w-full overflow-hidden">
+    <Layout>
+      <div className="w-full overflow-hidden pt-6">
         {/* Hero Header matching User Management */}
         <div className="mb-6 px-4">
           <div className="rounded-2xl shadow-sm p-4 sm:p-6 relative overflow-hidden border" style={{
             background: `linear-gradient(to right, ${colors.primary}10, ${colors.secondary}10)`,
-            borderColor: `${colors.primary}20`
+            borderColor: colors.primary
           }}>
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
               backgroundColor: colors.primary,
@@ -113,7 +113,7 @@ export default function PayrollLayout() {
               </div>
               <div className="flex gap-2 sm:gap-3 flex-shrink-0">
                 <div className="bg-white rounded-lg p-2 sm:p-3 shadow-sm border" style={{
-                  borderColor: `${colors.primary}20`
+                  borderColor: colors.primary
                 }}>
                   <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                     <DollarSign className="h-3 w-3" />
@@ -132,7 +132,7 @@ export default function PayrollLayout() {
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
             backgroundColor: `${colors.primary}10`,
-            border: `1px solid ${colors.primary}20`
+            border: `1px solid ${colors.primary}`
           }}>
             <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
               backgroundColor: colors.primary,
@@ -173,7 +173,7 @@ export default function PayrollLayout() {
         {/* Content */}
         <div className="px-4">
           <div className="rounded-3xl shadow-xl overflow-hidden" style={{
-            border: `1px solid ${colors.primary}20`
+            border: `1px solid ${colors.primary}`
           }}>
             {tab === "Salary Structure" && <SalaryStructure />}
             {tab === "Statutory Rules" && <StatutoryRules />}

@@ -599,6 +599,9 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
               className="absolute right-0 mt-2 w-48 sm:w-56
               bg-white text-primary
               rounded-xl shadow-lg overflow-hidden z-50"
+              style={{
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+              }}
             >
               <div className="px-3 sm:px-4 py-3 border-b">
                 <p className="font-semibold text-sm truncate text-gray-900">{userInfo.name}</p>

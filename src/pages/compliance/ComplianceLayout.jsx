@@ -75,8 +75,9 @@ export default function ComplianceLayout() {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Hero Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
-          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border shadow-sm p-4 sm:p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
@@ -94,7 +95,9 @@ export default function ComplianceLayout() {
               </div>
             </div>
             <div className="flex gap-2 sm:gap-3 flex-shrink-0">
-              <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border shadow-sm" style={{
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+              }}>
                 <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
@@ -114,7 +117,7 @@ export default function ComplianceLayout() {
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
             backgroundColor: `${brandingColors.primary}10`,
-            border: `1px solid ${brandingColors.primary}20`
+            border: `1px solid ${brandingColors.primary}`
           }}>
             <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
               backgroundColor: brandingColors.primary,
@@ -154,8 +157,8 @@ export default function ComplianceLayout() {
 
         {/* Content */}
         <div className="px-4">
-          <div className="rounded-3xl shadow-xl overflow-hidden" style={{
-            border: `1px solid ${brandingColors.primary}20`
+          <div className="rounded-3xl shadow-xl overflow-hidden border" style={{
+            border: `1px solid ${brandingColors.primary}`
           }}>
 
             {renderTabContent()}

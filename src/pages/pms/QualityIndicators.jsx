@@ -284,7 +284,9 @@ const QualityIndicators = () => {
       </div>
 
       {/* Tab Navigation */}
-      <div className="-b border-gray-200 mb-6">
+      <div className="-b border-gray-200 mb-6" style={{
+        borderBottom: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+      }}>
         <nav className="-mb-px flex space-x-8">
           <button
             onClick={() => setActiveTab('manage')}

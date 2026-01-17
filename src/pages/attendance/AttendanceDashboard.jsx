@@ -207,8 +207,8 @@ const AttendanceDashboard = () => {
     // Status Breakdown
     const statusBreakdown = [
       { name: 'Present', value: attendanceData.presentToday || Math.floor(totalEmp * 0.92), color: primaryColor },
-      { name: 'Absent', value: attendanceData.absentToday || Math.floor(totalEmp * 0.05), color: '#ef4444' },
-      { name: 'Late', value: attendanceData.lateArrivals || Math.floor(totalEmp * 0.03), color: secondaryColor }
+      { name: 'Absent', value: attendanceData.absentToday || Math.floor(totalEmp * 0.05), color: secondaryColor },
+      { name: 'Late', value: attendanceData.lateArrivals || Math.floor(totalEmp * 0.03), color: primaryColor }
     ];
 
     setChartData({
@@ -220,16 +220,16 @@ const AttendanceDashboard = () => {
   };
 
   const getAttendanceColor = (percentage) => {
-    if (percentage >= 90) return 'bg-green-500';
-    if (percentage >= 80) return 'bg-yellow-500';
-    return 'bg-red-500';
+    if (percentage >= 90) return colors.primary;
+    if (percentage >= 80) return colors.secondary;
+    return colors.secondary;
   };
 
   const getActivityColor = (type) => {
     switch (type) {
-      case 'late': return 'bg-red-500';
-      case 'regularization': return 'bg-yellow-500';
-      default: return 'bg-green-500';
+      case 'late': return colors.secondary;
+      case 'regularization': return colors.secondary;
+      default: return colors.primary;
     }
   };
 
@@ -262,37 +262,35 @@ const AttendanceDashboard = () => {
   return (
     <Layout>
       <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
-        {/* Hero Header - Clean */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl shadow-sm p-4 border relative overflow-hidden" style={{
-          borderColor: `${colors.primary}20`
+        {/* Hero Header matching Organization Setup */}
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl shadow-sm p-4 sm:p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
-          <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
-            backgroundColor: colors.primary,
-            transform: 'translate(40%, -40%)'
-          }}></div>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-center gap-3 min-w-0 flex-1">
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <FiClock className="h-5 w-5" style={{
+                <FiClock className="h-5 w-5 sm:h-6 sm:w-6" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} />
               </div>
               <div className="min-w-0 flex-1">
-                <h1 className="text-lg font-bold text-gray-900 mb-1">Attendance Dashboard</h1>
-                <p className="text-gray-600 text-sm">Real-time attendance tracking & workforce insights</p>
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1 truncate">Attendance Dashboard</h1>
+                <p className="text-gray-600 text-xs sm:text-sm mb-1">Real-time attendance tracking & workforce insights</p>
+                <p className="text-gray-500 text-xs hidden sm:block">Live Updates • Analytics</p>
               </div>
             </div>
-            <div className="flex gap-2 flex-shrink-0">
-              <div className="bg-white rounded-lg p-2 shadow-sm border" style={{
-                borderColor: `${colors.primary}20`
+            <div className="flex gap-2 sm:gap-3 flex-shrink-0">
+              <div className="bg-white rounded-lg p-2 sm:p-3 shadow-sm" style={{
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <div className="flex items-center gap-1 text-gray-600 mb-1">
+                <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <FiTrendingUp className="h-3 w-3" />
                   <span className="text-xs font-medium">Attendance</span>
                 </div>
-                <p className="text-xs font-semibold text-gray-900">{attendanceData.overallAttendance}%</p>
+                <p className="text-sm font-semibold text-gray-900">{attendanceData.overallAttendance}%</p>
               </div>
             </div>
           </div>
@@ -301,7 +299,7 @@ const AttendanceDashboard = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -316,8 +314,12 @@ const AttendanceDashboard = () => {
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Overall Attendance</p>
                 <p className="text-xl font-bold text-gray-900">{attendanceData.overallAttendance}%</p>
                 <div className="flex items-center gap-1 mt-1">
-                  <FiTrendingUp className="h-3 w-3 text-green-600" />
-                  <span className="text-xs font-semibold text-green-600">Today's rate</span>
+                  <FiTrendingUp className="h-3 w-3" style={{
+                    color: colors.primary
+                  }} />
+                  <span className="text-xs font-semibold" style={{
+                    color: colors.primary
+                  }}>Today's rate</span>
                 </div>
               </div>
               <div className="p-2 rounded" style={{
@@ -332,7 +334,7 @@ const AttendanceDashboard = () => {
 
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -367,7 +369,7 @@ const AttendanceDashboard = () => {
 
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
@@ -402,7 +404,7 @@ const AttendanceDashboard = () => {
 
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
@@ -441,7 +443,7 @@ const AttendanceDashboard = () => {
           {/* Weekly Attendance Bar Chart */}
           <div className="rounded-lg shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
             background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-            borderColor: `${colors.primary}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
               backgroundColor: colors.primary,
@@ -480,7 +482,7 @@ const AttendanceDashboard = () => {
           {/* Department Distribution Pie Chart */}
           <div className="rounded-lg shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
             background: `linear-gradient(135deg, white 0%, ${colors.secondary}05 100%)`,
-            borderColor: `${colors.secondary}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
               backgroundColor: colors.secondary,
@@ -530,7 +532,7 @@ const AttendanceDashboard = () => {
           {/* Attendance Trend Line Chart */}
           <div className="rounded-lg shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
             background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-            borderColor: `${colors.primary}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
               backgroundColor: colors.primary,
@@ -574,7 +576,7 @@ const AttendanceDashboard = () => {
           {/* Status Breakdown Pie Chart */}
           <div className="rounded-lg shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
             background: `linear-gradient(135deg, white 0%, ${colors.secondary}05 100%)`,
-            borderColor: `${colors.secondary}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
               backgroundColor: colors.secondary,
@@ -591,7 +593,9 @@ const AttendanceDashboard = () => {
                 }}>
                   <FiCalendar className="h-3 w-3" style={{ color: colors.secondary }} />
                 </div>
-                <h3 className="text-sm font-semibold text-gray-900">Today's Status</h3>
+                <h3 className="text-sm font-semibold" style={{
+                  color: colors.primary
+                }}>Today's Status</h3>
               </div>
             </div>
             <div className="p-2">
@@ -620,7 +624,7 @@ const AttendanceDashboard = () => {
         {/* Quick Actions matching Dashboard */}
         <div className="rounded-2xl shadow-sm overflow-hidden relative border" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -655,7 +659,7 @@ const AttendanceDashboard = () => {
               {canViewPunchLogs && (
                 <div className="rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 group relative overflow-hidden border" style={{
                   background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-                  borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                 }}>
                   <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -699,7 +703,7 @@ const AttendanceDashboard = () => {
               {canViewShifts && (
                 <div className="rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 group relative overflow-hidden border" style={{
                   background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-                  borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                 }}>
                   <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -743,7 +747,7 @@ const AttendanceDashboard = () => {
               {canViewRules && (
                 <div className="rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 group relative overflow-hidden border" style={{
                   background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-                  borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                 }}>
                   <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',

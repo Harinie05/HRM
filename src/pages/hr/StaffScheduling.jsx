@@ -300,7 +300,7 @@ export default function StaffScheduling() {
           {!canAdd ? (
             <div className="bg-white rounded-lg p-6 text-center relative overflow-hidden" style={{
               background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-              border: `1px solid ${colors.primary}20`
+              border: `1px solid ${colors.primary}`
             }}>
               <p className="text-gray-500">You don't have permission to manage staff schedules.</p>
             </div>
@@ -308,7 +308,7 @@ export default function StaffScheduling() {
             <>
               <div className="bg-white rounded-lg p-6 relative overflow-hidden" style={{
                 background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-                border: `1px solid ${colors.primary}20`
+                border: `1px solid ${colors.primary}`
               }}>
                 <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
                   background: `radial-gradient(circle, ${colors.primary}40 0%, transparent 70%)`,
@@ -475,7 +475,7 @@ export default function StaffScheduling() {
 
           <div className="bg-white rounded-lg p-6 relative overflow-hidden" style={{
             background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-            border: `1px solid ${colors.primary}20`
+            border: `1px solid ${colors.primary}`
           }}>
             <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
               background: `radial-gradient(circle, ${colors.primary}40 0%, transparent 70%)`,
@@ -664,7 +664,7 @@ export default function StaffScheduling() {
           {/* Patient Loads Table */}
           <div className="bg-white rounded-xl shadow-sm overflow-hidden border" style={{
             background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
-            borderColor: `${colors.primary}20`
+            border: `1px solid ${colors.primary}`
           }}>
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
               backgroundColor: colors.primary,
@@ -739,7 +739,7 @@ export default function StaffScheduling() {
           {/* Staff Allocations Table */}
           <div className="bg-white rounded-xl shadow-sm overflow-hidden border" style={{
             background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
-            borderColor: `${colors.primary}20`
+            border: `1px solid ${colors.primary}`
           }}>
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
               backgroundColor: colors.primary,

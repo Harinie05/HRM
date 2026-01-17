@@ -7,7 +7,9 @@ export default function ComplianceTabs({ tab, setTab }) {
   ];
 
   return (
-    <div className="w-full bg-white border-b px-4 flex space-x-6">
+    <div className="w-full bg-white border-b px-4 flex space-x-6" style={{
+      borderBottom: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+    }}>
       {tabs.map((item) => (
         <button
           key={item}

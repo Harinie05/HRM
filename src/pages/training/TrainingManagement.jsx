@@ -112,13 +112,15 @@ export default function TrainingManagement() {
                 onClick={() => setActiveModule(module.name)}
                 className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
                   activeModule === module.name
-                    ? "border-blue-500 bg-blue-50 shadow-md"
-                    : "border-black bg-white hover:shadow-md hover:border-gray-400"
+                    ? "shadow-md"
+                    : "bg-white hover:shadow-md"
                 }`}
                 style={activeModule === module.name ? {
                   borderColor: 'var(--primary-color)',
                   backgroundColor: 'var(--primary-color)15'
-                } : {}}
+                } : {
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+                }}
               >
                 <div className="flex flex-col items-center text-center space-y-3">
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${

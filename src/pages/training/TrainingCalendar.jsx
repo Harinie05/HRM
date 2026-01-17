@@ -108,7 +108,9 @@ export default function TrainingCalendar() {
         ) : (
           <div className="grid gap-4">
             {calendarEvents.map((event) => (
-              <div key={event.id} className="border-0 rounded-lg p-4 hover:shadow-md transition-shadow">
+              <div key={event.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow" style={{
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+              }}>
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <h3 className="text-lg font-medium text-primary">{event.title}</h3>

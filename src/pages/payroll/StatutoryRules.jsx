@@ -99,7 +99,7 @@ export default function StatutoryRules() {
   return (
     <div className="rounded-xl shadow-sm overflow-hidden relative" style={{
       background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-      border: `1px solid ${colors.primary}20`
+      border: `1px solid ${colors.primary}`
     }}>
       <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
         backgroundColor: colors.primary,
@@ -123,7 +123,7 @@ export default function StatutoryRules() {
         <div className="space-y-4">
         <div className="rounded-xl p-6 hover:shadow-md transition-shadow relative overflow-hidden" style={{
           background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
-          border: `1px solid ${colors.primary}20`
+          border: `1px solid ${colors.primary}`
         }}>
           <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
             backgroundColor: colors.primary,
@@ -180,7 +180,7 @@ export default function StatutoryRules() {
 
         <div className="rounded-xl p-6 hover:shadow-md transition-shadow relative overflow-hidden" style={{
           background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
-          border: `1px solid ${colors.primary}20`
+          border: `1px solid ${colors.primary}`
         }}>
           <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
             backgroundColor: colors.secondary,
@@ -235,7 +235,7 @@ export default function StatutoryRules() {
         </div>
 
         <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 hover:shadow-md transition-shadow relative overflow-hidden" style={{
-          border: `1px solid ${colors.primary}20`
+          border: `1px solid ${colors.primary}`
         }}>
           <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
             backgroundColor: colors.primary,
@@ -275,7 +275,7 @@ export default function StatutoryRules() {
         </div>
 
         <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 hover:shadow-md transition-shadow relative overflow-hidden" style={{
-          border: `1px solid ${colors.primary}20`
+          border: `1px solid ${colors.primary}`
         }}>
           <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
             backgroundColor: colors.secondary,

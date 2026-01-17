@@ -31,7 +31,9 @@ export default function JobRequisition() {
     return (
       <Layout>
         <div className="p-6 text-center">
-          <div className="bg-white rounded-2xl border-0 p-8 max-w-md mx-auto">
+          <div className="bg-white rounded-2xl p-8 max-w-md mx-auto" style={{
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+          }}>
             <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
             <p className="text-gray-600">You do not have permission to view Job Requisitions.</p>
           </div>
@@ -124,9 +126,9 @@ export default function JobRequisition() {
     <Layout>
       <div className="p-6">
         {/* Header */}
-        <div className="rounded-2xl shadow-sm p-4 sm:p-6 mb-6 relative overflow-hidden border" style={{
+        <div className="rounded-2xl shadow-sm p-4 sm:p-6 mb-6 relative overflow-hidden" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -215,9 +217,9 @@ export default function JobRequisition() {
         {/* Job Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredRequisitions.map((req) => (
-            <div key={req.id} className="bg-white rounded-xl p-4 hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+            <div key={req.id} className="bg-white rounded-xl p-4 hover:shadow-md transition-all duration-200 relative overflow-hidden" style={{
               background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
             }}>
               <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
                 backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -459,12 +461,12 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-      <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl relative overflow-hidden border" style={{
+      <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl relative overflow-hidden" style={{
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
-        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
       }}>
         <div className="absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl opacity-10" style={{
           backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -505,9 +507,9 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
             {/* Left Column */}
             <div className="space-y-6">
               {/* Basic Information */}
-              <div className="rounded-xl p-6 relative overflow-hidden border" style={{
+              <div className="rounded-xl p-6 relative overflow-hidden" style={{
                 background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
               }}>
                 <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -604,9 +606,9 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
               </div>
               
               {/* Job Details */}
-              <div className="rounded-xl p-6 relative overflow-hidden border" style={{
+              <div className="rounded-xl p-6 relative overflow-hidden" style={{
                 background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
               }}>
                 <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -695,9 +697,9 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
             {/* Right Column */}
             <div className="space-y-6">
               {/* Job Description */}
-              <div className="rounded-xl p-6 relative overflow-hidden border" style={{
+              <div className="rounded-xl p-6 relative overflow-hidden" style={{
                 background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05 100%)`,
-                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}20`
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
               }}>
                 <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
@@ -763,9 +765,9 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
               </div>
               
               {/* Interview Process */}
-              <div className="rounded-xl p-6 relative overflow-hidden border" style={{
+              <div className="rounded-xl p-6 relative overflow-hidden" style={{
                 background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05 100%)`,
-                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}20`
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
               }}>
                 <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',

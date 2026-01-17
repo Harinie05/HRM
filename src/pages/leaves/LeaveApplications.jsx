@@ -39,7 +39,7 @@ export default function LeaveApplications() {
         {/* Hero Header matching User Management */}
         <div className="rounded-2xl shadow-sm p-4 sm:p-6 relative overflow-hidden border" style={{
           background: `linear-gradient(to right, ${colors.primary}10, ${colors.secondary}10)`,
-          borderColor: `${colors.primary}20`
+          borderColor: colors.primary
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
             backgroundColor: colors.primary,
@@ -411,7 +411,7 @@ export default function LeaveApplications() {
       {hasPermission("view_leave_applications") && (
         <div className="bg-white rounded-xl shadow-sm relative overflow-hidden border" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          borderColor: colors.primary
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -433,7 +433,7 @@ export default function LeaveApplications() {
                   className="pl-10 sm:pl-12 pr-4 py-2 sm:py-3 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full hover:bg-white transition-colors text-sm sm:text-base border"
                   style={{
                     backgroundColor: `${colors.primary}10`,
-                    borderColor: `${colors.primary}20`
+                    borderColor: colors.primary
                   }}
                 />
               </div>
@@ -445,7 +445,7 @@ export default function LeaveApplications() {
                   className="pl-10 sm:pl-12 pr-8 py-2 sm:py-3 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:bg-white transition-colors text-sm sm:text-base w-full sm:w-auto border"
                   style={{
                     backgroundColor: `${colors.primary}10`,
-                    borderColor: `${colors.primary}20`
+                    borderColor: colors.primary
                   }}
                 >
                   <option value="All">All Status</option>
@@ -463,7 +463,7 @@ export default function LeaveApplications() {
       {hasPermission("view_leave_applications") && (
         <div className="rounded-2xl shadow-sm overflow-hidden relative border" style={{
           background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-          borderColor: `${colors.primary}20`
+          borderColor: colors.primary
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: colors.primary,
@@ -695,7 +695,7 @@ export default function LeaveApplications() {
               msOverflowStyle: 'none',
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            borderColor: colors.primary
           }}>
             <h3 className="text-lg font-semibold mb-4">New Leave Application</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -866,7 +866,7 @@ export default function LeaveApplications() {
               msOverflowStyle: 'none',
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          borderColor: colors.primary
         }}>
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Leave Balances</h3>
@@ -961,7 +961,7 @@ export default function LeaveApplications() {
               msOverflowStyle: 'none',
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          borderColor: colors.primary
         }}>
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Review Leave Application</h3>

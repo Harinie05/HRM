@@ -293,7 +293,7 @@ export default function PayrollAdjustments() {
   return (
     <div className="rounded-2xl overflow-hidden relative" style={{
       background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-      border: `1px solid ${colors.primary}20`
+      border: `1px solid ${colors.primary}`
     }}>
       <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
         background: `radial-gradient(circle, ${colors.primary}40 0%, transparent 70%)`,
@@ -301,7 +301,7 @@ export default function PayrollAdjustments() {
       }}></div>
       {/* Header */}
       <div className="p-6 relative z-10" style={{
-        borderBottom: `1px solid ${colors.primary}20`
+        borderBottom: `1px solid ${colors.primary}`
       }}>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
@@ -353,13 +353,13 @@ export default function PayrollAdjustments() {
 
         {/* Table */}
         <div className="rounded-2xl overflow-hidden" style={{
-          border: `1px solid ${colors.primary}20`
+          border: `1px solid ${colors.primary}`
         }}>
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <table className="w-full">
               <thead className="bg-gray-100" style={{
-                borderBottom: `1px solid ${colors.primary}20`
+                borderBottom: `1px solid ${colors.primary}`
               }}>
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
@@ -516,7 +516,7 @@ export default function PayrollAdjustments() {
 
         {/* Stats Footer */}
         <div className="px-6 py-4 bg-gray-50 rounded-b-2xl" style={{
-          borderTop: `1px solid ${colors.primary}20`
+          borderTop: `1px solid ${colors.primary}`
         }}>
           <div className="flex justify-between items-center text-sm text-gray-600">
             <span>Total Adjustments: {adjustments.length}</span>
@@ -534,7 +534,7 @@ export default function PayrollAdjustments() {
               msOverflowStyle: 'none',
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
-            border: `1px solid ${colors.primary}20`
+            border: `1px solid ${colors.primary}`
           }}>
             <h3 className="text-lg font-semibold mb-4">
               {editingAdjustment ? "Edit Adjustment" : "Add Adjustment"}
@@ -626,7 +626,7 @@ export default function PayrollAdjustments() {
                   onClick={handleCloseModal}
                   className="flex-1 px-4 py-2 rounded-xl text-gray-700 hover:bg-gray-50 text-sm font-medium"
                   style={{
-                    border: `1px solid ${colors.primary}20`
+                    border: `1px solid ${colors.primary}`
                   }}
                 >
                   Cancel

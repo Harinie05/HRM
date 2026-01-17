@@ -810,8 +810,9 @@ export default function AttendanceLogs() {
         
         <div className="p-4 sm:p-6 pt-16 sm:pt-20 lg:pt-24 space-y-4 sm:space-y-6">
           {/* Hero Header matching User.jsx */}
-          <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6 relative overflow-hidden" style={{
-            background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+          <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border shadow-sm p-4 sm:p-6 relative overflow-hidden" style={{
+            background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -839,7 +840,9 @@ export default function AttendanceLogs() {
                 </div>
               </div>
               <div className="flex gap-2 sm:gap-3 flex-shrink-0">
-                <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
+                <div className="bg-white rounded-lg p-2 sm:p-3 border shadow-sm" style={{
+                  borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
                   <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                     <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"></path>
@@ -852,74 +855,60 @@ export default function AttendanceLogs() {
             </div>
           </div>
 
-          {/* Tab Navigation matching User.jsx */}
-          <div className="bg-white rounded-xl border shadow-sm relative overflow-hidden" style={{
-            borderColor: `${colors.primary}20`
-          }}>
-            <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-10" style={{
-              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-              transform: 'translate(30%, -30%)'
-            }}></div>
-            <div className="p-5 border-b-0">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg" style={{
-                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-                  }}>
-                    <svg className="h-5 w-5" style={{
-                      color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-                    }} fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"></path>
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900">Attendance Directory</h3>
-                </div>
-              </div>
+          {/* Tab Navigation matching Organization Setup */}
+          <div className="mb-6 px-4">
+            <div className="rounded-full p-1.5 inline-flex space-x-1 overflow-x-auto scrollbar-hide w-full sm:w-auto relative overflow-hidden" style={{
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+            }}>
+              <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                transform: 'translate(30%, -30%)'
+              }}></div>
+              <div className="absolute bottom-0 left-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+                transform: 'translate(-30%, 30%)'
+              }}></div>
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 relative z-10`}
+                  style={{
+                    backgroundColor: activeTab === tab.id ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
+                    color: activeTab === tab.id ? 'white' : '#6b7280'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (activeTab !== tab.id) {
+                      e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                      e.currentTarget.style.color = 'white';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (activeTab !== tab.id) {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                      e.currentTarget.style.color = '#6b7280';
+                    }
+                  }}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
-            
-            <div className="p-5 space-y-4">
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-600">Filter</span>
-                    <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                      {tabs.map((tab) => (
-                        <button
-                          key={tab.id}
-                          onClick={() => setActiveTab(tab.id)}
-                          className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
-                            activeTab === tab.id 
-                              ? "bg-white text-gray-900 shadow-sm" 
-                              : "text-gray-600 hover:text-gray-900"
-                          }`}
-                          style={{
-                            backgroundColor: activeTab === tab.id ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
-                            color: activeTab === tab.id ? 'white' : '#6b7280'
-                          }}
-                          onMouseEnter={(e) => {
-                            if (activeTab !== tab.id) {
-                              e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                              e.currentTarget.style.color = 'white';
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            if (activeTab !== tab.id) {
-                              e.currentTarget.style.backgroundColor = 'transparent';
-                              e.currentTarget.style.color = '#6b7280';
-                            }
-                          }}
-                        >
-                          {tab.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {activeTab === 'logs' && (
-              <div className="p-4 sm:p-6">
+          </div>
+          {/* Content */}
+          <div className="px-4">
+            <div className="rounded-3xl shadow-xl overflow-hidden relative" style={{
+              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`,
+              background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`
+            }}>
+              <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                transform: 'translate(30%, -30%)'
+              }}></div>
+              <div className="px-4 pt-6 relative z-10">
                 {/* Employee Selection */}
                 <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-gray-50 rounded-lg border relative overflow-hidden" style={{
                   borderColor: `${colors.primary}20`
@@ -1077,7 +1066,9 @@ export default function AttendanceLogs() {
                 </div>
 
                 {selectedEmployee && !attendanceMode && currentStatus === 'not_checked_in' && canMarkAttendance && (
-                  <div className="mb-6 sm:mb-8 p-4 sm:p-6 lg:p-8 bg-white rounded-3xl border-0 shadow-xl relative overflow-hidden">
+                  <div className="mb-6 sm:mb-8 p-4 sm:p-6 lg:p-8 bg-white rounded-3xl border shadow-xl relative overflow-hidden" style={{
+                    borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
                   <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-15" style={{
                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
                     transform: 'translate(30%, -30%)'
@@ -1167,7 +1158,9 @@ export default function AttendanceLogs() {
                 )}
 
                 {selectedEmployee && attendanceMode && (
-                  <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-white rounded-lg border-0">
+                  <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-white rounded-lg border relative overflow-hidden" style={{
+                    borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                       <div className="flex items-center gap-3">
                         <div className={`w-3 h-3 rounded-full ${
@@ -1254,7 +1247,9 @@ export default function AttendanceLogs() {
                     )}
                     
                     {currentStatus === 'checked_in' && (
-                      <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-white rounded-lg border-0 relative overflow-hidden">
+                      <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-white rounded-lg border relative overflow-hidden" style={{
+                        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                      }}>
                       <div className="absolute top-0 left-0 w-12 h-12 rounded-full blur-xl opacity-10" style={{
                         backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
                         transform: 'translate(-25%, -25%)'
@@ -1291,7 +1286,9 @@ export default function AttendanceLogs() {
                 
                 {loading && (
                   <div className="text-center py-6 sm:py-8">
-                    <div className="inline-flex items-center gap-2 sm:gap-3 text-gray-600 bg-white px-4 sm:px-6 py-2 sm:py-3 rounded-2xl shadow-lg border-0">
+                    <div className="inline-flex items-center gap-2 sm:gap-3 text-gray-600 bg-white px-4 sm:px-6 py-2 sm:py-3 rounded-2xl shadow-lg border" style={{
+                      borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                    }}>
                       <svg className="animate-spin w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -1301,15 +1298,17 @@ export default function AttendanceLogs() {
                   </div>
                 )}
               </div>
-            )}
+            </div>
           </div>
 
           <div className="bg-white rounded-lg border overflow-hidden" style={{
-            borderColor: `${colors.primary}20`
+            border: `1px solid ${colors.primary}`
           }}>
             {activeTab === 'logs' && (
               <div>
-                <div className="px-4 py-3 bg-gray-50 border-b-0">
+                <div className="px-4 py-3 bg-gray-50 border" style={{
+                  border: `1px solid ${colors.primary}`
+                }}>
                   <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
                     Punch Logs - {new Date().toLocaleDateString('en-US', { 
                       weekday: 'long', 
@@ -1473,7 +1472,9 @@ export default function AttendanceLogs() {
             {activeTab === 'regularization' && (
               <div className="p-4 sm:p-6 lg:p-8">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-                  <div className="bg-gray-50 rounded-lg border-0 p-4 sm:p-6 lg:p-8 relative overflow-hidden">
+                  <div className="bg-gray-50 rounded-lg border p-4 sm:p-6 lg:p-8 relative overflow-hidden" style={{
+                    borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
                     <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-xl opacity-10" style={{
                       backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
                       transform: 'translate(25%, -25%)'
@@ -1602,7 +1603,9 @@ export default function AttendanceLogs() {
                     <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Pending Requests</h3>
                     <div className="space-y-3 sm:space-y-4 max-h-80 sm:max-h-96 overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                       {regularizationRequests.map((request) => (
-                        <div key={request.id} className="p-3 sm:p-4 border-0 rounded-lg">
+                        <div key={request.id} className="p-3 sm:p-4 border rounded-lg" style={{
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+                        }}>
                           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-2">
                             <div>
                               <p className="font-semibold text-gray-900 text-sm sm:text-base">{request.employee}</p>
@@ -1636,7 +1639,9 @@ export default function AttendanceLogs() {
                               </button>
                               <button
                                 onClick={() => handleReject(request.id)}
-                                className="px-3 sm:px-4 py-2 bg-white text-black border-0 rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-100 transition-colors"
+                                className="px-3 sm:px-4 py-2 bg-white text-black border rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-100 transition-colors" style={{
+                                  borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                                }}
                               >
                                 Reject
                               </button>
@@ -1809,7 +1814,7 @@ export default function AttendanceLogs() {
                     <div className="space-y-3 sm:space-y-4 max-h-80 sm:max-h-96 overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                       {odApplications.map((application) => (
                         <div key={application.id} className="p-3 sm:p-4 rounded-lg border" style={{
-                          borderColor: `${colors.primary}20`
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                         }}>
                           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-2">
                             <div>
@@ -1836,9 +1841,8 @@ export default function AttendanceLogs() {
                               </button>
                               <button
                                 onClick={() => handleOdReject(application.id)}
-                                className="px-3 sm:px-4 py-2 bg-white text-black rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-100 border"
-                                style={{
-                                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                                className="px-3 sm:px-4 py-2 bg-white text-black rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-100 border" style={{
+                                  borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
                                 }}
                               >
                                 Reject
@@ -2037,7 +2041,9 @@ export default function AttendanceLogs() {
                     {/* Mobile Card View */}
                     <div className="md:hidden">
                       {reportData.map((log, index) => (
-                        <div key={log.id} className={`p-4 border-b-0 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                        <div key={log.id} className={`p-4 border-b-0 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} border rounded-lg mb-3`} style={{
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+                        }}>
                           <div className="space-y-3">
                             <div className="flex justify-between items-start">
                               <div>

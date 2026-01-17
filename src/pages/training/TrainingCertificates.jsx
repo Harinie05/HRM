@@ -177,7 +177,9 @@ export default function TrainingCertificates() {
           transform: 'translate(40%, -40%)'
         }}></div>
         {/* Header */}
-        <div className="p-6 border-0 relative z-10">
+        <div className="p-6 border relative z-10" style={{
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+        }}>
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-medium text-gray-900">Training Certificates</h3>
             {(hasPermission('generate_training_certificate') || isAdmin()) && (
@@ -229,13 +231,27 @@ export default function TrainingCertificates() {
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Candidate</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Training Program</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Certificate ID</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Issued Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Expiry Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Status</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Actions</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border" style={{
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+                    }}>Candidate</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border" style={{
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+                    }}>Training Program</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border" style={{
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+                    }}>Certificate ID</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border" style={{
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+                    }}>Issued Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border" style={{
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+                    }}>Expiry Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border" style={{
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+                    }}>Status</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border" style={{
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+                    }}>Actions</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-100">
@@ -244,7 +260,9 @@ export default function TrainingCertificates() {
                       const isExpiringSoon = certificate.expiry_date && !isExpired && new Date(certificate.expiry_date) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
                       
                       return (
-                        <tr key={certificate.id} className="hover:bg-gray-50 border-0">
+                        <tr key={certificate.id} className="hover:bg-gray-50 border" style={{
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+                        }}>
                           <td className="px-6 py-4 whitespace-nowrap border-0">
                             <div className="text-sm font-medium text-gray-900">{certificate.employee_name}</div>
                           </td>
@@ -298,7 +316,9 @@ export default function TrainingCertificates() {
                   const isExpiringSoon = certificate.expiry_date && !isExpired && new Date(certificate.expiry_date) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
                   
                   return (
-                    <div key={certificate.id} className="p-4 border-b-0 last:border-b-0">
+                    <div key={certificate.id} className="p-4 border-b last:border-b" style={{
+                      borderBottom: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+                    }}>
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex-1">
                           <h4 className="font-medium text-gray-900">{certificate.employee_name}</h4>
@@ -363,7 +383,9 @@ export default function TrainingCertificates() {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col">
-            <div className="px-6 py-4 border-b-0 flex-shrink-0">
+            <div className="px-6 py-4 border-b flex-shrink-0" style={{
+              borderBottom: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+            }}>
               <h3 className="text-lg font-semibold text-gray-900">Generate Training Certificate</h3>
               <p className="text-sm text-gray-500 mt-1">Create a certificate for completed training</p>
             </div>
@@ -440,11 +462,15 @@ export default function TrainingCertificates() {
                 </div>
               </form>
             </div>
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex gap-3 flex-shrink-0">
+            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex gap-3 flex-shrink-0" style={{
+              borderTop: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+            }}>
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
-                className="flex-1 px-4 py-2 border-0 rounded-lg text-black font-medium hover:bg-gray-100 transition-all duration-200"
+                className="flex-1 px-4 py-2 border rounded-lg text-black font-medium hover:bg-gray-100 transition-all duration-200" style={{
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}`
+                }}
               >
                 Cancel
               </button>

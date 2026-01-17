@@ -439,7 +439,7 @@ export default function Payslips() {
   return (
     <div className="rounded-2xl overflow-hidden relative" style={{
       background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-      border: `1px solid ${colors.primary}20`
+      border: `1px solid ${colors.primary}`
     }}>
       <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
         backgroundColor: colors.primary,
@@ -447,7 +447,7 @@ export default function Payslips() {
       }}></div>
       {/* Header */}
       <div className="p-6 relative z-10" style={{
-        borderBottom: `1px solid ${colors.primary}20`
+        borderBottom: `1px solid ${colors.primary}`
       }}>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
@@ -611,13 +611,13 @@ export default function Payslips() {
 
         {/* Table */}
         <div className="rounded-2xl overflow-hidden" style={{
-          border: `1px solid ${colors.primary}20`
+          border: `1px solid ${colors.primary}`
         }}>
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <table className="w-full">
               <thead className="bg-gray-100" style={{
-                borderBottom: `1px solid ${colors.primary}20`
+                borderBottom: `1px solid ${colors.primary}`
               }}>
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
