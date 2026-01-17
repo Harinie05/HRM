@@ -113,82 +113,69 @@ export default function OrganizationLayout() {
           </div>
         </div>
 
-        {/* Organization Management Section */}
-        <div className="bg-white rounded-xl shadow-sm relative overflow-hidden border" style={{
-          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-        }}>
-          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
-            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-            transform: 'translate(30%, -30%)'
-          }}></div>
-          <div className="p-5 border-b-0 relative z-10">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg" style={{
-                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-                }}>
-                  <svg className="h-5 w-5" style={{
-                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-                  }} fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z"/>
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900">Setup Modules</h3>
-              </div>
-            </div>
-          </div>
-          
-          <div className="p-4 sm:p-5 space-y-4">
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                <span className="text-sm text-gray-600 whitespace-nowrap">Setup</span>
-                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border-0 scrollbar-hide" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
-                  {visibleTabs.map((tabItem) => {
-                    return (
-                      <button
-                        key={tabItem.name}
-                        onClick={() => setTab(tabItem.name)}
-                        className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 ${
-                          tab === tabItem.name 
-                            ? "bg-white text-gray-900 shadow-sm" 
-                            : "text-gray-600 hover:text-gray-900"
-                        }`}
-                        style={{
-                          backgroundColor: tab === tabItem.name ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
-                          color: tab === tabItem.name ? 'white' : '#6b7280'
-                        }}
-                        onMouseEnter={(e) => {
-                          if (tab !== tabItem.name) {
-                            e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                            e.currentTarget.style.color = 'white';
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          if (tab !== tabItem.name) {
-                            e.currentTarget.style.backgroundColor = 'transparent';
-                            e.currentTarget.style.color = '#6b7280';
-                          }
-                        }}
-                      >
-                        {tabItem.name}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
+        {/* Tab Navigation */}
+        <div className="mb-6 px-4">
+          <div className="rounded-full p-1.5 inline-flex space-x-1 overflow-x-auto scrollbar-hide w-full sm:w-auto relative overflow-hidden" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+            backgroundColor: `${getPrimaryColor()}10`,
+            border: `1px solid ${getPrimaryColor()}20`
+          }}>
+            <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
+              backgroundColor: getPrimaryColor(),
+              transform: 'translate(30%, -30%)'
+            }}></div>
+            <div className="absolute bottom-0 left-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
+              backgroundColor: getSecondaryColor(),
+              transform: 'translate(-30%, 30%)'
+            }}></div>
+            {visibleTabs.map((tabItem) => (
+              <button
+                key={tabItem.name}
+                onClick={() => setTab(tabItem.name)}
+                className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 relative z-10`}
+                style={{
+                  backgroundColor: tab === tabItem.name ? getPrimaryColor() : 'transparent',
+                  color: tab === tabItem.name ? 'white' : '#6b7280'
+                }}
+                onMouseEnter={(e) => {
+                  if (tab !== tabItem.name) {
+                    e.currentTarget.style.backgroundColor = getSecondaryColor();
+                    e.currentTarget.style.color = 'white';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (tab !== tabItem.name) {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = '#6b7280';
+                  }
+                }}
+              >
+                {tabItem.name}
+              </button>
+            ))}
           </div>
         </div>
 
         {/* Content */}
-        <div>
-          {tab === "Company Profile" && <CompanyProfile />}
-          {tab === "Branch / Unit" && <Branch />}
-          {tab === "Department" && <DepartmentList />}
-          {tab === "Designation" && <DesignationList />}
-          {tab === "Reporting Structure" && <ReportingStructure />}
-          {tab === "Holiday Calendar" && <HolidayCalender />}
+        <div className="px-4">
+          <div className="rounded-3xl shadow-xl overflow-hidden relative" style={{
+            border: `1px solid ${getPrimaryColor()}20`,
+            background: `linear-gradient(135deg, white 0%, ${getPrimaryColor()}03 100%)`
+          }}>
+            <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+              backgroundColor: getPrimaryColor(),
+              transform: 'translate(30%, -30%)'
+            }}></div>
+            <div className="px-4 pt-6 relative z-10">
+              {tab === "Company Profile" && <CompanyProfile />}
+              {tab === "Branch / Unit" && <Branch />}
+              {tab === "Department" && <DepartmentList />}
+              {tab === "Designation" && <DesignationList />}
+              {tab === "Reporting Structure" && <ReportingStructure />}
+              {tab === "Holiday Calendar" && <HolidayCalender />}
+            </div>
+          </div>
         </div>
       </div>
     </Layout>

@@ -199,21 +199,23 @@ export default function Departments() {
         </div>
 
         {/* Key Performance Indicators matching Dashboard */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Departments</p>
-                <p className="text-2xl font-bold text-gray-900">{departments.length}</p>
-                <p className="text-gray-400 text-xs mt-1">Organizational units</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Total Departments</p>
+                <p className="text-xl font-bold text-gray-900">{departments.length}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-xs font-semibold text-gray-400">Organizational units</span>
+                </div>
               </div>
-              <div className="p-3 rounded-lg" style={{
+              <div className="p-2 rounded" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <svg className="h-6 w-6" style={{
+                <svg className="h-4 w-4" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} fill="currentColor" viewBox="0 0 24 24">
                   <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
@@ -222,20 +224,22 @@ export default function Departments() {
             </div>
           </div>
 
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Staff</p>
-                <p className="text-2xl font-bold text-gray-900">{users.length}</p>
-                <p className="text-gray-400 text-xs mt-1">Active employees</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Total Staff</p>
+                <p className="text-xl font-bold text-gray-900">{users.length}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-xs font-semibold text-gray-400">Active employees</span>
+                </div>
               </div>
-              <div className="p-3 rounded-lg" style={{
+              <div className="p-2 rounded" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <svg className="h-6 w-6" style={{
+                <svg className="h-4 w-4" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
@@ -244,20 +248,22 @@ export default function Departments() {
             </div>
           </div>
 
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Filtered Results</p>
-                <p className="text-2xl font-bold text-gray-900">{filteredDepartments.length}</p>
-                <p className="text-gray-400 text-xs mt-1">Currently showing</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Filtered Results</p>
+                <p className="text-xl font-bold text-gray-900">{filteredDepartments.length}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-xs font-semibold text-gray-400">Currently showing</span>
+                </div>
               </div>
-              <div className="p-3 rounded-lg" style={{
+              <div className="p-2 rounded" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <svg className="h-6 w-6" style={{
+                <svg className="h-4 w-4" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -266,20 +272,22 @@ export default function Departments() {
             </div>
           </div>
 
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Avg Headcount</p>
-                <p className="text-2xl font-bold text-gray-900">{departments.length > 0 ? Math.round(users.length / departments.length) : 0}</p>
-                <p className="text-gray-400 text-xs mt-1">Per department</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Avg Headcount</p>
+                <p className="text-xl font-bold text-gray-900">{departments.length > 0 ? Math.round(users.length / departments.length) : 0}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-xs font-semibold text-gray-400">Per department</span>
+                </div>
               </div>
-              <div className="p-3 rounded-lg" style={{
+              <div className="p-2 rounded" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <svg className="h-6 w-6" style={{
+                <svg className="h-4 w-4" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />

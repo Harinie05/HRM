@@ -130,17 +130,25 @@ export default function LeaveLayout() {
         
         {/* Tab Navigation */}
         <div className="mb-6 px-4">
-          <div className="rounded-full p-1.5 inline-flex space-x-1 overflow-x-auto scrollbar-hide w-full sm:w-auto" style={{
+          <div className="rounded-full p-1.5 inline-flex space-x-1 overflow-x-auto scrollbar-hide w-full sm:w-auto relative overflow-hidden" style={{
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
             backgroundColor: `${colors.primary}10`,
             border: `1px solid ${colors.primary}20`
           }}>
+            <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(30%, -30%)'
+            }}></div>
+            <div className="absolute bottom-0 left-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
+              backgroundColor: colors.secondary,
+              transform: 'translate(-30%, 30%)'
+            }}></div>
             {visibleTabs.map((tabItem) => (
               <button
                 key={tabItem.name}
                 onClick={() => setTab(tabItem.name)}
-                className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0`}
+                className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 relative z-10`}
                 style={{
                   backgroundColor: tab === tabItem.name ? colors.primary : 'transparent',
                   color: tab === tabItem.name ? 'white' : '#6b7280'

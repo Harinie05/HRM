@@ -29,12 +29,15 @@ def get_tenant_session(user):
     tenant_db = user.get("tenant_db")
     master = next(get_master_db())
 
-    hospital = master.query(Hospital).filter(Hospital.db_name == tenant_db).first()
-    if not hospital:
-        raise HTTPException(404, "Tenant not found")
+    try:
+        hospital = master.query(Hospital).filter(Hospital.db_name == tenant_db).first()
+        if not hospital:
+            raise HTTPException(404, "Tenant not found")
 
-    engine = get_tenant_engine(hospital.db_name)
-    return Session(bind=engine)
+        engine = get_tenant_engine(hospital.db_name)
+        return Session(bind=engine)
+    finally:
+        master.close()
 
 router = APIRouter(prefix="/employee/salary", tags=["Employee Salary Structure"])
 

@@ -226,132 +226,220 @@ export default function Customization() {
 
   return (
     <Layout>
-      <div className="p-4 sm:p-6 space-y-6">
-        {/* Header */}
-        <div>
-          <h1 className="text-2xl font-bold text-primary">Customization & Templates</h1>
-          <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Configure organisation identity, logo, UI colors, and global PDF header/footer for all NABH HIMS documents.</p>
+      <div className="p-6 space-y-6">
+        {/* Hero Header matching User Management */}
+        <div className="rounded-2xl shadow-sm p-4 sm:p-6 relative overflow-hidden border" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+        }}>  
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 relative z-10">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+              }}>
+                <svg className="h-5 w-5 sm:h-6 sm:w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'
+                }} fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z"/>
+                </svg>
+              </div>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1 truncate">Customization & Templates</h1>
+                <p className="text-gray-600 text-xs sm:text-sm mb-1">Configure organisation identity, logo, UI colors, and global PDF header/footer for all NABH HIMS documents.</p>
+                <p className="text-gray-500 text-xs hidden sm:block">Branding & Organization Setup</p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Tabs */}
-        <div className="rounded-xl overflow-hidden" style={{ backgroundColor: 'var(--card-bg, #ffffff)', border: '1px solid var(--border-color, #e2e8f0)' }}>
-          <div className="flex border-b" style={{ backgroundColor: 'var(--content-bg, #f8fafc)', borderBottomColor: 'var(--border-color, #e2e8f0)' }}>
+        {/* Tab Navigation */}
+        <div className="mb-6 px-4">
+          <div className="rounded-full p-1.5 inline-flex space-x-1 overflow-x-auto scrollbar-hide w-full sm:w-auto relative overflow-hidden" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}10`,
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+          }}>
+            <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9',
+              transform: 'translate(30%, -30%)'
+            }}></div>
+            <div className="absolute bottom-0 left-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+              transform: 'translate(-30%, 30%)'
+            }}></div>
             <button
               onClick={() => setActiveTab("branding")}
-              className={`px-6 py-4 text-sm font-medium transition-colors ${
-                activeTab === "branding"
-                  ? "border-b-2" 
-                  : "hover:text-primary"
-              }`}
+              className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 relative z-10`}
               style={{
-                backgroundColor: activeTab === "branding" ? 'var(--card-bg, #ffffff)' : 'transparent',
-                color: activeTab === "branding" ? 'var(--primary-color, #2862e9)' : 'var(--muted-text, #64748b)',
-                borderBottomColor: activeTab === "branding" ? 'var(--primary-color, #2862e9)' : 'transparent'
+                backgroundColor: activeTab === "branding" ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9' : 'transparent',
+                color: activeTab === "branding" ? 'white' : '#6b7280'
+              }}
+              onMouseEnter={(e) => {
+                if (activeTab !== "branding") {
+                  e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                  e.currentTarget.style.color = 'white';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (activeTab !== "branding") {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.color = '#6b7280';
+                }
               }}
             >
               Branding & Organisation
             </button>
             <button
               onClick={() => setActiveTab("colors")}
-              className={`px-6 py-4 text-sm font-medium transition-colors ${
-                activeTab === "colors"
-                  ? "border-b-2"
-                  : "hover:text-primary"
-              }`}
+              className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 relative z-10`}
               style={{
-                backgroundColor: activeTab === "colors" ? 'var(--card-bg, #ffffff)' : 'transparent',
-                color: activeTab === "colors" ? 'var(--primary-color, #2862e9)' : 'var(--muted-text, #64748b)',
-                borderBottomColor: activeTab === "colors" ? 'var(--primary-color, #2862e9)' : 'transparent'
+                backgroundColor: activeTab === "colors" ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9' : 'transparent',
+                color: activeTab === "colors" ? 'white' : '#6b7280'
+              }}
+              onMouseEnter={(e) => {
+                if (activeTab !== "colors") {
+                  e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                  e.currentTarget.style.color = 'white';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (activeTab !== "colors") {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.color = '#6b7280';
+                }
               }}
             >
               Color Palette
             </button>
           </div>
+        </div>
 
-          <div className="p-6">
+        {/* Content */}
+        <div className="px-4">
+          <div className="rounded-3xl shadow-xl overflow-hidden" style={{
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+          }}>
+            <div className="p-4 sm:p-6">
             {activeTab === "branding" && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-primary mb-2">Organisation details</h3>
-                  <p className=" text-sm mb-4" style={{color: 'var(--text-secondary, #374151)'}}>These values appear on letterheads, EMR PDFs, discharge summaries and other NABH documents.</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Organisation details</h3>
+                  <p className="text-sm mb-4" style={{color: 'var(--text-secondary, #374151)'}}>These values appear on letterheads, EMR PDFs, discharge summaries and other NABH documents.</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-2">Organisation name</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Organisation name</label>
+                    <input 
                       type="text"
                       value={orgDetails.name}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, name: e.target.value }))}
                       disabled={!canEdit}
-                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      className="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-2">Tagline</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Tagline</label>
+                    <input 
                       type="text"
                       value={orgDetails.tagline}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, tagline: e.target.value }))}
-                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                     />
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-secondary mb-2">Address</label>
-                    <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                    <textarea 
                       value={orgDetails.address}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, address: e.target.value }))}
                       rows={3}
-                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-2">Phone</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                    <input 
                       type="text"
                       value={orgDetails.phone}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, phone: e.target.value }))}
-                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-2">Email</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input 
                       type="email"
                       value={orgDetails.email}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, email: e.target.value }))}
-                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-2">Website</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Website</label>
+                    <input 
                       type="url"
                       value={orgDetails.website}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, website: e.target.value }))}
-                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-2">GSTIN</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <label className="block text-sm font-medium text-gray-700 mb-2">GSTIN</label>
+                    <input 
                       type="text"
                       value={orgDetails.gstin}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, gstin: e.target.value }))}
-                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                     />
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-secondary mb-2">Logo</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Logo</label>
                     <div className="flex items-center space-x-4">
-                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                      <input 
                         type="file"
                         accept="image/*"
                         onChange={handleLogoUpload}
@@ -360,7 +448,10 @@ export default function Customization() {
                       />
                       <label
                         htmlFor="logo-upload"
-                        className="px-4 py-2 bg-white text-black border-2 border-black rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                        className="px-4 py-2 text-white rounded-lg cursor-pointer hover:opacity-90 transition-colors"
+                        style={{
+                          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'
+                        }}
                       >
                         Choose Logo
                       </label>
@@ -383,115 +474,157 @@ export default function Customization() {
             {activeTab === "colors" && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-primary mb-2">Color palette</h3>
-                  <p className=" text-sm mb-6" style={{color: 'var(--text-secondary, #374151)'}}>Tune application colors. These drive sidebar, primary buttons and card backgrounds.</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Color palette</h3>
+                  <p className="text-sm mb-6" style={{color: 'var(--text-secondary, #374151)'}}>Tune application colors. These drive sidebar, primary buttons and card backgrounds.</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-2">Primary color (buttons, highlights)</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Primary color (buttons, highlights)</label>
                     <div className="flex items-center space-x-3">
-                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                      <input 
                         type="color"
                         value={colors.primaryColor}
                         onChange={(e) => updateColor('primaryColor', e.target.value)}
-                        className="w-12 h-10 rounded border border-black cursor-pointer"
+                        className="w-12 h-10 rounded cursor-pointer"
+                        style={{
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                        }}
                       />
-                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                      <input 
                         type="text"
                         value={colors.primaryColor}
                         onChange={(e) => updateColor('primaryColor', e.target.value)}
-                        className="flex-1 px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="flex-1 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                        }}
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-2">Secondary color</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Secondary color</label>
                     <div className="flex items-center space-x-3">
-                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                      <input 
                         type="color"
                         value={colors.secondaryColor}
                         onChange={(e) => updateColor('secondaryColor', e.target.value)}
-                        className="w-12 h-10 rounded border border-black cursor-pointer"
+                        className="w-12 h-10 rounded cursor-pointer"
+                        style={{
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                        }}
                       />
-                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                      <input 
                         type="text"
                         value={colors.secondaryColor}
                         onChange={(e) => updateColor('secondaryColor', e.target.value)}
-                        className="flex-1 px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="flex-1 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                        }}
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-2">Sidebar background color</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Sidebar background color</label>
                     <div className="flex items-center space-x-3">
-                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                      <input 
                         type="color"
                         value={colors.sidebarBg}
                         onChange={(e) => updateColor('sidebarBg', e.target.value)}
-                        className="w-12 h-10 rounded border border-black cursor-pointer"
+                        className="w-12 h-10 rounded cursor-pointer"
+                        style={{
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                        }}
                       />
-                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                      <input 
                         type="text"
                         value={colors.sidebarBg}
                         onChange={(e) => updateColor('sidebarBg', e.target.value)}
-                        className="flex-1 px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="flex-1 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                        }}
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-2">Header & footer background</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Header & footer background</label>
                     <div className="flex items-center space-x-3">
-                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                      <input 
                         type="color"
                         value={colors.headerFooterBg}
                         onChange={(e) => updateColor('headerFooterBg', e.target.value)}
-                        className="w-12 h-10 rounded border border-black cursor-pointer"
+                        className="w-12 h-10 rounded cursor-pointer"
+                        style={{
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                        }}
                       />
-                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                      <input 
                         type="text"
                         value={colors.headerFooterBg}
                         onChange={(e) => updateColor('headerFooterBg', e.target.value)}
-                        className="flex-1 px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="flex-1 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                        }}
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-2">Sidebar text color</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Sidebar text color</label>
                     <div className="flex items-center space-x-3">
-                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                      <input 
                         type="color"
                         value={colors.sidebarTextColor}
                         onChange={(e) => updateColor('sidebarTextColor', e.target.value)}
-                        className="w-12 h-10 rounded border border-black cursor-pointer"
+                        className="w-12 h-10 rounded cursor-pointer"
+                        style={{
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                        }}
                       />
-                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                      <input 
                         type="text"
                         value={colors.sidebarTextColor}
                         onChange={(e) => updateColor('sidebarTextColor', e.target.value)}
-                        className="flex-1 px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="flex-1 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                        }}
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-secondary mb-2">Header text color</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Header text color</label>
                     <div className="flex items-center space-x-3">
-                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                      <input 
                         type="color"
                         value={colors.headerTextColor}
                         onChange={(e) => updateColor('headerTextColor', e.target.value)}
-                        className="w-12 h-10 rounded border border-black cursor-pointer"
+                        className="w-12 h-10 rounded cursor-pointer"
+                        style={{
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                        }}
                       />
-                      <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                      <input 
                         type="text"
                         value={colors.headerTextColor}
                         onChange={(e) => updateColor('headerTextColor', e.target.value)}
-                        className="flex-1 px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="flex-1 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                        }}
                       />
                     </div>
                   </div>
@@ -502,12 +635,13 @@ export default function Customization() {
                 </div>
               </div>
             )}
+            </div>
           </div>
         </div>
 
         {/* Save Button */}
         {canEdit && (
-          <div className="flex justify-end">
+          <div className="flex justify-end px-4">
             <button
               onClick={saveSettings}
               style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}

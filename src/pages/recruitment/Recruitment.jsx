@@ -287,80 +287,88 @@ export default function Recruitment() {
 
         {/* Key Performance Indicators */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Jobs</p>
-                <p className="text-2xl font-bold text-gray-900">{jobs.length}</p>
-                <p className="text-gray-400 text-xs mt-1">Active positions</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Total Jobs</p>
+                <p className="text-xl font-bold text-gray-900">{jobs.length}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-xs font-semibold text-gray-400">Active positions</span>
+                </div>
               </div>
-              <div className="p-3 rounded-lg" style={{
+              <div className="p-2 rounded" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <FiUsers className="h-6 w-6" style={{
+                <FiUsers className="h-4 w-4" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} />
               </div>
             </div>
           </div>
           
-          <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Published</p>
-                <p className="text-2xl font-bold text-gray-900">{jobs.filter(j => j.publish_status?.trim() === 'Published').length}</p>
-                <p className="text-gray-400 text-xs mt-1">Live positions</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Published</p>
+                <p className="text-xl font-bold text-gray-900">{jobs.filter(j => j.publish_status?.trim() === 'Published').length}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-xs font-semibold text-gray-400">Live positions</span>
+                </div>
               </div>
-              <div className="p-3 rounded-lg" style={{
+              <div className="p-2 rounded" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <FiPlay className="h-6 w-6" style={{
+                <FiPlay className="h-4 w-4" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} />
               </div>
             </div>
           </div>
           
-          <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Drafts</p>
-                <p className="text-2xl font-bold text-gray-900">{jobs.filter(j => j.publish_status?.trim() !== 'Published').length}</p>
-                <p className="text-gray-400 text-xs mt-1">In preparation</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Drafts</p>
+                <p className="text-xl font-bold text-gray-900">{jobs.filter(j => j.publish_status?.trim() !== 'Published').length}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-xs font-semibold text-gray-400">In preparation</span>
+                </div>
               </div>
-              <div className="p-3 rounded-lg" style={{
+              <div className="p-2 rounded" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <FiPause className="h-6 w-6" style={{
+                <FiPause className="h-4 w-4" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} />
               </div>
             </div>
           </div>
           
-          <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Closed</p>
-                <p className="text-2xl font-bold text-gray-900">{jobs.filter(j => j.status?.trim() === 'Inactive').length}</p>
-                <p className="text-gray-400 text-xs mt-1">Completed</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Closed</p>
+                <p className="text-xl font-bold text-gray-900">{jobs.filter(j => j.status?.trim() === 'Inactive').length}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-xs font-semibold text-gray-400">Completed</span>
+                </div>
               </div>
-              <div className="p-3 rounded-lg" style={{
+              <div className="p-2 rounded" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <FiPause className="h-6 w-6" style={{
+                <FiPause className="h-4 w-4" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} />
               </div>

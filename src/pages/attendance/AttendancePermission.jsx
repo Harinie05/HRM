@@ -198,7 +198,7 @@ export default function AttendancePermission() {
           
           <div className="p-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+        <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
           borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
         }}>
@@ -213,14 +213,16 @@ export default function AttendancePermission() {
           <div className="relative z-10">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Requests</p>
-              <p className="text-2xl font-bold text-gray-900">{list.length}</p>
-              <p className="text-gray-400 text-xs mt-1">All submissions</p>
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Total Requests</p>
+              <p className="text-xl font-bold text-gray-900">{list.length}</p>
+              <div className="flex items-center gap-1 mt-1">
+                <span className="text-xs font-semibold text-gray-400">All submissions</span>
+              </div>
             </div>
-            <div className="p-3 rounded-lg" style={{
+            <div className="p-2 rounded" style={{
               backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
             }}>
-              <FiFileText className="h-6 w-6" style={{
+              <FiFileText className="h-4 w-4" style={{
                 color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
               }} />
             </div>
@@ -228,7 +230,7 @@ export default function AttendancePermission() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+        <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
           borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
         }}>
@@ -243,14 +245,16 @@ export default function AttendancePermission() {
           <div className="relative z-10">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Pending</p>
-              <p className="text-2xl font-bold text-gray-900">{list.filter(r => r.status === 'Pending').length}</p>
-              <p className="text-gray-400 text-xs mt-1">Awaiting approval</p>
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Pending</p>
+              <p className="text-xl font-bold text-gray-900">{list.filter(r => r.status === 'Pending').length}</p>
+              <div className="flex items-center gap-1 mt-1">
+                <span className="text-xs font-semibold text-gray-400">Awaiting approval</span>
+              </div>
             </div>
-            <div className="p-3 rounded-lg" style={{
+            <div className="p-2 rounded" style={{
               backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
             }}>
-              <FiClock className="h-6 w-6" style={{
+              <FiClock className="h-4 w-4" style={{
                 color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
               }} />
             </div>
@@ -258,7 +262,7 @@ export default function AttendancePermission() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+        <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
           borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
         }}>
@@ -273,14 +277,16 @@ export default function AttendancePermission() {
           <div className="relative z-10">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Approved</p>
-              <p className="text-2xl font-bold text-gray-900">{list.filter(r => r.status === 'Approved').length}</p>
-              <p className="text-gray-400 text-xs mt-1">Accepted requests</p>
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Approved</p>
+              <p className="text-xl font-bold text-gray-900">{list.filter(r => r.status === 'Approved').length}</p>
+              <div className="flex items-center gap-1 mt-1">
+                <span className="text-xs font-semibold text-gray-400">Accepted requests</span>
+              </div>
             </div>
-            <div className="p-3 rounded-lg" style={{
+            <div className="p-2 rounded" style={{
               backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
             }}>
-              <FiCheckCircle className="h-6 w-6" style={{
+              <FiCheckCircle className="h-4 w-4" style={{
                 color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
               }} />
             </div>
@@ -288,7 +294,7 @@ export default function AttendancePermission() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+        <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
           borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
         }}>
@@ -303,14 +309,16 @@ export default function AttendancePermission() {
           <div className="relative z-10">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Rejected</p>
-              <p className="text-2xl font-bold text-gray-900">{list.filter(r => r.status === 'Rejected').length}</p>
-              <p className="text-gray-400 text-xs mt-1">Declined requests</p>
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Rejected</p>
+              <p className="text-xl font-bold text-gray-900">{list.filter(r => r.status === 'Rejected').length}</p>
+              <div className="flex items-center gap-1 mt-1">
+                <span className="text-xs font-semibold text-gray-400">Declined requests</span>
+              </div>
             </div>
-            <div className="p-3 rounded-lg" style={{
+            <div className="p-2 rounded" style={{
               backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
             }}>
-              <FiXCircle className="h-6 w-6" style={{
+              <FiXCircle className="h-4 w-4" style={{
                 color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
               }} />
             </div>

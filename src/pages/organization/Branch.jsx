@@ -74,19 +74,8 @@ export default function Branch() {
   }
 
   return (
-    <div className="bg-white rounded-xl p-5 shadow-sm overflow-hidden relative border" style={{
-      background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-      borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-    }}>
-      <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
-        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-        transform: 'translate(40%, -40%)'
-      }}></div>
-      <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
-        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-        transform: 'translate(-40%, 40%)'
-      }}></div>
-      <div className="p-5 border-b-0 relative z-10">
+    <>
+      <div className="px-4 pt-6 border-b-0 relative z-10">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg" style={{
             backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -296,6 +285,6 @@ export default function Branch() {
         )}
       </form>
       <Toast toast={toast} hideToast={hideToast} />
-    </div>
+    </>
   );
 }

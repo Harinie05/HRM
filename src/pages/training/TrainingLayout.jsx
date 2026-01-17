@@ -67,7 +67,7 @@ export default function TrainingLayout() {
 
   return (
     <Layout>
-      <div className="p-6 space-y-6">
+      <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
         {/* Header with gradient background */}
         <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
@@ -99,62 +99,59 @@ export default function TrainingLayout() {
           </div>
         </div>
 
-          <div className="rounded-xl shadow-sm overflow-hidden relative" style={{
-            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}05 100%)`,
+        {/* Tab Navigation */}
+        <div className="mb-6 px-4">
+          <div className="rounded-full p-1.5 inline-flex space-x-1 overflow-x-auto scrollbar-hide w-full sm:w-auto relative overflow-hidden" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}10`,
             border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
           }}>
-            <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 pointer-events-none" style={{
-              background: `radial-gradient(circle, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'} 0%, transparent 70%)`,
-              transform: 'translate(40%, -40%)'
+            <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9',
+              transform: 'translate(30%, -30%)'
             }}></div>
-            {/* Content */}
-            <div className="p-4 sm:p-6 relative z-10">
-              {/* Tab Navigation */}
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-6">
-                <span className="text-sm text-gray-600">Modules</span>
-                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto scrollbar-hide border-0" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
-                  {tabs.map((tab) => (
-                    <button
-                      key={tab.name}
-                      onClick={() => navigate(tab.path)}
-                      className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 ${
-                        currentTab.name === tab.name
-                          ? "text-white"
-                          : "text-gray-600 hover:text-gray-900"
-                      }`}
-                      style={{
-                        backgroundColor: currentTab.name === tab.name ? 'var(--primary-color)' : 'transparent',
-                        color: currentTab.name === tab.name ? 'white' : '#6b7280'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (currentTab.name !== tab.name) {
-                          e.currentTarget.style.backgroundColor = 'var(--secondary-color)';
-                          e.currentTarget.style.color = 'white';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (currentTab.name !== tab.name) {
-                          e.currentTarget.style.backgroundColor = 'transparent';
-                          e.currentTarget.style.color = '#6b7280';
-                        }
-                      }}
-                    >
-                      {tab.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              {/* Scroll indicator */}
-              <div className="flex justify-center mb-6">
-                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </div>
+            <div className="absolute bottom-0 left-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+              transform: 'translate(-30%, 30%)'
+            }}></div>
+            {tabs.map((tab) => (
+              <button
+                key={tab.name}
+                onClick={() => navigate(tab.path)}
+                className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 relative z-10`}
+                style={{
+                  backgroundColor: currentTab.name === tab.name ? 'var(--primary-color)' : 'transparent',
+                  color: currentTab.name === tab.name ? 'white' : '#6b7280'
+                }}
+                onMouseEnter={(e) => {
+                  if (currentTab.name !== tab.name) {
+                    e.currentTarget.style.backgroundColor = 'var(--secondary-color)';
+                    e.currentTarget.style.color = 'white';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (currentTab.name !== tab.name) {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = '#6b7280';
+                  }
+                }}
+              >
+                {tab.name}
+              </button>
+            ))}
+        </div>
 
+        {/* Content */}
+        <div className="rounded-3xl shadow-xl overflow-hidden" style={{
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+        }}>
+          <div className="p-4 sm:p-6">
               {/* Tab Content */}
               <Outlet />
             </div>
           </div>
+        </div>
       </div>
     </Layout>
   );

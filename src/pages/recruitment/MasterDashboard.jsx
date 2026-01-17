@@ -245,82 +245,110 @@ export default function MasterDashboard() {
         </div>
 
         {/* Key Performance Indicators */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Job Requisitions</p>
-                <p className="text-2xl font-bold text-gray-900">{loading ? "..." : metrics.totalJobs}</p>
-                <p className="text-gray-400 text-xs mt-1">Total job openings</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Job Requisitions</p>
+                <p className="text-xl font-bold text-gray-900">{loading ? "..." : metrics.totalJobs}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <Briefcase className="h-3 w-3" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                  <span className="text-xs font-semibold" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}>Total openings</span>
+                </div>
               </div>
-              <div className="p-3 rounded-lg" style={{
+              <div className="p-2 rounded" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <Briefcase className="h-6 w-6" style={{
+                <Briefcase className="h-4 w-4" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} />
               </div>
             </div>
           </div>
 
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}20`
+          }}>
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Applications</p>
+                <p className="text-xl font-bold text-gray-900">{loading ? "..." : metrics.appliedCandidates}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <Users className="h-3 w-3" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'
+                  }} />
+                  <span className="text-xs font-semibold" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'
+                  }}>Received</span>
+                </div>
+              </div>
+              <div className="p-2 rounded" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}20`
+              }}>
+                <Users className="h-4 w-4" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'
+                }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Applications</p>
-                <p className="text-2xl font-bold text-gray-900">{loading ? "..." : metrics.appliedCandidates}</p>
-                <p className="text-gray-400 text-xs mt-1">Total applications received</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Onboarded</p>
+                <p className="text-xl font-bold text-gray-900">{loading ? "..." : metrics.onboardedCandidates}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <UserCheck className="h-3 w-3" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                  <span className="text-xs font-semibold" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}>Joined</span>
+                </div>
               </div>
-              <div className="p-3 rounded-lg" style={{
+              <div className="p-2 rounded" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <Users className="h-6 w-6" style={{
+                <UserCheck className="h-4 w-4" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} />
               </div>
             </div>
           </div>
 
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
-            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}20`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Onboarded</p>
-                <p className="text-2xl font-bold text-gray-900">{loading ? "..." : metrics.onboardedCandidates}</p>
-                <p className="text-gray-400 text-xs mt-1">Successfully joined employees</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Completed</p>
+                <p className="text-xl font-bold text-gray-900">{loading ? "..." : metrics.completedJobs}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <CheckCircle className="h-3 w-3" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'
+                  }} />
+                  <span className="text-xs font-semibold" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'
+                  }}>Filled</span>
+                </div>
               </div>
-              <div className="p-3 rounded-lg" style={{
-                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              <div className="p-2 rounded" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}20`
               }}>
-                <UserCheck className="h-6 w-6" style={{
-                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-                }} />
-              </div>
-            </div>
-          </div>
-
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
-            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-          }}>
-            <div className="flex items-center justify-between">
-              <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Completed</p>
-                <p className="text-2xl font-bold text-gray-900">{loading ? "..." : metrics.completedJobs}</p>
-                <p className="text-gray-400 text-xs mt-1">Filled positions</p>
-              </div>
-              <div className="p-3 rounded-lg" style={{
-                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-              }}>
-                <CheckCircle className="h-6 w-6" style={{
-                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                <CheckCircle className="h-4 w-4" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'
                 }} />
               </div>
             </div>
@@ -328,42 +356,56 @@ export default function MasterDashboard() {
         </div>
 
         {/* Secondary Stats */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Selected</p>
-                <p className="text-2xl font-bold text-gray-900">{loading ? "..." : metrics.selectedCandidates}</p>
-                <p className="text-gray-400 text-xs mt-1">Candidates cleared all rounds</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Selected</p>
+                <p className="text-xl font-bold text-gray-900">{loading ? "..." : metrics.selectedCandidates}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <UserPlus className="h-3 w-3" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                  <span className="text-xs font-semibold" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}>Cleared rounds</span>
+                </div>
               </div>
-              <div className="p-3 rounded-lg" style={{
+              <div className="p-2 rounded" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <UserPlus className="h-6 w-6" style={{
+                <UserPlus className="h-4 w-4" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} />
               </div>
             </div>
           </div>
 
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
-            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05 100%)`,
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}20`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Rejected</p>
-                <p className="text-2xl font-bold text-gray-900">{loading ? "..." : metrics.rejectedCandidates}</p>
-                <p className="text-gray-400 text-xs mt-1">Not selected candidates</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Rejected</p>
+                <p className="text-xl font-bold text-gray-900">{loading ? "..." : metrics.rejectedCandidates}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <UserX className="h-3 w-3" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'
+                  }} />
+                  <span className="text-xs font-semibold" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'
+                  }}>Not selected</span>
+                </div>
               </div>
-              <div className="p-3 rounded-lg" style={{
-                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              <div className="p-2 rounded" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}20`
               }}>
-                <UserX className="h-6 w-6" style={{
-                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                <UserX className="h-4 w-4" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'
                 }} />
               </div>
             </div>

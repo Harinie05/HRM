@@ -329,47 +329,52 @@ export default function EmployeeListPage() {
     <Layout>
       <div className="overflow-x-hidden">
       {/* Hero Section */}
-      <div className="mb-4 p-4 sm:p-6">
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl shadow-sm p-4 sm:p-8 relative overflow-hidden" style={{
-          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+      <div className="mb-3 p-4 sm:p-6">
+        <div className="rounded-2xl shadow-sm p-4 sm:p-6 relative overflow-hidden border" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
         }}>
-          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-            transform: 'translate(30%, -30%)'
+            transform: 'translate(40%, -40%)'
           }}></div>
-          <div className="relative z-10">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 min-w-0 flex-1">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl flex items-center justify-center mx-auto sm:mx-0 flex-shrink-0" style={{
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 relative z-10">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <Users className="w-6 h-6 sm:w-8 sm:h-8" style={{
+                <Users className="h-5 w-5 sm:h-6 sm:w-6" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} />
               </div>
-              <div className="text-center sm:text-left min-w-0">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 truncate">Employee Directory & Profiles</h1>
-                <p className="text-gray-600 text-base sm:text-lg mb-1">Comprehensive employee information management and profile system</p>
-                <p className="text-gray-500 text-sm">Employee Information System</p>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1 truncate">Employee Directory & Profiles</h1>
+                <p className="text-gray-600 text-xs sm:text-sm mb-1">Comprehensive employee information management and profile system</p>
+                <p className="text-gray-500 text-xs hidden sm:block">Employee Information System</p>
               </div>
             </div>
-            <div className="text-center sm:text-right flex-shrink-0">
-              <div className="bg-white rounded-lg p-3 border-0 shadow-sm text-center">
-                <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
+            <div className="flex gap-2 sm:gap-3 flex-shrink-0">
+              <div className="bg-white rounded-lg p-2 sm:p-3 shadow-sm border" style={{
+                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
+                  <Users className="h-3 w-3" />
                   <span className="text-xs font-medium">Employees</span>
                 </div>
-                <p className="text-lg font-bold text-gray-900">{employees.length}</p>
+                <p className="text-sm font-semibold text-gray-900">{employees.length}</p>
               </div>
             </div>
-          </div>
           </div>
         </div>
       </div>
 
       <div className="p-4 sm:p-6">
         {/* Search and Actions */}
-        <div className="bg-white rounded-xl shadow-sm p-4 mb-6 relative overflow-hidden" style={{
+        <div className="bg-white rounded-xl shadow-sm p-4 mb-3 relative overflow-hidden" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
           border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
         }}>

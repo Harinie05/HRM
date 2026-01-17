@@ -374,63 +374,69 @@ export default function PayrollRun() {
         {/* Stats Cards */}
         <div className="mb-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="rounded-xl p-6 relative overflow-hidden" style={{
-              border: `1px solid ${colors.primary}20`
-            }}>
-              <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
-                backgroundColor: colors.primary,
-                transform: 'translate(30%, -30%)'
-              }}></div>
-              <div className="flex items-center justify-between relative z-10">
-                <div>
-                  <p className="text-gray-600 text-sm font-medium">Active Employees</p>
-                  <p className="text-3xl font-bold text-gray-900">{activeEmployeesCount}</p>
-                </div>
-                <div className="p-3 rounded-xl" style={{
-                  backgroundColor: `${colors.primary}20`
-                }}>
-                  <Users className="h-10 w-10" style={{ color: colors.primary }} />
-                </div>
-              </div>
-            </div>
-            <div className="rounded-xl p-6 relative overflow-hidden" style={{
-              border: `1px solid ${colors.primary}20`
-            }}>
-              <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
-                backgroundColor: colors.secondary,
-                transform: 'translate(30%, -30%)'
-              }}></div>
-              <div className="flex items-center justify-between relative z-10">
-                <div>
-                  <p className="text-gray-600 text-sm font-medium">Completed Runs</p>
-                  <p className="text-3xl font-bold text-gray-900">{completedRunsCount}</p>
-                </div>
-                <div className="p-3 rounded-xl" style={{
-                  backgroundColor: `${colors.primary}20`
-                }}>
-                  <Play className="h-10 w-10" style={{ color: colors.primary }} />
+            {(isAdmin() || hasPermission("view_employees") || hasPermission("view_salary_structure")) && (
+              <div className="rounded-xl p-6 relative overflow-hidden" style={{
+                border: `1px solid ${colors.primary}20`
+              }}>
+                <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
+                  backgroundColor: colors.primary,
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <div className="flex items-center justify-between relative z-10">
+                  <div>
+                    <p className="text-gray-600 text-sm font-medium">Active Employees</p>
+                    <p className="text-3xl font-bold text-gray-900">{activeEmployeesCount}</p>
+                  </div>
+                  <div className="p-3 rounded-xl" style={{
+                    backgroundColor: `${colors.primary}20`
+                  }}>
+                    <Users className="h-10 w-10" style={{ color: colors.primary }} />
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="rounded-xl p-6 relative overflow-hidden" style={{
-              border: `1px solid ${colors.primary}20`
-            }}>
-              <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
-                backgroundColor: colors.primary,
-                transform: 'translate(30%, -30%)'
-              }}></div>
-              <div className="flex items-center justify-between relative z-10">
-                <div>
-                  <p className="text-gray-600 text-sm font-medium">This Month</p>
-                  <p className="text-3xl font-bold text-gray-900">{thisMonthCount}</p>
-                </div>
-                <div className="p-3 rounded-xl" style={{
-                  backgroundColor: `${colors.primary}20`
-                }}>
-                  <Calendar className="h-10 w-10" style={{ color: colors.primary }} />
+            )}
+            {(isAdmin() || hasPermission("view_payroll_run")) && (
+              <div className="rounded-xl p-6 relative overflow-hidden" style={{
+                border: `1px solid ${colors.primary}20`
+              }}>
+                <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
+                  backgroundColor: colors.secondary,
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <div className="flex items-center justify-between relative z-10">
+                  <div>
+                    <p className="text-gray-600 text-sm font-medium">Completed Runs</p>
+                    <p className="text-3xl font-bold text-gray-900">{completedRunsCount}</p>
+                  </div>
+                  <div className="p-3 rounded-xl" style={{
+                    backgroundColor: `${colors.primary}20`
+                  }}>
+                    <Play className="h-10 w-10" style={{ color: colors.primary }} />
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
+            {(isAdmin() || hasPermission("view_payroll_run")) && (
+              <div className="rounded-xl p-6 relative overflow-hidden" style={{
+                border: `1px solid ${colors.primary}20`
+              }}>
+                <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
+                  backgroundColor: colors.primary,
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <div className="flex items-center justify-between relative z-10">
+                  <div>
+                    <p className="text-gray-600 text-sm font-medium">This Month</p>
+                    <p className="text-3xl font-bold text-gray-900">{thisMonthCount}</p>
+                  </div>
+                  <div className="p-3 rounded-xl" style={{
+                    backgroundColor: `${colors.primary}20`
+                  }}>
+                    <Calendar className="h-10 w-10" style={{ color: colors.primary }} />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

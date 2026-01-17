@@ -111,52 +111,56 @@ export default function HRLayout() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden relative" style={{
-          background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-          border: `1px solid ${colors.primary}20`
-        }}>
-          <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none" style={{
-            background: `radial-gradient(circle, ${colors.primary}40 0%, transparent 70%)`,
-            transform: 'translate(40%, -40%)'
-          }}></div>
-          {/* Content */}
-          <div className="p-4 sm:p-6">
-            {/* Tab Navigation */}
-            <div className="mb-6">
-              <div className="rounded-full p-1.5 inline-flex space-x-1 overflow-x-auto scrollbar-hide w-full sm:w-auto" style={{
+        {/* Tab Navigation */}
+        <div className="mb-6 px-4">
+          <div className="rounded-full p-1.5 inline-flex space-x-1 overflow-x-auto scrollbar-hide w-full sm:w-auto relative overflow-hidden" style={{
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
-                backgroundColor: `${colors.primary}10`,
-                border: `1px solid ${colors.primary}20`
-              }}>
-                {tabs.map((tabName) => (
-                  <button
-                    key={tabName}
-                    onClick={() => setTab(tabName)}
-                    className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0`}
-                    style={{
-                      backgroundColor: tab === tabName ? colors.primary : 'transparent',
-                      color: tab === tabName ? 'white' : '#6b7280'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (tab !== tabName) {
-                        e.currentTarget.style.backgroundColor = colors.secondary;
-                        e.currentTarget.style.color = 'white';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (tab !== tabName) {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                        e.currentTarget.style.color = '#6b7280';
-                      }
-                    }}
-                  >
-                    {tabName}
-                  </button>
-                ))}
-              </div>
-            </div>
+            backgroundColor: `${colors.primary}10`,
+            border: `1px solid ${colors.primary}20`
+          }}>
+            <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(30%, -30%)'
+            }}></div>
+            <div className="absolute bottom-0 left-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
+              backgroundColor: colors.secondary,
+              transform: 'translate(-30%, 30%)'
+            }}></div>
+            {tabs.map((tabName) => (
+              <button
+                key={tabName}
+                onClick={() => setTab(tabName)}
+                className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 relative z-10`}
+                style={{
+                  backgroundColor: tab === tabName ? colors.primary : 'transparent',
+                  color: tab === tabName ? 'white' : '#6b7280'
+                }}
+                onMouseEnter={(e) => {
+                  if (tab !== tabName) {
+                    e.currentTarget.style.backgroundColor = colors.secondary;
+                    e.currentTarget.style.color = 'white';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (tab !== tabName) {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = '#6b7280';
+                  }
+                }}
+              >
+                {tabName}
+              </button>
+            ))}
+          </div>
+        </div>
 
+        <div className="px-4">
+          <div className="rounded-3xl shadow-xl overflow-hidden" style={{
+            border: `1px solid ${colors.primary}20`
+          }}>
+
+            <div className="p-4 sm:p-6">
               {/* Tab Content */}
               {tab === "Lifecycle Actions" && (
                 <div>
@@ -268,6 +272,7 @@ export default function HRLayout() {
               )}
             </div>
           </div>
+        </div>
       </div>
     </Layout>
   );

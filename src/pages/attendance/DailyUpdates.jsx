@@ -255,7 +255,7 @@ const DailyUpdates = () => {
           
           <div className="p-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
@@ -265,21 +265,23 @@ const DailyUpdates = () => {
             }}></div>
             <div className="flex items-center justify-between relative z-10">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Updates</p>
-                <p className="text-2xl font-bold text-gray-900">{updates.length}</p>
-                <p className="text-gray-400 text-xs mt-1">All entries</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Total Updates</p>
+                <p className="text-xl font-bold text-gray-900">{updates.length}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-xs font-semibold text-gray-400">All entries</span>
+                </div>
               </div>
-              <div className="p-3 rounded-lg" style={{
+              <div className="p-2 rounded" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <FiEdit className="h-6 w-6" style={{
+                <FiEdit className="h-4 w-4" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} />
               </div>
             </div>
           </div>
 
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
@@ -289,21 +291,23 @@ const DailyUpdates = () => {
             }}></div>
             <div className="flex items-center justify-between relative z-10">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Draft Updates</p>
-                <p className="text-2xl font-bold text-gray-900">{updates.filter(u => u.status === 'Draft').length}</p>
-                <p className="text-gray-400 text-xs mt-1">Pending submission</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Draft Updates</p>
+                <p className="text-xl font-bold text-gray-900">{updates.filter(u => u.status === 'Draft').length}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-xs font-semibold text-gray-400">Pending submission</span>
+                </div>
               </div>
-              <div className="p-3 rounded-lg" style={{
+              <div className="p-2 rounded" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <FiFileText className="h-6 w-6" style={{
+                <FiFileText className="h-4 w-4" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} />
               </div>
             </div>
           </div>
 
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
@@ -313,21 +317,23 @@ const DailyUpdates = () => {
             }}></div>
             <div className="flex items-center justify-between relative z-10">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Submitted</p>
-                <p className="text-2xl font-bold text-gray-900">{updates.filter(u => u.status === 'Submitted').length}</p>
-                <p className="text-gray-400 text-xs mt-1">Completed entries</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Submitted</p>
+                <p className="text-xl font-bold text-gray-900">{updates.filter(u => u.status === 'Submitted').length}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-xs font-semibold text-gray-400">Completed entries</span>
+                </div>
               </div>
-              <div className="p-3 rounded-lg" style={{
+              <div className="p-2 rounded" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <FiCheckCircle className="h-6 w-6" style={{
+                <FiCheckCircle className="h-4 w-4" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} />
               </div>
             </div>
           </div>
 
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
@@ -337,19 +343,21 @@ const DailyUpdates = () => {
             }}></div>
             <div className="flex items-center justify-between relative z-10">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">This Week</p>
-                <p className="text-2xl font-bold text-gray-900">{updates.filter(u => {
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">This Week</p>
+                <p className="text-xl font-bold text-gray-900">{updates.filter(u => {
                   const updateDate = new Date(u.date);
                   const now = new Date();
                   const weekStart = new Date(now.setDate(now.getDate() - now.getDay()));
                   return updateDate >= weekStart;
                 }).length}</p>
-                <p className="text-gray-400 text-xs mt-1">Recent activity</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-xs font-semibold text-gray-400">Recent activity</span>
+                </div>
               </div>
-              <div className="p-3 rounded-lg" style={{
+              <div className="p-2 rounded" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <FiCalendar className="h-6 w-6" style={{
+                <FiCalendar className="h-4 w-4" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} />
               </div>

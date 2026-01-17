@@ -108,72 +108,59 @@ export default function ComplianceLayout() {
           </div>
         </div>
 
-        {/* Compliance Management Section */}
-        <div className="rounded-xl shadow-sm overflow-hidden relative border" style={{
-          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-        }}>
-          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
-            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-            transform: 'translate(40%, -40%)'
-          }}></div>
-          <div className="p-5 border-b-0 relative z-10">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg" style={{
-                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-                }}>
-                  <Shield className="h-5 w-5" style={{
-                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-                  }} />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900">Compliance Modules</h3>
-              </div>
-            </div>
-          </div>
-          
-          <div className="p-4 sm:p-5 space-y-4 relative z-10">
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                <span className="text-sm text-gray-600 whitespace-nowrap">Compliance Management</span>
-                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border-0 scrollbar-hide" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
-                  {tabs.map((tabName) => (
-                    <button
-                      key={tabName}
-                      onClick={() => setActiveTab(tabName)}
-                      className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 ${
-                        activeTab === tabName 
-                          ? "bg-white text-gray-900 shadow-sm" 
-                          : "text-gray-600 hover:text-gray-900"
-                      }`}
-                      style={{
-                        backgroundColor: activeTab === tabName ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
-                        color: activeTab === tabName ? 'white' : '#6b7280'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (activeTab !== tabName) {
-                          e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                          e.currentTarget.style.color = 'white';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (activeTab !== tabName) {
-                          e.currentTarget.style.backgroundColor = 'transparent';
-                          e.currentTarget.style.color = '#6b7280';
-                        }
-                      }}
-                    >
-                      {tabName}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
+        {/* Tab Navigation */}
+        <div className="mb-6 px-4">
+          <div className="rounded-full p-1.5 inline-flex space-x-1 overflow-x-auto scrollbar-hide w-full sm:w-auto relative overflow-hidden" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+            backgroundColor: `${brandingColors.primary}10`,
+            border: `1px solid ${brandingColors.primary}20`
+          }}>
+            <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
+              backgroundColor: brandingColors.primary,
+              transform: 'translate(30%, -30%)'
+            }}></div>
+            <div className="absolute bottom-0 left-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
+              backgroundColor: brandingColors.secondary,
+              transform: 'translate(-30%, 30%)'
+            }}></div>
+            {tabs.map((tabName) => (
+              <button
+                key={tabName}
+                onClick={() => setActiveTab(tabName)}
+                className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 relative z-10`}
+                style={{
+                  backgroundColor: activeTab === tabName ? brandingColors.primary : 'transparent',
+                  color: activeTab === tabName ? 'white' : '#6b7280'
+                }}
+                onMouseEnter={(e) => {
+                  if (activeTab !== tabName) {
+                    e.currentTarget.style.backgroundColor = brandingColors.secondary;
+                    e.currentTarget.style.color = 'white';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeTab !== tabName) {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = '#6b7280';
+                  }
+                }}
+              >
+                {tabName}
+              </button>
+            ))}
           </div>
         </div>
 
         {/* Content */}
-        {renderTabContent()}
+        <div className="px-4">
+          <div className="rounded-3xl shadow-xl overflow-hidden" style={{
+            border: `1px solid ${brandingColors.primary}20`
+          }}>
+
+            {renderTabContent()}
+          </div>
+        </div>
       </div>
     </Layout>
   );

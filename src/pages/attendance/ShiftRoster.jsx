@@ -961,101 +961,109 @@ export default function ShiftRoster() {
 
         {/* Key Performance Indicators matching Dashboard */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
-            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-          }}>
-            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
-              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-              transform: 'translate(40%, -40%)'
-            }}></div>
-            <div className="flex items-center justify-between relative z-10">
-              <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Shifts</p>
-                <p className="text-2xl font-bold text-gray-900">{shifts.length}</p>
-                <p className="text-gray-400 text-xs mt-1">Configured shifts</p>
-              </div>
-              <div className="p-3 rounded-lg" style={{
-                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-              }}>
-                <Clock className="h-6 w-6" style={{
-                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-                }} />
+          {(isAdmin() || hasPermission("view_shifts")) && (
+            <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+              background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                transform: 'translate(40%, -40%)'
+              }}></div>
+              <div className="flex items-center justify-between relative z-10">
+                <div className="min-w-0 flex-1">
+                  <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Shifts</p>
+                  <p className="text-2xl font-bold text-gray-900">{shifts.length}</p>
+                  <p className="text-gray-400 text-xs mt-1">Configured shifts</p>
+                </div>
+                <div className="p-3 rounded-lg" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <Clock className="h-6 w-6" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
-            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-          }}>
-            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
-              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-              transform: 'translate(40%, -40%)'
-            }}></div>
-            <div className="flex items-center justify-between relative z-10">
-              <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Active Shifts</p>
-                <p className="text-2xl font-bold text-gray-900">{shifts.filter(s => s.is_active !== false).length}</p>
-                <p className="text-gray-400 text-xs mt-1">Currently enabled</p>
-              </div>
-              <div className="p-3 rounded-lg" style={{
-                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-              }}>
-                <Settings className="h-6 w-6" style={{
-                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-                }} />
+          {(isAdmin() || hasPermission("view_shifts")) && (
+            <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+              background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                transform: 'translate(40%, -40%)'
+              }}></div>
+              <div className="flex items-center justify-between relative z-10">
+                <div className="min-w-0 flex-1">
+                  <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Active Shifts</p>
+                  <p className="text-2xl font-bold text-gray-900">{shifts.filter(s => s.is_active !== false).length}</p>
+                  <p className="text-gray-400 text-xs mt-1">Currently enabled</p>
+                </div>
+                <div className="p-3 rounded-lg" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <Settings className="h-6 w-6" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
-            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-          }}>
-            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
-              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-              transform: 'translate(40%, -40%)'
-            }}></div>
-            <div className="flex items-center justify-between relative z-10">
-              <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Employees</p>
-                <p className="text-2xl font-bold text-gray-900">{allocatedUsers.length}</p>
-                <p className="text-gray-400 text-xs mt-1">In roster</p>
-              </div>
-              <div className="p-3 rounded-lg" style={{
-                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-              }}>
-                <Users className="h-6 w-6" style={{
-                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-                }} />
+          {(isAdmin() || hasPermission("view_roster") || hasPermission("view_employees")) && (
+            <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+              background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                transform: 'translate(40%, -40%)'
+              }}></div>
+              <div className="flex items-center justify-between relative z-10">
+                <div className="min-w-0 flex-1">
+                  <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Employees</p>
+                  <p className="text-2xl font-bold text-gray-900">{allocatedUsers.length}</p>
+                  <p className="text-gray-400 text-xs mt-1">In roster</p>
+                </div>
+                <div className="p-3 rounded-lg" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <Users className="h-6 w-6" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
-            background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-          }}>
-            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
-              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-              transform: 'translate(40%, -40%)'
-            }}></div>
-            <div className="flex items-center justify-between relative z-10">
-              <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">On-Call Duties</p>
-                <p className="text-2xl font-bold text-gray-900">{onCallDuties.length}</p>
-                <p className="text-gray-400 text-xs mt-1">Scheduled</p>
-              </div>
-              <div className="p-3 rounded-lg" style={{
-                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-              }}>
-                <Phone className="h-6 w-6" style={{
-                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-                }} />
+          {(isAdmin() || hasPermission("manage_on_call_duty") || hasPermission("view_roster")) && (
+            <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
+              background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                transform: 'translate(40%, -40%)'
+              }}></div>
+              <div className="flex items-center justify-between relative z-10">
+                <div className="min-w-0 flex-1">
+                  <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">On-Call Duties</p>
+                  <p className="text-2xl font-bold text-gray-900">{onCallDuties.length}</p>
+                  <p className="text-gray-400 text-xs mt-1">Scheduled</p>
+                </div>
+                <div className="p-3 rounded-lg" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <Phone className="h-6 w-6" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Shift Management Actions */}

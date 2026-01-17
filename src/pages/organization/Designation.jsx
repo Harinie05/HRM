@@ -107,18 +107,7 @@ export default function DesignationList() {
   };
 
   return (
-    <div className="bg-white rounded-xl p-5 shadow-sm overflow-hidden relative border" style={{
-      background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-      borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-    }}>
-      <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
-        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-        transform: 'translate(40%, -40%)'
-      }}></div>
-      <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
-        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-        transform: 'translate(-40%, 40%)'
-      }}></div>
+    <>
       {/* Header */}
       <div className="p-5 border-b-0 relative z-10">
         <div className="flex items-center justify-between">
@@ -269,7 +258,9 @@ export default function DesignationList() {
                   transform: 'translate(30%, -30%)'
                 }}></div>
                 <div className="flex items-start justify-between mb-4 relative z-10">
-                  <div className={`w-12 h-12 ${getRoleColor(role.level)} rounded-lg flex items-center justify-center text-white shadow-sm`}>
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center text-white shadow-sm" style={{
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}>
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
@@ -284,9 +275,6 @@ export default function DesignationList() {
                 </div>
                 
                 <div className="flex items-center justify-between">
-                  <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium text-white ${getRoleColor(role.level)}`}>
-                    {getRoleLabel(role.level)}
-                  </span>
                   <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                     {role.permissions ? role.permissions.length : 0} permissions
                   </span>
@@ -297,6 +285,6 @@ export default function DesignationList() {
         )}
       </div>
       <Toast toast={toast} hideToast={hideToast} />
-    </div>
+    </>
   );
 }

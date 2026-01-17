@@ -425,7 +425,11 @@ def create_offer_and_onboarding(candidate, job, db):
 def get_organization_name(db: Session) -> str:
     """Get organization name from branding table"""
     org_branding = db.query(OrganizationBranding).first()
-    return org_branding.organization_name if org_branding else "Company"
+    if org_branding is not None:
+        org_name = getattr(org_branding, 'organization_name', None)
+        if org_name is not None and str(org_name).strip():
+            return str(org_name)
+    return "Company"
 
 def send_round_notification_email(candidate, job, action, db, next_round=None, interview_date=None, interview_time=None):
     """Send email notification for round progression"""

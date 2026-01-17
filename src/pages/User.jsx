@@ -224,18 +224,20 @@ export default function Users() {
         </div>
 
         {/* Key Performance Indicators matching Dashboard */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Users</p>
-                <p className="text-2xl font-bold text-gray-900">{users.length}</p>
-                <p className="text-gray-400 text-xs mt-1">System accounts</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Total Users</p>
+                <p className="text-xl font-bold text-gray-900">{users.length}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-xs font-semibold text-gray-400">System accounts</span>
+                </div>
               </div>
-              <div className="p-3 rounded-lg" style={{
+              <div className="p-2 rounded" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
                 <svg className="h-6 w-6" style={{
@@ -247,20 +249,22 @@ export default function Users() {
             </div>
           </div>
 
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Active Users</p>
-                <p className="text-2xl font-bold text-gray-900">{users.filter(u => u.status === 'Active').length}</p>
-                <p className="text-gray-400 text-xs mt-1">Currently enabled</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Active Users</p>
+                <p className="text-xl font-bold text-gray-900">{users.filter(u => u.status === 'Active').length}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-xs font-semibold text-gray-400">Currently enabled</span>
+                </div>
               </div>
-              <div className="p-3 rounded-lg" style={{
+              <div className="p-2 rounded" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <svg className="h-6 w-6" style={{
+                <svg className="h-4 w-4" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -269,20 +273,22 @@ export default function Users() {
             </div>
           </div>
 
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Filtered Results</p>
-                <p className="text-2xl font-bold text-gray-900">{filteredUsers.length}</p>
-                <p className="text-gray-400 text-xs mt-1">Currently showing</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Filtered Results</p>
+                <p className="text-xl font-bold text-gray-900">{filteredUsers.length}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-xs font-semibold text-gray-400">Currently showing</span>
+                </div>
               </div>
-              <div className="p-3 rounded-lg" style={{
+              <div className="p-2 rounded" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <svg className="h-6 w-6" style={{
+                <svg className="h-4 w-4" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -291,20 +297,22 @@ export default function Users() {
             </div>
           </div>
 
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
+          <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
             borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">With Roles</p>
-                <p className="text-2xl font-bold text-gray-900">{users.filter(u => u.role && u.role.trim() !== '').length}</p>
-                <p className="text-gray-400 text-xs mt-1">Role assigned</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">With Roles</p>
+                <p className="text-xl font-bold text-gray-900">{users.filter(u => u.role && u.role.trim() !== '').length}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-xs font-semibold text-gray-400">Role assigned</span>
+                </div>
               </div>
-              <div className="p-3 rounded-lg" style={{
+              <div className="p-2 rounded" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <svg className="h-6 w-6" style={{
+                <svg className="h-4 w-4" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -323,7 +331,7 @@ export default function Users() {
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
             transform: 'translate(30%, -30%)'
           }}></div>
-          <div className="p-5 border-b-0 relative z-10">
+          <div className="px-4 pt-6 border-b-0 relative z-10">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg" style={{

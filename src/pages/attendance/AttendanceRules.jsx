@@ -193,117 +193,125 @@ export default function AttendanceRules() {
 
         {/* Key Performance Indicators matching Dashboard */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border relative overflow-hidden" style={{
-            background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-            borderColor: `${colors.primary}20`
-          }}>
-            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
-              backgroundColor: colors.primary,
-              transform: 'translate(40%, -40%)'
-            }}></div>
-            <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
-              backgroundColor: colors.primary,
-              transform: 'translate(-40%, 40%)'
-            }}></div>
-            <div className="flex items-center justify-between relative z-10">
-              <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Rules</p>
-                <p className="text-2xl font-bold text-gray-900">{rules.length}</p>
-                <p className="text-gray-400 text-xs mt-1">Attendance policies</p>
-              </div>
-              <div className="p-3 rounded-lg" style={{
-                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-              }}>
-                <FiSettings className="h-6 w-6" style={{
-                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-                }} />
+          {(isAdmin() || hasPermission("view_attendance_rules")) && (
+            <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border relative overflow-hidden" style={{
+              background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+              borderColor: `${colors.primary}20`
+            }}>
+              <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+                backgroundColor: colors.primary,
+                transform: 'translate(40%, -40%)'
+              }}></div>
+              <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+                backgroundColor: colors.primary,
+                transform: 'translate(-40%, 40%)'
+              }}></div>
+              <div className="flex items-center justify-between relative z-10">
+                <div className="min-w-0 flex-1">
+                  <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Rules</p>
+                  <p className="text-2xl font-bold text-gray-900">{rules.length}</p>
+                  <p className="text-gray-400 text-xs mt-1">Attendance policies</p>
+                </div>
+                <div className="p-3 rounded-lg" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiSettings className="h-6 w-6" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border relative overflow-hidden" style={{
-            background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-            borderColor: `${colors.primary}20`
-          }}>
-            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
-              backgroundColor: colors.primary,
-              transform: 'translate(40%, -40%)'
-            }}></div>
-            <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
-              backgroundColor: colors.primary,
-              transform: 'translate(-40%, 40%)'
-            }}></div>
-            <div className="flex items-center justify-between relative z-10">
-              <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Active Rules</p>
-                <p className="text-2xl font-bold text-gray-900">{rules.filter(r => r.is_active).length}</p>
-                <p className="text-gray-400 text-xs mt-1">Currently enabled</p>
-              </div>
-              <div className="p-3 rounded-lg" style={{
-                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-              }}>
-                <FiToggleRight className="h-6 w-6" style={{
-                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-                }} />
+          {(isAdmin() || hasPermission("view_attendance_rules")) && (
+            <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border relative overflow-hidden" style={{
+              background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+              borderColor: `${colors.primary}20`
+            }}>
+              <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+                backgroundColor: colors.primary,
+                transform: 'translate(40%, -40%)'
+              }}></div>
+              <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+                backgroundColor: colors.primary,
+                transform: 'translate(-40%, 40%)'
+              }}></div>
+              <div className="flex items-center justify-between relative z-10">
+                <div className="min-w-0 flex-1">
+                  <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Active Rules</p>
+                  <p className="text-2xl font-bold text-gray-900">{rules.filter(r => r.is_active).length}</p>
+                  <p className="text-gray-400 text-xs mt-1">Currently enabled</p>
+                </div>
+                <div className="p-3 rounded-lg" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiToggleRight className="h-6 w-6" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border relative overflow-hidden" style={{
-            background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-            borderColor: `${colors.primary}20`
-          }}>
-            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
-              backgroundColor: colors.primary,
-              transform: 'translate(40%, -40%)'
-            }}></div>
-            <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
-              backgroundColor: colors.primary,
-              transform: 'translate(-40%, 40%)'
-            }}></div>
-            <div className="flex items-center justify-between relative z-10">
-              <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Locations</p>
-                <p className="text-2xl font-bold text-gray-900">{locations.length}</p>
-                <p className="text-gray-400 text-xs mt-1">Configured sites</p>
-              </div>
-              <div className="p-3 rounded-lg" style={{
-                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-              }}>
-                <FiMapPin className="h-6 w-6" style={{
-                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-                }} />
+          {(isAdmin() || hasPermission("view_attendance_locations")) && (
+            <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border relative overflow-hidden" style={{
+              background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+              borderColor: `${colors.primary}20`
+            }}>
+              <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+                backgroundColor: colors.primary,
+                transform: 'translate(40%, -40%)'
+              }}></div>
+              <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+                backgroundColor: colors.primary,
+                transform: 'translate(-40%, 40%)'
+              }}></div>
+              <div className="flex items-center justify-between relative z-10">
+                <div className="min-w-0 flex-1">
+                  <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Locations</p>
+                  <p className="text-2xl font-bold text-gray-900">{locations.length}</p>
+                  <p className="text-gray-400 text-xs mt-1">Configured sites</p>
+                </div>
+                <div className="p-3 rounded-lg" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiMapPin className="h-6 w-6" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
-          <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border relative overflow-hidden" style={{
-            background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
-            borderColor: `${colors.primary}20`
-          }}>
-            <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
-              backgroundColor: colors.primary,
-              transform: 'translate(40%, -40%)'
-            }}></div>
-            <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
-              backgroundColor: colors.primary,
-              transform: 'translate(-40%, 40%)'
-            }}></div>
-            <div className="flex items-center justify-between relative z-10">
-              <div className="min-w-0 flex-1">
-                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Grace Time</p>
-                <p className="text-2xl font-bold text-gray-900">{locations.length > 0 ? Math.max(...locations.map(l => l.grace_time || 0)) : 0}</p>
-                <p className="text-gray-400 text-xs mt-1">Max minutes</p>
-              </div>
-              <div className="p-3 rounded-lg" style={{
-                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-              }}>
-                <FiClock className="h-6 w-6" style={{
-                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-                }} />
+          {(isAdmin() || hasPermission("view_attendance_locations")) && (
+            <div className="rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border relative overflow-hidden" style={{
+              background: `linear-gradient(135deg, white 0%, ${colors.primary}05 100%)`,
+              borderColor: `${colors.primary}20`
+            }}>
+              <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+                backgroundColor: colors.primary,
+                transform: 'translate(40%, -40%)'
+              }}></div>
+              <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full blur-3xl opacity-20" style={{
+                backgroundColor: colors.primary,
+                transform: 'translate(-40%, 40%)'
+              }}></div>
+              <div className="flex items-center justify-between relative z-10">
+                <div className="min-w-0 flex-1">
+                  <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Grace Time</p>
+                  <p className="text-2xl font-bold text-gray-900">{locations.length > 0 ? Math.max(...locations.map(l => l.grace_time || 0)) : 0}</p>
+                  <p className="text-gray-400 text-xs mt-1">Max minutes</p>
+                </div>
+                <div className="p-3 rounded-lg" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiClock className="h-6 w-6" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
