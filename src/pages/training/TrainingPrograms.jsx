@@ -379,6 +379,7 @@ export default function TrainingPrograms() {
                                           ...prev,
                                           [program.id]: applicationLink
                                         }));
+                                        setOpenLinkMenu(null);
                                         showToast("Application link generated!", "success");
                                       }}
                                     >
@@ -408,19 +409,31 @@ export default function TrainingPrograms() {
                             )}
                           </div>
                           {generatedLinks[program.id] && (
-                            <div className="mt-2">
-                              <label className="text-xs text-gray-600 font-medium">Application Link:</label>
-                              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
-                                type="text"
-                                value={generatedLinks[program.id]}
-                                readOnly
-                                className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none cursor-pointer"
-                                onClick={(e) => {
-                                  e.target.select();
-                                  navigator.clipboard.writeText(e.target.value);
-                                  showToast("Link copied to clipboard!", "success");
-                                }}
-                              />
+                            <div className="mt-2 max-w-xs">
+                              <label className="text-xs text-gray-600 font-medium block mb-1">Application Link:</label>
+                              <div className="flex items-center gap-2">
+                                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
+                                  type="text"
+                                  value={generatedLinks[program.id]}
+                                  readOnly
+                                  className="flex-1 text-xs border p-2 rounded bg-gray-50 focus:outline-none cursor-pointer truncate"
+                                  onClick={(e) => {
+                                    e.target.select();
+                                    navigator.clipboard.writeText(e.target.value);
+                                    showToast("Link copied to clipboard!", "success");
+                                  }}
+                                />
+                                <button
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(generatedLinks[program.id]);
+                                    showToast("Link copied to clipboard!", "success");
+                                  }}
+                                  className="p-1 text-gray-500 hover:text-gray-700 text-xs"
+                                  title="Copy link"
+                                >
+                                  📋
+                                </button>
+                              </div>
                             </div>
                           )}
                         </td>

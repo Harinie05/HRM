@@ -410,12 +410,16 @@ This certificate is issued upon request for official purposes."""
 # 6. UPDATE EMAIL STATUS
 # -------------------------------------------------------------------------
 @router.put("/experience-letter/{letter_id}/email")
-def update_email_status(letter_id: int, email_to: str, request: Request, user=Depends(require_permission("email_settlement_docs"))):
+def update_email_status(letter_id: int, data: dict, request: Request, user=Depends(require_permission("email_settlement_docs"))):
     db = get_tenant_session(user)
     
     letter = db.query(ExperienceLetter).filter(ExperienceLetter.id == letter_id).first()
     if not letter:
         raise HTTPException(404, "Experience letter not found")
+    
+    email_to = data.get("email_to")
+    if not email_to:
+        raise HTTPException(400, "email_to is required")
     
     old_values = {"email_sent": letter.email_sent, "email_sent_to": letter.email_sent_to}
     setattr(letter, 'email_sent', True)

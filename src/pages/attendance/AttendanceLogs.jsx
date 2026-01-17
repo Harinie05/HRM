@@ -1577,9 +1577,15 @@ export default function AttendanceLogs() {
                       <button
                         onClick={handleRegularizationSubmit}
                         className="w-full py-2 sm:py-3 text-white rounded-lg font-medium transition-colors text-sm sm:text-base"
-                        style={{ backgroundColor: colors.primary }}
-                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
-                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
+                        style={{
+                          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                        }}
                       >
                         Submit Request
                       </button>
@@ -1616,9 +1622,15 @@ export default function AttendanceLogs() {
                               <button
                                 onClick={() => handleApprove(request.id)}
                                 className="px-3 sm:px-4 py-2 text-white rounded-lg text-xs sm:text-sm font-medium transition-colors"
-                                style={{ backgroundColor: colors.primary }}
-                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
-                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
+                                style={{
+                                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                                }}
                               >
                                 Approve
                               </button>
@@ -1770,7 +1782,16 @@ export default function AttendanceLogs() {
                       </div>
                       <button
                         onClick={handleOdSubmit}
-                        className="w-full py-2 sm:py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors text-sm sm:text-base"
+                        className="w-full py-2 sm:py-3 text-white rounded-lg font-medium transition-colors text-sm sm:text-base"
+                        style={{
+                          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                        }}
                       >
                         Submit Application
                       </button>

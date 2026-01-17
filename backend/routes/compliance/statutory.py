@@ -53,17 +53,21 @@ def calculate_statutory(data: StatutoryDeductionRequest, request: Request, db: S
         if employee_id is None:
             raise HTTPException(status_code=404, detail=f"Employee with code {data.employee_id} not found")
         
-        record = EmployeeStatutory(
-            employee_id=employee_id,
-            month=month,
-            year=year,
-            basic_salary=data.basic_salary,
-            pf_employee=pf_employee,
-            pf_employer=pf_employer,
-            esi_employee=esi_employee,
-            esi_employer=esi_employer,
-            professional_tax=pt_amount
-        )
+        # Create record with all fields including employee_name
+        record_data = {
+            'employee_id': employee_id,
+            'employee_name': data.employee_name,
+            'month': month,
+            'year': year,
+            'basic_salary': data.basic_salary,
+            'pf_employee': pf_employee,
+            'pf_employer': pf_employer,
+            'esi_employee': esi_employee,
+            'esi_employer': esi_employer,
+            'professional_tax': pt_amount
+        }
+        
+        record = EmployeeStatutory(**record_data)
         
         db.add(record)
         db.commit()
@@ -87,6 +91,9 @@ def calculate_statutory(data: StatutoryDeductionRequest, request: Request, db: S
         }
         
     except Exception as e:
+        import traceback
+        print(f"Error in calculate_statutory: {str(e)}")
+        print(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.get("/")
@@ -102,10 +109,21 @@ def get_statutory_calculations(request: Request, db: Session = Depends(get_tenan
             if not user:
                 user = db.query(User).filter(User.employee_code == str(record.employee_id)).first()
             
+            # Get employee name and ID properly - prioritize stored name
+            if hasattr(record, 'employee_name') and record.employee_name:
+                employee_name = record.employee_name
+                employee_id = user.employee_code if user and user.employee_code else str(record.employee_id)
+            elif user and user.name:
+                employee_name = user.name
+                employee_id = user.employee_code if user.employee_code else str(record.employee_id)
+            else:
+                employee_name = f"Employee {record.employee_id}"
+                employee_id = str(record.employee_id)
+            
             result.append({
                 "id": record.id,
-                "employee_id": user.employee_code if user is not None and user.employee_code is not None else str(record.employee_id),
-                "employee_name": user.name if user else f"Employee {record.employee_id}",
+                "employee_id": employee_id,
+                "employee_name": employee_name,
                 "basic_salary": record.basic_salary,
                 "pf_amount": record.pf_employee,
                 "esi_amount": record.esi_employee,
@@ -150,6 +168,13 @@ def update_statutory_calculation(record_id: int, data: StatutoryDeductionRequest
         setattr(record, 'professional_tax', pt_amount)
         setattr(record, 'month', data.month or record.month)
         setattr(record, 'year', data.year or record.year)
+        
+        # Try to update employee_name if the column exists
+        try:
+            setattr(record, 'employee_name', data.employee_name)
+        except AttributeError:
+            # Column doesn't exist in this tenant database
+            pass
         
         db.commit()
         
@@ -196,10 +221,21 @@ def get_deleted_statutory_calculations(request: Request, db: Session = Depends(g
             if not user_record:
                 user_record = db.query(User).filter(User.employee_code == str(record.employee_id)).first()
             
+            # Get employee name and ID properly - prioritize stored name
+            if hasattr(record, 'employee_name') and record.employee_name:
+                employee_name = record.employee_name
+                employee_id = user_record.employee_code if user_record and user_record.employee_code else str(record.employee_id)
+            elif user_record and user_record.name:
+                employee_name = user_record.name
+                employee_id = user_record.employee_code if user_record.employee_code else str(record.employee_id)
+            else:
+                employee_name = f"Employee {record.employee_id}"
+                employee_id = str(record.employee_id)
+            
             result.append({
                 "id": record.id,
-                "employee_id": user_record.employee_code if user_record is not None and user_record.employee_code is not None else str(record.employee_id),
-                "employee_name": user_record.name if user_record else f"Employee {record.employee_id}",
+                "employee_id": employee_id,
+                "employee_name": employee_name,
                 "basic_salary": record.basic_salary,
                 "pf_amount": record.pf_employee,
                 "esi_amount": record.esi_employee,

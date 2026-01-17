@@ -35,6 +35,7 @@ export default function WorkAssignments() {
   const [myAssignments, setMyAssignments] = useState([]);
   const [reviewCycles, setReviewCycles] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [selectedAssignment, setSelectedAssignment] = useState(null);
@@ -145,13 +146,24 @@ export default function WorkAssignments() {
       userEmployeeData.forEach(userEmp => {
         const existingIndex = allEmployees.findIndex(emp => emp.employee_code === userEmp.employee_code);
         if (existingIndex === -1) {
+          // Add prefix to user IDs to avoid conflicts with onboarding IDs
+          userEmp.id = `user_${userEmp.id}`;
           allEmployees.push(userEmp);
-        } else {
-          allEmployees[existingIndex] = userEmp;
         }
       });
       
-      return { data: allEmployees };
+      // Remove duplicates using Set
+      const seen = new Set();
+      const uniqueEmployees = allEmployees.filter(emp => {
+        const key = emp.employee_code;
+        if (seen.has(key)) {
+          return false;
+        }
+        seen.add(key);
+        return true;
+      });
+      
+      return { data: uniqueEmployees };
     } catch (error) {
       console.error("Error fetching employees:", error);
       return { data: [] };
@@ -173,7 +185,9 @@ export default function WorkAssignments() {
 
       // Handle assignments
       if (results[0].status === 'fulfilled') {
-        setAssignments(results[0].value.data.data || []);
+        const assignmentsData = results[0].value.data.data || [];
+        console.log("Assignments data:", assignmentsData);
+        setAssignments(assignmentsData);
       } else {
         console.error("Error fetching assignments:", results[0].reason);
       }
@@ -204,6 +218,7 @@ export default function WorkAssignments() {
       if (results[3].status === 'fulfilled') {
         const employeesData = results[3].value.data || [];
         console.log("Processed employees data:", employeesData);
+        console.log("Employee IDs:", employeesData.map(emp => emp.id));
         setEmployees(employeesData);
       } else {
         console.error("Error fetching employees:", results[3].reason);
@@ -226,7 +241,27 @@ export default function WorkAssignments() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post("/api/pms/work-assignments/assignments", formData);
+      console.log("Form data:", formData);
+      console.log("Available employees:", employees);
+      
+      // Find selected employee details from dropdown
+      const selectedEmployee = employees.find(emp => emp.id.toString() === formData.assigned_employee_id);
+      console.log("Selected employee:", selectedEmployee);
+      
+      if (!selectedEmployee) {
+        showToast('Please select an employee', 'error');
+        return;
+      }
+      
+      const assignmentData = {
+        ...formData,
+        employee_name: selectedEmployee.name,
+        employee_code: selectedEmployee.employee_code
+      };
+      
+      console.log("Sending assignment data:", assignmentData);
+      
+      await api.post("/api/pms/work-assignments/assignments", assignmentData);
       setShowModal(false);
       setFormData({
         title: "",
@@ -500,7 +535,25 @@ export default function WorkAssignments() {
           transform: 'translate(-40%, 40%)'
         }} />
         <div className="relative z-10">
-        <h3 className="text-lg font-semibold mb-4">All Assignments</h3>
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
+          <h3 className="text-lg font-semibold">All Assignments</h3>
+          <select
+            value={selectedEmployeeId}
+            onChange={(e) => setSelectedEmployeeId(e.target.value)}
+            className="px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+            }}
+          >
+            <option value="">All Employees</option>
+            {Array.isArray(employees) && employees.map(emp => (
+              <option key={emp.id} value={emp.id}>
+                {emp.name} ({emp.employee_code || `EMP${emp.id}`})
+              </option>
+            ))}
+          </select>
+        </div>
         
         {/* Desktop Table View */}
         <div className="hidden md:block overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
@@ -518,7 +571,9 @@ export default function WorkAssignments() {
               </tr>
             </thead>
             <tbody>
-              {assignments.map((assignment) => (
+              {assignments.filter(assignment => 
+                !selectedEmployeeId || assignment.assigned_employee_id.toString() === selectedEmployeeId
+              ).map((assignment) => (
                 <tr key={assignment.id} className="-b">
                   <td className="p-2">{assignment.title}</td>
                   <td className="p-2">{assignment.employee_name}</td>
@@ -564,10 +619,14 @@ export default function WorkAssignments() {
 
         {/* Mobile Card View */}
         <div className="md:hidden space-y-4">
-          {assignments.length === 0 ? (
+          {assignments.filter(assignment => 
+            !selectedEmployeeId || assignment.assigned_employee_id.toString() === selectedEmployeeId
+          ).length === 0 ? (
             <p className="text-gray-500 text-center py-4">No assignments found</p>
           ) : (
-            assignments.map((assignment) => (
+            assignments.filter(assignment => 
+              !selectedEmployeeId || assignment.assigned_employee_id.toString() === selectedEmployeeId
+            ).map((assignment) => (
               <div key={assignment.id} className=" border-gray-200 rounded-lg p-4">
                 <div className="mb-3">
                   <h4 className="font-medium text-gray-900">{assignment.title}</h4>
@@ -682,11 +741,14 @@ export default function WorkAssignments() {
                 required
               >
                 <option value="">Select Employee</option>
-                {Array.isArray(employees) && employees.map(emp => (
-                  <option key={emp.id} value={emp.id}>
-                    {emp.employee_code || `EMP${emp.id}`} - {emp.name}
-                  </option>
-                ))}
+                {Array.isArray(employees) && employees.map(emp => {
+                  console.log("Employee dropdown option:", emp);
+                  return (
+                    <option key={`emp_${emp.id}_${emp.employee_code}`} value={emp.id}>
+                      {emp.employee_code || `EMP${emp.id}`} - {emp.name}
+                    </option>
+                  );
+                })}
               </select>
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <button type="submit" className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">

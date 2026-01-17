@@ -121,11 +121,12 @@ export default function Appraisal() {
       }));
       
       const userEmployeeData = userEmployees
+        .filter(user => user.employee_code && user.employee_code.trim() !== '')
         .map(user => ({
           id: `user_${user.id}`,
           name: user.name,
-          employee_code: user.employee_code || `USER_${user.id}`,
-          email: user.email || `${user.employee_code || `user${user.id}`}@company.com`,
+          employee_code: user.employee_code,
+          email: user.email || `${user.employee_code}@company.com`,
           source: 'user_management'
         }));
       

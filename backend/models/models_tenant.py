@@ -1303,6 +1303,8 @@ class WorkAssignment(MasterBase):
     frequency = Column(String(50), nullable=False)  # Daily/Weekly/Monthly/One-time
     review_cycle_id = Column(Integer, ForeignKey("pms_reviews.id"), nullable=False)
     assigned_employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    employee_name = Column(String(255), nullable=True)  # Store employee name
+    employee_code = Column(String(100), nullable=True)  # Store employee code
     status = Column(String(50), default="Active")  # Active/Inactive
     is_active = Column(Boolean, default=True)
     deleted_at = Column(DateTime, nullable=True)
@@ -1557,6 +1559,7 @@ class EmployeeStatutory(MasterBase):
 
     id = Column(Integer, primary_key=True, index=True)
     employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    employee_name = Column(String(150), nullable=True)  # Store employee name
 
     month = Column(String(20), nullable=False)
     year = Column(Integer, nullable=False)
@@ -1585,6 +1588,7 @@ class LabourLawRegister(MasterBase):
 
     id = Column(Integer, primary_key=True, index=True)
     employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    employee_name = Column(String(150), nullable=True)  # Store employee name
 
     register_type = Column(String(100), nullable=False)
     # Muster Roll / Wage Register / OT Register

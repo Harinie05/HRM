@@ -87,7 +87,7 @@ export default function EmployeeListPage() {
         const onboardedData = onboardedEmployees.map(emp => ({
           id: emp.application_id,
           name: emp.candidate_name,
-          email: 'N/A', // onboarding doesn't have email
+          email: emp.candidate_email || 'N/A',
           designation: emp.job_title,
           department: emp.department,
           employee_code: emp.employee_id,

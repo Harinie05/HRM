@@ -262,7 +262,7 @@ export default function EmployeeExperience() {
         {/* Experience Table */}
         <div className="bg-white rounded-xl shadow-sm overflow-hidden border relative" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -487,11 +487,17 @@ export default function EmployeeExperience() {
               msOverflowStyle: 'none',
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
-              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
             }}>
               <div className="flex items-center gap-3 mb-6">
-                <FiBriefcase className="text-black text-xl" />
-                <h3 className="text-lg font-semibold text-primary">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiBriefcase className="w-5 h-5" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">
                   {editing ? "Edit Experience" : "Add Experience"}
                 </h3>
               </div>

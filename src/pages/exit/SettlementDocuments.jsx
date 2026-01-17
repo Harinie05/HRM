@@ -129,69 +129,116 @@ export default function SettlementDocuments() {
     }
   };
 
-  const calculateSettlement = (employee, resignationData) => {
-    // Mock employee salary data (in real system, fetch from payroll/employee master)
-    const mockEmployeeData = {
-      basic_salary: 30000,
-      hra: 12000,
-      allowances: 8000,
-      joining_date: '2022-01-15',
-      unused_leave_days: 12,
-      advance_taken: 5000,
-      loan_balance: 0
-    };
-    
-    const { basic_salary, hra, allowances, unused_leave_days, advance_taken, loan_balance } = mockEmployeeData;
-    const monthly_gross = basic_salary + hra + allowances;
-    
-    // Calculate working days in notice period
-    const resignationDate = new Date(resignationData.resignation_date);
-    const lastWorkingDate = new Date(resignationData.last_working_day);
-    const noticeDays = Math.ceil((lastWorkingDate - resignationDate) / (1000 * 60 * 60 * 24));
-    const workingDaysInMonth = 26; // Standard working days
-    
-    // EARNINGS CALCULATION
-    const pendingSalary = (monthly_gross / workingDaysInMonth) * Math.min(noticeDays, workingDaysInMonth);
-    const leaveEncashment = (basic_salary / workingDaysInMonth) * unused_leave_days;
-    const bonus = monthly_gross * 0.1; // 10% bonus
-    
-    const totalEarnings = pendingSalary + leaveEncashment + bonus;
-    
-    // DEDUCTIONS CALCULATION
-    const tds = totalEarnings * 0.1; // 10% TDS
-    const pf = basic_salary * 0.12; // 12% PF
-    const professionalTax = 200;
-    const advanceRecovery = advance_taken;
-    const loanRecovery = loan_balance;
-    
-    const totalDeductions = tds + pf + professionalTax + advanceRecovery + loanRecovery;
-    
-    const netPayable = totalEarnings - totalDeductions;
-    
-    return {
-      breakdown: {
-        // Earnings
-        pending_salary: Math.round(pendingSalary),
-        leave_encashment: Math.round(leaveEncashment),
-        bonus: Math.round(bonus),
-        // Deductions
-        tds: Math.round(tds),
-        pf: Math.round(pf),
-        professional_tax: professionalTax,
-        advance_recovery: advanceRecovery,
-        loan_recovery: loanRecovery
-      },
-      totals: {
-        gross_amount: Math.round(totalEarnings),
-        total_deductions: Math.round(totalDeductions),
-        net_payable: Math.round(netPayable)
-      }
-    };
+  const calculateSettlement = async (employee, resignationData) => {
+    try {
+      // Fetch real employee data from backend
+      const empResponse = await api.get(`/api/employees/${resignationData.employee_id}`);
+      const leaveResponse = await api.get(`/api/leave/balance/${resignationData.employee_id}`);
+      const advanceResponse = await api.get(`/api/finance/advances/${resignationData.employee_id}`);
+      
+      const employeeData = {
+        basic_salary: empResponse.data.basic_salary || 30000,
+        hra: empResponse.data.hra || empResponse.data.basic_salary * 0.4 || 12000,
+        allowances: empResponse.data.allowances || empResponse.data.basic_salary * 0.27 || 8000,
+        joining_date: empResponse.data.joining_date || '2022-01-15',
+        unused_leave_days: leaveResponse.data.unused_days || 12,
+        advance_taken: advanceResponse.data.pending_amount || 0,
+        loan_balance: advanceResponse.data.loan_balance || 0
+      };
+      
+      const { basic_salary, hra, allowances, unused_leave_days, advance_taken, loan_balance } = employeeData;
+      const monthly_gross = basic_salary + hra + allowances;
+      
+      // Calculate working days in notice period
+      const resignationDate = new Date(resignationData.resignation_date);
+      const lastWorkingDate = new Date(resignationData.last_working_day || new Date());
+      const noticeDays = Math.max(0, Math.ceil((lastWorkingDate - resignationDate) / (1000 * 60 * 60 * 24)));
+      const workingDaysInMonth = 26; // Standard working days
+      
+      // EARNINGS CALCULATION - Use positive values
+      const pendingSalary = Math.max(0, (monthly_gross / workingDaysInMonth) * Math.min(noticeDays, workingDaysInMonth));
+      const leaveEncashment = Math.max(0, (basic_salary / workingDaysInMonth) * unused_leave_days);
+      const bonus = Math.max(0, monthly_gross * 0.1); // 10% bonus
+      
+      const totalEarnings = pendingSalary + leaveEncashment + bonus;
+      
+      // DEDUCTIONS CALCULATION - Use positive values
+      const tds = Math.max(0, totalEarnings * 0.1); // 10% TDS
+      const pf = Math.max(0, basic_salary * 0.12); // 12% PF
+      const professionalTax = 200;
+      const advanceRecovery = Math.max(0, advance_taken);
+      const loanRecovery = Math.max(0, loan_balance);
+      
+      const totalDeductions = tds + pf + professionalTax + advanceRecovery + loanRecovery;
+      
+      const netPayable = totalEarnings - totalDeductions;
+      
+      return {
+        breakdown: {
+          // Earnings
+          pending_salary: Math.round(pendingSalary),
+          leave_encashment: Math.round(leaveEncashment),
+          bonus: Math.round(bonus),
+          // Deductions
+          tds: Math.round(tds),
+          pf: Math.round(pf),
+          professional_tax: professionalTax,
+          advance_recovery: advanceRecovery,
+          loan_recovery: loanRecovery
+        },
+        totals: {
+          gross_amount: Math.round(totalEarnings),
+          total_deductions: Math.round(totalDeductions),
+          net_payable: Math.round(netPayable)
+        }
+      };
+    } catch (error) {
+      console.error('Error fetching employee data:', error);
+      // Fallback to basic calculation if API fails
+      const basic_salary = 30000;
+      const hra = 12000;
+      const allowances = 8000;
+      const monthly_gross = basic_salary + hra + allowances;
+      const unused_leave_days = 12;
+      const advance_taken = 0;
+      
+      const resignationDate = new Date(resignationData.resignation_date);
+      const lastWorkingDate = new Date(resignationData.last_working_day || new Date());
+      const noticeDays = Math.max(0, Math.ceil((lastWorkingDate - resignationDate) / (1000 * 60 * 60 * 24)));
+      const workingDaysInMonth = 26;
+      
+      const pendingSalary = Math.max(0, (monthly_gross / workingDaysInMonth) * Math.min(noticeDays, workingDaysInMonth));
+      const leaveEncashment = Math.max(0, (basic_salary / workingDaysInMonth) * unused_leave_days);
+      const bonus = Math.max(0, monthly_gross * 0.1);
+      const totalEarnings = pendingSalary + leaveEncashment + bonus;
+      
+      const tds = Math.max(0, totalEarnings * 0.1);
+      const pf = Math.max(0, basic_salary * 0.12);
+      const totalDeductions = tds + pf + 200 + advance_taken;
+      
+      return {
+        breakdown: {
+          pending_salary: Math.round(pendingSalary),
+          leave_encashment: Math.round(leaveEncashment),
+          bonus: Math.round(bonus),
+          tds: Math.round(tds),
+          pf: Math.round(pf),
+          professional_tax: 200,
+          advance_recovery: advance_taken,
+          loan_recovery: 0
+        },
+        totals: {
+          gross_amount: Math.round(totalEarnings),
+          total_deductions: Math.round(totalDeductions),
+          net_payable: Math.round(totalEarnings - totalDeductions)
+        }
+      };
+    }
   };
 
   async function handleCalculateSettlement() {
     try {
-      const calculation = calculateSettlement(selectedExit, selectedExit);
+      const calculation = await calculateSettlement(selectedExit, selectedExit);
       
       const settlementData = {
         employee_id: selectedExit.employee_id,
@@ -320,24 +367,32 @@ export default function SettlementDocuments() {
 
   const handleDownloadPDF = async () => {
     try {
-      // Use the new endpoint with proper header
       const response = await api.get(`/api/settlement/experience-letter/${experienceLetter.id}/download`, {
         responseType: 'blob'
       });
       
-      // Create download link
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      // Create blob with correct MIME type
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      
+      // Create and trigger download
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `Experience_Certificate_${experienceLetter.employee_code}.pdf`);
+      link.download = `Experience_Certificate_${experienceLetter.employee_code}.pdf`;
+      link.style.display = 'none';
+      
       document.body.appendChild(link);
       link.click();
-      link.remove();
+      
+      // Cleanup
+      document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
       
+      showToast('PDF downloaded successfully!', 'success');
+      
     } catch (error) {
-      console.error('Error generating PDF:', error);
-      showToast('Failed to generate PDF. Please try again.', 'error');
+      console.error('Error downloading PDF:', error);
+      showToast('Failed to download PDF. Please try again.', 'error');
     }
   };
 
@@ -356,36 +411,46 @@ export default function SettlementDocuments() {
 
   const sendEmail = async () => {
     try {
+      // Get the actual PDF blob from the download endpoint
+      const pdfResponse = await api.get(`/api/settlement/experience-letter/${experienceLetter.id}/download`, {
+        responseType: 'blob'
+      });
+      
+      // Convert blob to base64
+      const reader = new FileReader();
+      const base64Promise = new Promise((resolve) => {
+        reader.onloadend = () => {
+          const base64 = reader.result.split(',')[1]; // Remove data:application/pdf;base64, prefix
+          resolve(base64);
+        };
+        reader.readAsDataURL(pdfResponse.data);
+      });
+      
+      const base64Content = await base64Promise;
+      
+      // Send email with the actual PDF content (not employee_data)
       const emailPayload = {
         to: emailData.to,
         subject: emailData.subject,
         body: emailData.body,
         attachment: {
           filename: `Experience_Certificate_${experienceLetter.employee_code}.pdf`,
-          content: 'base64_pdf_content'
-        },
-        employee_data: {
-          employee_name: experienceLetter.employee_name,
-          employee_code: experienceLetter.employee_code,
-          company_name: experienceLetter.company_name,
-          designation: experienceLetter.designation,
-          department: experienceLetter.department,
-          joining_date: experienceLetter.joining_date,
-          last_working_day: experienceLetter.last_working_day,
-          place: experienceLetter.place || 'Bangalore',
-          issued_by: experienceLetter.issued_by,
-          authorized_signatory: experienceLetter.authorized_signatory || 'HR Manager',
-          issued_date: experienceLetter.issued_date
+          content: base64Content // Real PDF content with header
         }
+        // Remove employee_data to prevent backend from generating new PDF
       };
       
       await api.post('/api/send-email', emailPayload);
       
-      // Update email status in database
-      if (experienceLetter.id) {
-        await api.put(`/api/settlement/experience-letter/${experienceLetter.id}/email`, {
-          email_to: emailData.to
-        });
+      // Try to update email status in database (optional)
+      try {
+        if (experienceLetter.id) {
+          await api.put(`/api/settlement/experience-letter/${experienceLetter.id}/email`, {
+            email_to: emailData.to
+          });
+        }
+      } catch (dbError) {
+        console.log('Database update failed, but email was sent successfully:', dbError);
       }
       
       showToast('Experience certificate sent successfully!', 'success');
@@ -996,6 +1061,64 @@ export default function SettlementDocuments() {
           )}
         </div>
       </div>
+      
+      {/* Email Modal */}
+      {showEmailModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
+            <h3 className="text-lg font-semibold mb-4">Email Experience Certificate</h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">To:</label>
+                <input
+                  type="email"
+                  value={emailData.to}
+                  onChange={(e) => setEmailData({...emailData, to: e.target.value})}
+                  className="w-full border rounded px-3 py-2 text-sm"
+                  placeholder="employee@company.com"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-1">Subject:</label>
+                <input
+                  type="text"
+                  value={emailData.subject}
+                  onChange={(e) => setEmailData({...emailData, subject: e.target.value})}
+                  className="w-full border rounded px-3 py-2 text-sm"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-1">Message:</label>
+                <textarea
+                  value={emailData.body}
+                  onChange={(e) => setEmailData({...emailData, body: e.target.value})}
+                  className="w-full border rounded px-3 py-2 text-sm"
+                  rows="4"
+                />
+              </div>
+            </div>
+            
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={sendEmail}
+                style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                className="flex-1 text-white py-2 rounded text-sm"
+              >
+                Send Email
+              </button>
+              <button
+                onClick={() => setShowEmailModal(false)}
+                className="flex-1 border py-2 rounded text-sm hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <Toast {...toast} />
     </div>
   );

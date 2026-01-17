@@ -783,7 +783,7 @@ export default function Statutory() {
                       <tr key={index} className={`hover:bg-gray-50 transition-colors duration-150 ${showDeleted ? 'bg-red-50' : ''}`}>
                         <td className="px-4 py-3">
                           <div>
-                            <div className="font-semibold text-gray-900">{calc.employee_name}</div>
+                            <div className="font-semibold text-gray-900">{calc.employee_name || 'Unknown Employee'}</div>
                             <div className="text-sm text-gray-600">{calc.employee_id}</div>
                           </div>
                         </td>
@@ -846,7 +846,7 @@ export default function Statutory() {
                   <div key={index} className={`p-4 border-b-0 last:border-b-0 hover:bg-gray-50 transition-colors ${showDeleted ? 'bg-red-50' : ''}`}>
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex-1">
-                        <h4 className="font-medium text-gray-900">{calc.employee_name}</h4>
+                        <h4 className="font-medium text-gray-900">{calc.employee_name || 'Unknown Employee'}</h4>
                         <p className="text-sm text-gray-600">{calc.employee_id}</p>
                       </div>
                       <span className="text-sm font-semibold text-gray-900">₹{calc.total_deductions}</span>

@@ -95,13 +95,21 @@ const OriginalDocumentsModal = ({ isOpen, onClose, employee }) => {
 
   return (
     <>
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-xl border border-black max-w-4xl w-full max-h-[90vh] overflow-hidden">
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden" style={{
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
           {/* Header */}
-          <div className="p-6 border-b border-black flex items-center justify-between">
+          <div className="p-6 border-b flex items-center justify-between" style={{
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gray-100 border border-black rounded-lg flex items-center justify-center">
-                <FiFileText className="w-5 h-5 text-gray-700" />
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiFileText className="w-5 h-5" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-gray-900">Original Documents Collected</h2>
@@ -121,24 +129,47 @@ const OriginalDocumentsModal = ({ isOpen, onClose, employee }) => {
           {/* Content */}
           <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)]" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {/* Add Custom Document */}
-            <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-              <h3 className="text-sm font-medium text-gray-700 mb-3">Add Custom Document Type</h3>
-              <div className="flex gap-3">
-                <input
-                  type="text"
-                  value={newDocumentType}
-                  onChange={(e) => setNewDocumentType(e.target.value)}
-                  placeholder="Enter document type (e.g., Medical Certificate, ID Proof)"
-                  className="flex-1 bg-white text-black border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-black focus:border-black"
-                  onKeyPress={(e) => e.key === 'Enter' && addCustomDocument()}
-                />
-                <button
-                  onClick={addCustomDocument}
-                  className="px-4 py-2 bg-black text-white border border-black rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2"
-                >
-                  <FiPlus size={16} />
-                  Add
-                </button>
+            <div className="mb-6 p-4 rounded-lg relative overflow-hidden" style={{
+              background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+              border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-2xl opacity-10" style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                transform: 'translate(20%, -20%)'
+              }}></div>
+              <div className="relative z-10">
+                <h3 className="text-sm font-medium text-gray-700 mb-3">Add Custom Document Type</h3>
+                <div className="flex gap-3">
+                  <input
+                    type="text"
+                    value={newDocumentType}
+                    onChange={(e) => setNewDocumentType(e.target.value)}
+                    placeholder="Enter document type (e.g., Medical Certificate, ID Proof)"
+                    className="flex-1 px-3 py-2 text-sm rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`,
+                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
+                    onKeyPress={(e) => e.key === 'Enter' && addCustomDocument()}
+                  />
+                  <button
+                    onClick={addCustomDocument}
+                    className="px-4 py-2 text-white rounded-lg transition-colors flex items-center gap-2"
+                    style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    }}
+                  >
+                    <FiPlus size={16} />
+                    Add
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -153,8 +184,15 @@ const OriginalDocumentsModal = ({ isOpen, onClose, employee }) => {
             ) : (
               <div className="space-y-4">
                 {documents.map((doc, index) => (
-                  <div key={doc.id} className="border border-gray-200 rounded-lg p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+                  <div key={doc.id} className="rounded-lg p-4 relative overflow-hidden" style={{
+                    background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
+                    <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-2xl opacity-10" style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                      transform: 'translate(20%, -20%)'
+                    }}></div>
+                    <div className="relative z-10 grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
                       {/* Document Type */}
                       <div className="md:col-span-1">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -184,7 +222,11 @@ const OriginalDocumentsModal = ({ isOpen, onClose, employee }) => {
                             type="checkbox"
                             checked={doc.is_collected}
                             onChange={(e) => handleDocumentChange(index, 'is_collected', e.target.checked)}
-                            className="w-4 h-4 text-black border-gray-300 rounded focus:ring-black"
+                            className="w-4 h-4 rounded focus:outline-none focus:ring-2"
+                            style={{
+                              accentColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                              focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
                           />
                           <span className="ml-2 text-sm text-gray-600">
                             {doc.is_collected ? 'Yes' : 'No'}
@@ -202,7 +244,12 @@ const OriginalDocumentsModal = ({ isOpen, onClose, employee }) => {
                           value={doc.collected_date || ''}
                           onChange={(e) => handleDocumentChange(index, 'collected_date', e.target.value)}
                           disabled={!doc.is_collected}
-                          className="w-full bg-white text-black border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-black focus:border-black disabled:bg-gray-100"
+                          className="w-full px-3 py-2 text-sm rounded-lg focus:outline-none focus:ring-2 focus:border-transparent disabled:opacity-50"
+                          style={{
+                            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`,
+                            focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }}
                         />
                       </div>
                     </div>
@@ -213,17 +260,42 @@ const OriginalDocumentsModal = ({ isOpen, onClose, employee }) => {
           </div>
 
           {/* Footer */}
-          <div className="p-6 border-t border-black flex justify-end gap-3">
+          <div className="p-6 border-t flex justify-end gap-3" style={{
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
             <button
               onClick={onClose}
-              className="px-6 py-2 bg-white text-black border border-black rounded-lg hover:bg-gray-100 transition-colors"
+              className="px-6 py-2 text-gray-700 rounded-lg transition-colors"
+              style={{
+                backgroundColor: 'white',
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}40`
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#f9fafb';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'white';
+              }}
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
               disabled={saving || loading}
-              className="px-6 py-2 bg-black text-white border border-black rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 disabled:opacity-50"
+              className="px-6 py-2 text-white rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
+              style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }}
+              onMouseEnter={(e) => {
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                }
+              }}
             >
               {saving ? (
                 <>

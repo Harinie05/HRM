@@ -134,15 +134,35 @@ export default function AttendancePermission() {
       return;
     }
 
+    // Validate time fields for specific request types
+    if (["SHORT_LEAVE", "LATE_COMING", "EARLY_GOING"].includes(form.request_type)) {
+      if (!form.from_time || !form.to_time) {
+        showToast("Please provide both from and to time", "error");
+        return;
+      }
+    }
+
     try {
       const actualEmployeeId = form.employee_id.toString().startsWith('user_') 
         ? parseInt(form.employee_id.replace('user_', '')) 
         : parseInt(form.employee_id);
       
-      await api.post("/api/attendance/permissions/", {
-        ...form,
-        employee_id: actualEmployeeId
-      });
+      const payload = {
+        employee_id: actualEmployeeId,
+        date: form.date,
+        request_type: form.request_type,
+        reason: form.reason
+      };
+
+      // Only include time fields if they have values
+      if (form.from_time) {
+        payload.from_time = form.from_time;
+      }
+      if (form.to_time) {
+        payload.to_time = form.to_time;
+      }
+      
+      await api.post("/api/attendance/permissions/", payload);
       setForm({ ...form, date: "", reason: "", from_time: "", to_time: "" });
       fetchList();
       showToast("Request submitted");
@@ -484,7 +504,8 @@ export default function AttendancePermission() {
               const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
               e.currentTarget.style.backgroundColor = hoverColor;
             }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+            onMouseLeave={(e) => { 
+              e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
             }}
           >
             <FiShield className="w-4 h-4" />
@@ -542,7 +563,13 @@ export default function AttendancePermission() {
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               {list.map(r => {
-                const employee = employees.find(emp => emp.id == r.employee_id);
+                const employee = employees.find(emp => {
+                  // Handle both direct ID match and user_ prefixed IDs
+                  const empId = emp.id.toString().startsWith('user_') 
+                    ? emp.original_user_id 
+                    : emp.id;
+                  return empId == r.employee_id;
+                });
                 return (
                   <div key={r.id} className="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-300">
                     <div className="flex items-start justify-between mb-3">

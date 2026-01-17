@@ -28,12 +28,11 @@ class LabourRegisterRequest(BaseModel):
 @router.post("/")
 def create_register(data: LabourRegisterRequest, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("add_labour_register"))):
     try:
-        # Find user by employee_code
+        # Find user by employee_code, fallback to creating with raw employee_id
         user_record = db.query(User).filter(User.employee_code == data.employee_id).first()
-        if not user_record and data.employee_id.isdigit():
-            user_record = db.query(User).filter(User.id == int(data.employee_id)).first()
+        employee_id = user_record.id if user_record else int(data.employee_id) if data.employee_id.isdigit() else None
         
-        if not user_record:
+        if employee_id is None:
             raise HTTPException(status_code=404, detail=f"Employee with code {data.employee_id} not found")
         
         # Use current month/year if not provided
@@ -42,7 +41,8 @@ def create_register(data: LabourRegisterRequest, request: Request, db: Session =
         year = data.year or current_date.year
         
         record = LabourLawRegister(
-            employee_id=user_record.id,
+            employee_id=employee_id,
+            employee_name=data.employee_name,
             register_type=data.register_type,
             month=month,
             year=year,
@@ -56,9 +56,21 @@ def create_register(data: LabourRegisterRequest, request: Request, db: Session =
         # Audit log
         audit_crud(request, db, user, "CREATE_LABOUR_REGISTER", "labour_law_registers", str(record.id), {}, data.dict())
         
-        return {"message": "Labour register added successfully"}
+        return {
+            "message": "Labour register added successfully",
+            "data": {
+                "employee_id": data.employee_id,
+                "employee_name": data.employee_name,
+                "register_type": data.register_type,
+                "month": month,
+                "year": year
+            }
+        }
         
     except Exception as e:
+        import traceback
+        print(f"Error in create_register: {str(e)}")
+        print(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.get("/")
@@ -68,14 +80,25 @@ def get_registers(request: Request, db: Session = Depends(get_tenant_db), user =
         
         result = []
         for record in records:
-            user = db.query(User).filter(User.id == record.employee_id).first()
-            if not user:
-                user = db.query(User).filter(User.employee_code == str(record.employee_id)).first()
+            user_record = db.query(User).filter(User.id == record.employee_id).first()
+            if not user_record:
+                user_record = db.query(User).filter(User.employee_code == str(record.employee_id)).first()
+            
+            # Get employee name and ID properly - prioritize stored name
+            if hasattr(record, 'employee_name') and record.employee_name:
+                employee_name = record.employee_name
+                employee_id = user_record.employee_code if user_record and user_record.employee_code else str(record.employee_id)
+            elif user_record and user_record.name:
+                employee_name = user_record.name
+                employee_id = user_record.employee_code if user_record.employee_code else str(record.employee_id)
+            else:
+                employee_name = f"Employee {record.employee_id}"
+                employee_id = str(record.employee_id)
             
             result.append({
                 "id": record.id,
-                "employee_id": user.employee_code if user else str(record.employee_id),
-                "employee_name": user.name if user else f"Employee {record.employee_id}",
+                "employee_id": employee_id,
+                "employee_name": employee_name,
                 "register_type": record.register_type,
                 "compliance_status": "Active",
                 "month": record.month,
@@ -86,6 +109,9 @@ def get_registers(request: Request, db: Session = Depends(get_tenant_db), user =
         return result
         
     except Exception as e:
+        import traceback
+        print(f"Error in get_registers: {str(e)}")
+        print(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.put("/{record_id}")
@@ -98,20 +124,22 @@ def update_register(record_id: int, data: LabourRegisterRequest, request: Reques
         # Store old values for audit
         old_values = {"employee_id": record.employee_id, "register_type": record.register_type, "month": record.month, "year": record.year}
         
-        # Find user by employee_code
+        # Find user by employee_code, fallback to raw employee_id
         user_record = db.query(User).filter(User.employee_code == data.employee_id).first()
-        if not user_record and data.employee_id.isdigit():
-            user_record = db.query(User).filter(User.id == int(data.employee_id)).first()
-        
-        if not user_record:
-            raise HTTPException(status_code=404, detail=f"Employee with code {data.employee_id} not found")
+        employee_id = user_record.id if user_record else int(data.employee_id) if data.employee_id.isdigit() else record.employee_id
         
         # Update record using setattr to avoid type issues
-        setattr(record, 'employee_id', user_record.id)
+        setattr(record, 'employee_id', employee_id)
         setattr(record, 'register_type', data.register_type)
         setattr(record, 'month', data.month or record.month)
         setattr(record, 'year', data.year or record.year)
         setattr(record, 'remarks', data.remarks or "")
+        
+        # Try to update employee_name if the column exists
+        try:
+            setattr(record, 'employee_name', data.employee_name)
+        except AttributeError:
+            pass
         
         db.commit()
         
@@ -121,6 +149,9 @@ def update_register(record_id: int, data: LabourRegisterRequest, request: Reques
         return {"message": "Record updated successfully"}
         
     except Exception as e:
+        import traceback
+        print(f"Error in update_register: {str(e)}")
+        print(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.delete("/{record_id}")
@@ -144,6 +175,9 @@ def soft_delete_register(record_id: int, request: Request, db: Session = Depends
         return {"message": "Record deleted successfully"}
         
     except Exception as e:
+        import traceback
+        print(f"Error in soft_delete_register: {str(e)}")
+        print(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.get("/deleted")
@@ -157,10 +191,21 @@ def get_deleted_registers(request: Request, db: Session = Depends(get_tenant_db)
             if not user_record:
                 user_record = db.query(User).filter(User.employee_code == str(record.employee_id)).first()
             
+            # Get employee name and ID properly - prioritize stored name
+            if hasattr(record, 'employee_name') and record.employee_name:
+                employee_name = record.employee_name
+                employee_id = user_record.employee_code if user_record and user_record.employee_code else str(record.employee_id)
+            elif user_record and user_record.name:
+                employee_name = user_record.name
+                employee_id = user_record.employee_code if user_record.employee_code else str(record.employee_id)
+            else:
+                employee_name = f"Employee {record.employee_id}"
+                employee_id = str(record.employee_id)
+            
             result.append({
                 "id": record.id,
-                "employee_id": user_record.employee_code if user_record else str(record.employee_id),
-                "employee_name": user_record.name if user_record else f"Employee {record.employee_id}",
+                "employee_id": employee_id,
+                "employee_name": employee_name,
                 "register_type": record.register_type,
                 "compliance_status": "Deleted",
                 "month": record.month,
@@ -172,6 +217,9 @@ def get_deleted_registers(request: Request, db: Session = Depends(get_tenant_db)
         return result
         
     except Exception as e:
+        import traceback
+        print(f"Error in get_deleted_registers: {str(e)}")
+        print(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.put("/restore/{record_id}")
@@ -195,4 +243,7 @@ def restore_register(record_id: int, request: Request, db: Session = Depends(get
         return {"message": "Record restored successfully"}
         
     except Exception as e:
+        import traceback
+        print(f"Error in restore_register: {str(e)}")
+        print(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")

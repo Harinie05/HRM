@@ -252,8 +252,13 @@ def list_communications(db: Session = Depends(get_tenant_db), user = Depends(get
 @router.get("/deleted", response_model=list)
 def list_deleted_communications(
     db: Session = Depends(get_tenant_db), 
-    user = Depends(require_permission("show_deleted_hr_letters"))
+    user = Depends(get_current_user)
 ):
+    # Check permissions - allow admin or specific permission
+    user_permissions = user.get('permissions', [])
+    if not ('show_deleted_hr_letters' in user_permissions or user.get('role') == 'admin'):
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    
     try:
         communications = db.query(HRCommunication).filter(
             HRCommunication.deleted_at.isnot(None)

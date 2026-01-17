@@ -96,6 +96,48 @@ def create_user(
             
             # Generate unique login code
             login_code = generate_unique_login_code(tdb)
+            
+            # Check if email matches an existing employee in onboarding system
+            employee_code = None
+            onboarding_employee = None
+            
+            # First, try to find by name match
+            onboarding_employee = tdb.query(OnboardingCandidate).filter(
+                OnboardingCandidate.candidate_name.ilike(f"%{payload.name}%")
+            ).first()
+            
+            # If no match by name, try to find by email in the candidates table
+            if not onboarding_employee:
+                try:
+                    from models.models_tenant import Candidate
+                    candidate = tdb.query(Candidate).filter(Candidate.email == payload.email).first()
+                    if candidate:
+                        onboarding_employee = tdb.query(OnboardingCandidate).filter(
+                            OnboardingCandidate.application_id == candidate.id
+                        ).first()
+                except Exception as e:
+                    print(f"Error searching candidates table: {e}")
+            
+            # If still no match, try direct email search in onboarding candidates
+            if not onboarding_employee:
+                try:
+                    # Get all onboarding candidates and check their emails from candidate table
+                    from models.models_tenant import Candidate
+                    onboarding_candidates = tdb.query(OnboardingCandidate).all()
+                    for oc in onboarding_candidates:
+                        candidate = tdb.query(Candidate).filter(Candidate.id == oc.application_id).first()
+                        if candidate and candidate.email and candidate.email.lower() == payload.email.lower():
+                            onboarding_employee = oc
+                            break
+                except Exception as e:
+                    print(f"Error in comprehensive email search: {e}")
+            
+            # Use employee_id from onboarding if found
+            if onboarding_employee and onboarding_employee.employee_id:
+                employee_code = onboarding_employee.employee_id
+                print(f"Found existing employee code from EIS: {employee_code} for {payload.email} (matched with {onboarding_employee.candidate_name})")
+            else:
+                print(f"No existing employee code found in EIS for {payload.email}")
 
             new_user = User(
                 name=payload.name,
@@ -104,6 +146,7 @@ def create_user(
                 role_id=payload.role_id,
                 department_id=payload.department_id,
                 login_code=login_code,
+                employee_code=employee_code,  # Set employee code from EIS if found
                 two_factor_enabled=payload.two_factor_enabled or False
             )
 
@@ -115,11 +158,19 @@ def create_user(
             audit_crud(request, tdb, user, "CREATE_USER", "users", str(new_user.id), {}, {"name": payload.name, "email": payload.email})
             
             logger.info(f"User {payload.email} created successfully with ID {new_user.id}")
+            
+            # Create appropriate success message
+            if employee_code:
+                message = f"User '{payload.name}' has been created successfully with login code: {login_code} and existing employee code: {employee_code}"
+            else:
+                message = f"User '{payload.name}' has been created successfully with login code: {login_code}"
+            
             return {
                 "detail": "User created successfully", 
-                "message": f"User '{payload.name}' has been created successfully with login code: {login_code}",
+                "message": message,
                 "user_id": new_user.id,
                 "login_code": login_code,
+                "employee_code": employee_code,
                 "success": True
             }
     except HTTPException:

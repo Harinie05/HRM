@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Eye, EyeOff, RotateCcw } from "lucide-react";
 import api from "../../api";
 import Toast from "../../components/Toast";
-import EmployeeDetailsModal from "../../components/EmployeeDetailsModal";
 import useToast from "../../utils/useToast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
@@ -48,8 +47,6 @@ export default function Communication() {
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState('view'); // 'view' or 'edit'
   const [selectedLetter, setSelectedLetter] = useState(null);
-  const [showEmployeeDetails, setShowEmployeeDetails] = useState(false);
-  const [selectedEmployeeDetails, setSelectedEmployeeDetails] = useState(null);
   const { toast, showToast, hideToast } = useToast();
 
   useEffect(() => {
@@ -403,75 +400,7 @@ export default function Communication() {
 
   const handlePrintLetter = async (letter) => {
     try {
-      // First, get comprehensive employee details and show in modal
-      if (letter.employee !== 'All') {
-        try {
-          const detailsResponse = await api.get(`/api/employee-details/${letter.employee}`);
-          console.log('Employee Details:', detailsResponse.data);
-          
-          // Show employee details in modal
-          setSelectedEmployeeDetails(detailsResponse.data);
-          setShowEmployeeDetails(true);
-          
-          // Also log to console for debugging
-          const details = detailsResponse.data;
-          console.log('\n=== EMPLOYEE COMPREHENSIVE DETAILS ===');
-          console.log('Basic Info:', {
-            name: details.name,
-            code: details.employee_code,
-            email: details.email,
-            designation: details.designation,
-            department: details.department,
-            joining_date: details.joining_date,
-            status: details.status
-          });
-          
-          if (details.experience?.length > 0) {
-            console.log('Experience:', details.experience);
-          }
-          
-          if (details.education?.length > 0) {
-            console.log('Education:', details.education);
-          }
-          
-          if (details.skills?.length > 0) {
-            console.log('Skills:', details.skills);
-          }
-          
-          if (details.family?.length > 0) {
-            console.log('Family:', details.family);
-          }
-          
-          if (details.medical) {
-            console.log('Medical/Emergency Contact:', details.medical);
-          }
-          
-          if (details.salary) {
-            console.log('Salary Details:', details.salary);
-          }
-          
-          if (details.bank_details) {
-            console.log('Bank Details:', details.bank_details);
-          }
-          
-          console.log('=== END EMPLOYEE DETAILS ===\n');
-          
-        } catch (detailsError) {
-          console.log('Could not fetch detailed employee information:', detailsError.message);
-          
-          // Try to get list of available employees for debugging
-          try {
-            const employeeListResponse = await api.get('/api/employee-details/list/all');
-            console.log('Available employees:', employeeListResponse.data);
-            showToast(`Employee ${letter.employee} not found. Check console for available employees.`, 'warning');
-          } catch (listError) {
-            console.log('Could not fetch employee list:', listError.message);
-            showToast('Could not fetch employee details, but proceeding with print', 'warning');
-          }
-        }
-      }
-      
-      // Use backend PDF generation endpoint with comprehensive details
+      // Use backend PDF generation endpoint
       const response = await api.get(`/hr/communication/print/${letter.id}`, {
         responseType: 'blob'
       });
@@ -1067,12 +996,7 @@ export default function Communication() {
           </div>
         </div>
       )}
-      {/* Employee Details Modal */}
-      <EmployeeDetailsModal 
-        isOpen={showEmployeeDetails}
-        onClose={() => setShowEmployeeDetails(false)}
-        employeeDetails={selectedEmployeeDetails}
-      />
+
       <Toast toast={toast} hideToast={hideToast} />
     </div>
   );

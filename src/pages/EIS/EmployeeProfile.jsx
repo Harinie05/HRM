@@ -27,17 +27,30 @@ export default function EmployeeProfile() {
   const [editForm, setEditForm] = useState({});
   const { toast, showToast, hideToast } = useToast();
 
-  // Function to get authenticated image URL
-  const getAuthenticatedImageUrl = async (docId) => {
+  // Function to fetch photo from document_upload table
+  const fetchEmployeePhoto = async (employeeId) => {
     try {
-      const response = await api.get(`/recruitment/onboarding/document/${docId}/view`, {
-        responseType: 'blob'
-      });
-      return URL.createObjectURL(response.data);
+      // Try to fetch photo directly from document_upload table
+      const response = await api.get(`/recruitment/onboarding/documents/photo/${employeeId}`);
+      if (response.data && response.data.length > 0) {
+        // Get the most recent photo
+        const latestPhoto = response.data.reduce((latest, current) => 
+          new Date(current.uploaded_at) > new Date(latest.uploaded_at) ? current : latest
+        );
+        
+        console.log('Photo found in document_upload table:', latestPhoto);
+        
+        // Create photo URL
+        const token = localStorage.getItem('access_token');
+        const photoUrl = `${api.defaults.baseURL}/recruitment/onboarding/document/${latestPhoto.id}/view?token=${token}`;
+        setPhotoUrl(photoUrl);
+        console.log('Photo URL set:', photoUrl);
+        return true;
+      }
     } catch (error) {
-      console.error('Failed to load image:', error);
-      return null;
+      console.log('No photo found in document_upload table:', error);
     }
+    return false;
   };
 
   // ---------------- FETCH EMPLOYEE PROFILE ----------------
@@ -109,33 +122,20 @@ export default function EmployeeProfile() {
           work_shift: emp.work_shift || 'General',
           probation_period: emp.probation_period || '3 Months'
         });
+        
+        // Fetch employee photo from document_upload table
+        const actualEmployeeId = emp.source === 'user_management' 
+          ? emp.application_id.toString().replace('user_', '') 
+          : emp.application_id;
+        
+        await fetchEmployeePhoto(actualEmployeeId);
+        
         // Fetch documents for this employee (only for onboarding employees)
         if (emp.source !== 'user_management') {
           try {
             const docsRes = await api.get(`/recruitment/onboarding/${emp.application_id}/documents`);
             const docs = docsRes.data || [];
             setDocuments(docs);
-          
-            // Find the most recent photo document (latest uploaded)
-            const photoDocs = docs.filter(doc => doc.document_type === 'photo');
-            if (photoDocs.length > 0) {
-              // Get the most recent photo by uploaded_at date
-              const latestPhoto = photoDocs.reduce((latest, current) => 
-                new Date(current.uploaded_at) > new Date(latest.uploaded_at) ? current : latest
-              );
-              
-              // Try authenticated URL first, fallback to direct URL
-              try {
-                const imageUrl = await getAuthenticatedImageUrl(latestPhoto.id);
-                if (imageUrl) {
-                  setPhotoUrl(imageUrl);
-                }
-              } catch {
-                // Fallback to direct URL with token
-                const token = localStorage.getItem('token');
-                setPhotoUrl(`${api.defaults.baseURL}/recruitment/onboarding/document/${latestPhoto.id}/view?token=${token}`);
-              }
-            }
           } catch (docErr) {
             console.log('No documents found for employee');
           }
@@ -673,7 +673,7 @@ export default function EmployeeProfile() {
         {/* Edit Profile Modal */}
         {showEditModal && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl border-0 shadow-2xl p-6 w-full max-w-md">
+            <div className="bg-white rounded-xl border-0 shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -847,7 +847,7 @@ export default function EmployeeProfile() {
         {/* Photo Upload Modal */}
         {showPhotoUpload && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl border-0 shadow-2xl p-6 w-full max-w-md">
+            <div className="bg-white rounded-xl border-0 shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
                   <FiCamera className="text-gray-600 w-5 h-5" />
@@ -925,13 +925,18 @@ export default function EmployeeProfile() {
                       formData.append('file', selectedFile);
                       
                       api.post('/recruitment/onboarding/upload-document', formData)
-                        .then(() => {
-                          setPhotoUrl(previewUrl);
+                        .then(async () => {
+                          // Refresh photo immediately after upload
+                          const actualEmployeeId = employee.source === 'user_management' 
+                            ? employee.application_id.toString().replace('user_', '') 
+                            : employee.application_id;
+                          
+                          await fetchEmployeePhoto(actualEmployeeId);
+                          
                           setShowPhotoUpload(false);
                           setSelectedFile(null);
                           setPreviewUrl(null);
                           showToast('Photo uploaded successfully!');
-                          fetchEmployee(); // Refresh employee data
                         })
                         .catch(err => {
                           console.error('Photo upload failed:', {

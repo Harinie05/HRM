@@ -231,7 +231,10 @@ def download_certificate(
         doc.build(story)
         buffer.seek(0)
         
-        filename = f"certificate_{certificate_id}.pdf"
+        # Clean filename for download
+        safe_employee_name = ''.join(c for c in employee_name if c.isalnum() or c in (' ', '-', '_')).rstrip()
+        safe_program_title = ''.join(c for c in program_title if c.isalnum() or c in (' ', '-', '_')).rstrip()
+        filename = f"{safe_employee_name}_{safe_program_title}_Certificate.pdf"
         
         # Audit log for certificate download
         audit_crud(request, db, user, "DOWNLOAD_TRAINING_CERTIFICATE", "certificate_downloads", str(certificate_id), {}, {
@@ -244,7 +247,10 @@ def download_certificate(
         return Response(
             content=buffer.getvalue(),
             media_type="application/pdf",
-            headers={"Content-Disposition": f"attachment; filename={filename}"}
+            headers={
+                "Content-Disposition": f"attachment; filename={filename}",
+                "Content-Type": "application/pdf"
+            }
         )
         
     except HTTPException:

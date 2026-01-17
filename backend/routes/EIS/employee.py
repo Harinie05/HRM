@@ -51,8 +51,8 @@ def get_employee_profile(employee_id: int, user=Depends(require_permission("view
     if not employee:
         raise HTTPException(404, "Employee not found")
     
-    # Get candidate details
-    candidate = db.query(Candidate).filter(Candidate.id == employee_id).first()
+    # Get candidate details from the onboarding record's application_id
+    candidate = db.query(Candidate).filter(Candidate.id == employee.application_id).first()
     
     return {
         "employee": {

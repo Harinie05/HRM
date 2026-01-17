@@ -464,137 +464,26 @@ def send_email_endpoint(email_request: EmailRequest):
     try:
         attachments = None
         if email_request.attachment and email_request.attachment.get('filename'):
-            # Generate real PDF content for email attachment
-            if 'Experience_Certificate_' in email_request.attachment['filename']:
-                # Extract employee data from the request (assuming it's passed in attachment content)
+            # Use the provided PDF content directly (already branded from download endpoint)
+            attachment_content = email_request.attachment.get('content', '')
+            if attachment_content:
                 try:
-                    # Create a proper PDF for the email attachment
-                    from datetime import datetime
-                    
-                    buffer = BytesIO()
-                    p = canvas.Canvas(buffer, pagesize=letter)
-                    width, height = letter
-                    
-                    # Title
-                    p.setFont("Helvetica-Bold", 18)
-                    title_text = "EXPERIENCE CERTIFICATE"
-                    title_width = p.stringWidth(title_text, "Helvetica-Bold", 18)
-                    p.drawString((width - title_width) / 2, height-100, title_text)
-                    
-                    # Generate complete experience certificate PDF
-                    if email_request.employee_data:
-                        emp_data = email_request.employee_data
-                        
-                        # Format dates
-                        joining_date = datetime.strptime(emp_data.get('joining_date', '2022-03-15'), '%Y-%m-%d').strftime('%d/%m/%Y')
-                        last_working_day = datetime.strptime(emp_data.get('last_working_day', '2025-12-26'), '%Y-%m-%d').strftime('%d/%m/%Y')
-                        issued_date = datetime.strptime(emp_data.get('issued_date', datetime.now().strftime('%Y-%m-%d')), '%Y-%m-%d').strftime('%d/%m/%Y')
-                        
-                        # Content with employee details
-                        p.setFont("Helvetica", 12)
-                        y_position = height - 180
-                        line_height = 20
-                        
-                        # Paragraph 1
-                        text1 = f"This is to certify that {emp_data.get('employee_name', 'Unknown')} (Employee Code: {emp_data.get('employee_code', 'EMP001')})"
-                        p.drawString(50, y_position, text1)
-                        y_position -= line_height
-                        
-                        text2 = f"was employed with {emp_data.get('company_name', 'Nutryah Healthcare Solutions')} as {emp_data.get('designation', 'Software Developer')}"
-                        p.drawString(50, y_position, text2)
-                        y_position -= line_height
-                        
-                        text3 = f"in the {emp_data.get('department', 'IT Department')}."
-                        p.drawString(50, y_position, text3)
-                        y_position -= line_height * 2
-                        
-                        # Paragraph 2
-                        text4 = f"The period of employment was from {joining_date} to {last_working_day}."
-                        p.drawString(50, y_position, text4)
-                        y_position -= line_height * 2
-                        
-                        # Paragraph 3
-                        text5 = f"During the tenure with our organization, {emp_data.get('employee_name', 'Unknown')} demonstrated"
-                        p.drawString(50, y_position, text5)
-                        y_position -= line_height
-                        
-                        text6 = "professionalism and contributed effectively to the team. The employee's conduct"
-                        p.drawString(50, y_position, text6)
-                        y_position -= line_height
-                        
-                        text7 = "and performance were satisfactory throughout the employment period."
-                        p.drawString(50, y_position, text7)
-                        y_position -= line_height * 2
-                        
-                        # Paragraph 4
-                        text8 = f"We wish {emp_data.get('employee_name', 'Unknown')} all the best for future endeavors."
-                        p.drawString(50, y_position, text8)
-                        y_position -= line_height * 3
-                        
-                        # Signature section
-                        p.setFont("Helvetica-Bold", 12)
-                        p.drawString(50, y_position, f"For {emp_data.get('company_name', 'Nutryah Healthcare Solutions')}")
-                        y_position -= line_height * 3
-                        
-                        # Signature line
-                        p.line(50, y_position, 200, y_position)
-                        y_position -= line_height
-                        
-                        p.setFont("Helvetica", 10)
-                        p.drawString(50, y_position, emp_data.get('authorized_signatory', 'HR Manager'))
-                        y_position -= 15
-                        p.drawString(50, y_position, emp_data.get('issued_by', 'HR Department'))
-                        
-                        # Date and place
-                        p.drawString(width-200, y_position + 30, f"Date: {issued_date}")
-                        p.drawString(width-200, y_position + 15, f"Place: {emp_data.get('place', 'Bangalore')}")
-                    else:
-                        # Basic content for email attachment
-                        p.setFont("Helvetica", 12)
-                        y_position = height - 180
-                        
-                        p.drawString(50, y_position, "This is to certify that the employee was employed with our organization.")
-                        y_position -= 40
-                        p.drawString(50, y_position, "We wish them all the best for future endeavors.")
-                        y_position -= 80
-                        
-                        p.setFont("Helvetica-Bold", 12)
-                        p.drawString(50, y_position, "For Nutryah Healthcare Solutions")
-                        y_position -= 60
-                        
-                        p.line(50, y_position, 200, y_position)
-                        y_position -= 20
-                        p.setFont("Helvetica", 10)
-                        p.drawString(50, y_position, "HR Manager")
-                        p.drawString(50, y_position-15, "HR Department")
-                        
-                        current_date = datetime.now().strftime('%d/%m/%Y')
-                        p.drawString(width-200, y_position, f"Date: {current_date}")
-                        p.drawString(width-200, y_position-15, "Place: Bangalore")
-                    
-                    p.save()
-                    buffer.seek(0)
-                    attachment_bytes = buffer.getvalue()
-                    
-                except Exception as pdf_error:
-                    logger.error(f"PDF generation for email failed: {pdf_error}")
-                    # Fallback to a simple text-based PDF
-                    attachment_bytes = b'%PDF-1.4\n1 0 obj\n<<\n/Type /Catalog\n/Pages 2 0 R\n>>\nendobj\n2 0 obj\n<<\n/Type /Pages\n/Kids [3 0 R]\n/Count 1\n>>\nendobj\n3 0 obj\n<<\n/Type /Page\n/Parent 2 0 R\n/MediaBox [0 0 612 792]\n>>\nendobj\nxref\n0 4\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \ntrailer\n<<\n/Size 4\n/Root 1 0 R\n>>\nstartxref\n174\n%%EOF'
+                    attachment_bytes = base64.b64decode(attachment_content)
+                except Exception as decode_error:
+                    logger.error(f"Failed to decode attachment content: {decode_error}")
+                    attachment_bytes = b'Invalid attachment content'
             else:
-                # Handle other attachment types
-                attachment_content = email_request.attachment.get('content', '')
-                if attachment_content and attachment_content != 'base64_pdf_content':
-                    try:
-                        attachment_bytes = base64.b64decode(attachment_content)
-                    except:
-                        attachment_bytes = b'Invalid attachment content'
-                else:
-                    attachment_bytes = b'No attachment content provided'
+                logger.error("No attachment content provided")
+                attachment_bytes = b'No attachment content provided'
             
-            attachments = [{
-                'content': attachment_bytes,
-                'filename': email_request.attachment['filename']
-            }]
+            if attachment_bytes and len(attachment_bytes) > 100:  # Valid PDF should be larger
+                attachments = [{
+                    'content': attachment_bytes,
+                    'filename': email_request.attachment['filename']
+                }]
+            else:
+                logger.error("Invalid or empty attachment content")
+                attachments = None
         
         success = send_email(
             to_email=email_request.to,

@@ -662,9 +662,27 @@ export default function StaffScheduling() {
       {activeTab === 'records' && (
         <div className="space-y-6">
           {/* Patient Loads Table */}
-          <div className="bg-white rounded-lg ">
-            <div className="px-6 py-4 border-b border-black">
-              <h3 className="text-lg font-medium text-gray-900">Patient Loads</h3>
+          <div className="bg-white rounded-xl shadow-sm overflow-hidden border" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+            borderColor: `${colors.primary}20`
+          }}>
+            <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(30%, -30%)'
+            }}></div>
+            <div className="px-6 py-4 border-b border-gray-200 relative z-10">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg" style={{
+                  backgroundColor: `${colors.primary}20`
+                }}>
+                  <svg className="h-5 w-5" style={{
+                    color: colors.primary
+                  }} fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900">Patient Loads</h3>
+              </div>
             </div>
             <div className="overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <table className="min-w-full divide-y divide-gray-200">
@@ -719,9 +737,27 @@ export default function StaffScheduling() {
           </div>
 
           {/* Staff Allocations Table */}
-          <div className="bg-white rounded-lg ">
-            <div className="px-6 py-4 border-b border-black">
-              <h3 className="text-lg font-medium text-gray-900">Staff Allocations</h3>
+          <div className="bg-white rounded-xl shadow-sm overflow-hidden border" style={{
+            background: `linear-gradient(135deg, white 0%, ${colors.primary}03 100%)`,
+            borderColor: `${colors.primary}20`
+          }}>
+            <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+              backgroundColor: colors.primary,
+              transform: 'translate(30%, -30%)'
+            }}></div>
+            <div className="px-6 py-4 border-b border-gray-200 relative z-10">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg" style={{
+                  backgroundColor: `${colors.primary}20`
+                }}>
+                  <svg className="h-5 w-5" style={{
+                    color: colors.primary
+                  }} fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900">Staff Allocations</h3>
+              </div>
             </div>
             <div className="overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <table className="min-w-full divide-y divide-gray-200">

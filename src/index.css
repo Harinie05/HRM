@@ -471,8 +471,8 @@ table, thead, tbody, tr, td, th {
   border-color: var(--border-color, #e2e8f0) !important;
 }
 
-/* ========== THIN BLACK BORDERS FOR ALL CARDS AND TABLES ========== */
-/* Add thin black borders to all card-like elements */
+/* ========== PRIMARY COLOR BORDERS FOR ALL CARDS AND TABLES ========== */
+/* Add primary color borders to all card-like elements */
 .bg-white,
 .rounded,
 .rounded-lg,
@@ -486,14 +486,14 @@ table, thead, tbody, tr, td, th {
 .shadow-xl,
 .card,
 .panel {
-  border: 1px solid #000000 !important;
+  border: 1px solid var(--primary-color, #4575b5) !important;
 }
 
 /* Add borders to all tables */
 table,
 .table,
 .min-w-full {
-  border: 1px solid #000000 !important;
+  border: 1px solid var(--primary-color, #4575b5) !important;
   border-collapse: collapse !important;
 }
 
@@ -502,12 +502,12 @@ th,
 td,
 thead th,
 tbody td {
-  border: 1px solid #000000 !important;
+  border: 1px solid var(--primary-color, #4575b5) !important;
 }
 
 /* Table rows */
 tr {
-  border-bottom: 1px solid #000000 !important;
+  border-bottom: 1px solid var(--primary-color, #4575b5) !important;
 }
 
 /* Modal and form containers */
@@ -515,7 +515,7 @@ tr {
 .modal,
 .dropdown,
 .popover {
-  border: 1px solid #000000 !important;
+  border: 1px solid var(--primary-color, #4575b5) !important;
 }
 
 /* Form inputs and selects with dynamic primary color background */
@@ -525,7 +525,7 @@ textarea {
   background: linear-gradient(to right, 
     color-mix(in srgb, var(--primary-color) 8%, white), 
     color-mix(in srgb, var(--primary-color) 5%, white)) !important;
-  border: 1px solid #d1d5db !important;
+  border: 1px solid var(--primary-color, #4575b5) !important;
   color: #111827 !important;
   transition: all 0.2s ease !important;
 }
@@ -549,7 +549,7 @@ textarea:focus {
 }
 
 .border {
-  border: 1px solid #000000 !important;
+  border: 1px solid var(--primary-color, #4575b5) !important;
 }
 
 /* Specific targeting for common card patterns */
@@ -559,14 +559,14 @@ div.bg-white.shadow,
 div.bg-white.p-4,
 div.bg-white.p-6,
 div.bg-white.p-8 {
-  border: 1px solid #000000 !important;
+  border: 1px solid var(--primary-color, #4575b5) !important;
 }
 
 /* Dashboard cards and KPI cards */
 .grid > div,
 .grid .bg-white,
 .flex .bg-white {
-  border: 1px solid #000000 !important;
+  border: 1px solid var(--primary-color, #4575b5) !important;
 }
 
 /* Override any existing border colors */
@@ -575,66 +575,66 @@ div.bg-white.p-8 {
 *[class*="border-blue"],
 *[class*="border-green"],
 *[class*="border-red"] {
-  border-color: #000000 !important;
+  border-color: var(--primary-color, #4575b5) !important;
 }
 
-/* Ensure all bordered elements use black */
+/* Ensure all bordered elements use primary color */
 .border-2 {
-  border-color: #000000 !important;
+  border-color: var(--primary-color, #4575b5) !important;
 }
 
 .border-t,
 .border-b,
 .border-l,
 .border-r {
-  border-color: #000000 !important;
+  border-color: var(--primary-color, #4575b5) !important;
 }
 
 /* Navigation and sidebar elements */
 .sidebar,
 .nav,
 .menu {
-  border: 1px solid #000000 !important;
+  border: 1px solid var(--primary-color, #4575b5) !important;
 }
 
 /* Button borders */
 button.border,
 .btn {
-  border: 1px solid #000000 !important;
+  border: 1px solid var(--primary-color, #4575b5) !important;
 }
 
 /* List items and containers */
 ul,
 ol,
 li {
-  border-color: #000000 !important;
+  border-color: var(--primary-color, #4575b5) !important;
 }
 
 /* Dividers */
 .divide-y > *,
 .divide-x > * {
-  border-color: #000000 !important;
+  border-color: var(--primary-color, #4575b5) !important;
 }
 
 /* Header sections */
 header,
 .header {
-  border: 1px solid #000000 !important;
+  border: 1px solid var(--primary-color, #4575b5) !important;
 }
 
 /* Content sections */
 section.bg-white,
 article.bg-white,
 main .bg-white {
-  border: 1px solid #000000 !important;
+  border: 1px solid var(--primary-color, #4575b5) !important;
 }
 
 /* Override inline styles */
 [style*="border"] {
-  border-color: #000000 !important;
+  border-color: var(--primary-color, #4575b5) !important;
 }
 
-/* Ensure all elements with existing borders get black color */
+/* Ensure all elements with existing borders get primary color */
 * {
-  border-color: #000000 !important;
+  border-color: var(--primary-color, #4575b5) !important;
 }

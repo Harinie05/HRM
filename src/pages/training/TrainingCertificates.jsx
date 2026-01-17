@@ -126,16 +126,33 @@ export default function TrainingCertificates() {
 
   const handleDownload = async (certificate) => {
     try {
-      // Create download URL similar to payroll
-      const downloadUrl = `/api/training/certificates/${certificate.id}/download`;
+      const token = localStorage.getItem('access_token');
+      const tenant = localStorage.getItem('tenant_name') || localStorage.getItem('tenant_db');
       
-      // Create temporary link and trigger download
+      const response = await fetch(`${api.defaults.baseURL}/api/training/certificates/${certificate.id}/download`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'tenant': tenant,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link.href = downloadUrl;
+      link.href = url;
       link.download = `${certificate.employee_name}_${certificate.program_title}_Certificate.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      showToast('Certificate downloaded successfully', 'success');
       
     } catch (error) {
       console.error('Download error:', error);

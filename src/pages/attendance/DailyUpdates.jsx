@@ -8,6 +8,33 @@ import { hasPermission, isAdmin } from '../../utils/permissions';
 const DailyUpdates = () => {
   const { toast, showToast, hideToast } = useToast();
   const [updates, setUpdates] = useState([]);
+  
+  // Safe setter to prevent error objects from being stored in updates state
+  const setSafeUpdates = (data) => {
+    console.log('setSafeUpdates called with:', data);
+    
+    if (!Array.isArray(data)) {
+      console.log('Data is not an array, setting empty array');
+      setUpdates([]);
+      return;
+    }
+    
+    const validUpdates = data.filter(item => {
+      // Filter out validation error objects
+      if (!item || typeof item !== 'object') {
+        console.log('Filtered out non-object:', item);
+        return false;
+      }
+      if (item.type && item.loc && item.msg && item.input) {
+        console.log('Filtered out validation error object:', item);
+        return false;
+      }
+      return true;
+    });
+    
+    console.log('Setting valid updates:', validUpdates);
+    setUpdates(validUpdates);
+  };
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [loading, setLoading] = useState(true);
@@ -134,10 +161,23 @@ const DailyUpdates = () => {
       }
       
       const response = await api.get(`/api/daily-updates/my-updates?employee_id=${userId}`);
-      setUpdates(response.data);
+      
+      console.log('Fetched updates response:', response.data);
+      
+      // Ensure response.data is an array and filter out error objects
+      const updatesData = Array.isArray(response.data) ? response.data : [];
+      console.log('Processed updates data:', updatesData);
+      setSafeUpdates(updatesData);
     } catch (error) {
       console.error('Error fetching updates:', error);
-      showToast('Failed to load daily updates', 'error');
+      setSafeUpdates([]); // Use safe setter
+      
+      let errorMessage = 'Failed to load daily updates';
+      if (error.response?.data?.detail) {
+        errorMessage = error.response.data.detail;
+      }
+      
+      showToast(errorMessage, 'error');
     } finally {
       setLoading(false);
     }
@@ -163,10 +203,29 @@ const DailyUpdates = () => {
       setShowForm(false);
       setEditingUpdate(null);
       resetForm();
-      fetchMyUpdates();
+      await fetchMyUpdates(); // Ensure this completes before showing toast
     } catch (error) {
       console.error('Error saving update:', error);
-      showToast(error.response?.data?.detail || 'Failed to save update', 'error');
+      
+      let errorMessage = 'Failed to save update';
+      
+      if (error.response?.data) {
+        if (typeof error.response.data === 'string') {
+          errorMessage = error.response.data;
+        } else if (error.response.data.detail) {
+          errorMessage = error.response.data.detail;
+        } else if (error.response.data.message) {
+          errorMessage = error.response.data.message;
+        } else if (Array.isArray(error.response.data)) {
+          // Handle validation errors array
+          const validationErrors = error.response.data
+            .map(err => err.msg || err.message || 'Validation error')
+            .join(', ');
+          errorMessage = validationErrors || 'Validation failed';
+        }
+      }
+      
+      showToast(errorMessage, 'error');
     }
   };
 
@@ -394,6 +453,7 @@ const DailyUpdates = () => {
               </div>
               {canAdd && (
                 <button
+                  type="button"
                   onClick={handleNewUpdate}
                   className="text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2 text-sm font-medium"
                   style={{ backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' }}
@@ -403,8 +463,10 @@ const DailyUpdates = () => {
                   }}
                   onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                   }}
+                  aria-label="Create new daily update"
+                  title="Create New Update"
                 >
-                  <FiPlus className="w-4 h-4" />
+                  <FiPlus className="w-4 h-4" aria-hidden="true" />
                   New Update
                 </button>
               )}
@@ -705,6 +767,11 @@ const DailyUpdates = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {updates.map((update) => {
+                    // Ensure update is a valid object
+                    if (!update || typeof update !== 'object' || update.type) {
+                      return null;
+                    }
+                    
                     const employee = employees.find(emp => {
                       if (emp.source === 'user_management') {
                         return emp.original_user_id == update.employee_id;
@@ -713,20 +780,20 @@ const DailyUpdates = () => {
                     });
                     
                     return (
-                      <tr key={update.id} className="hover:bg-gray-50">
+                      <tr key={update.id || Math.random()} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          <div className="font-medium">{employee?.employee_code || `EMP${update.employee_id}`}</div>
-                          <div className="text-gray-500">{employee?.name || `Employee ${update.employee_id}`}</div>
+                          <div className="font-medium">{employee?.employee_code || `EMP${update.employee_id || 'N/A'}`}</div>
+                          <div className="text-gray-500">{employee?.name || `Employee ${update.employee_id || 'N/A'}`}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                           <div className="flex items-center gap-2">
                             <FiCalendar size={16} className="text-gray-400" />
-                            {new Date(update.date).toLocaleDateString()}
+                            {update.date ? new Date(update.date).toLocaleDateString() : 'N/A'}
                           </div>
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-900 max-w-xs">
-                          <div className="truncate" title={update.work_done}>
-                            {update.work_done}
+                          <div className="truncate" title={update.work_done || ''}>
+                            {update.work_done || 'No description'}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -743,25 +810,28 @@ const DailyUpdates = () => {
                               ? 'bg-green-100 text-green-800' 
                               : 'bg-yellow-100 text-yellow-800'
                           }`}>
-                            {update.status}
+                            {update.status || 'Draft'}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           {canEdit && canEditUpdate(update) && (
                             <button
+                              type="button"
                               onClick={() => handleEdit(update)}
                               className="text-gray-600 hover:text-blue-600 hover:text-white p-2 rounded-lg transition-colors"
                               style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
                               onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
                               onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                              aria-label={`Edit daily update for ${update.date}`}
+                              title="Edit this daily update"
                             >
-                              <FiEdit size={16} />
+                              <FiEdit size={16} aria-hidden="true" />
                             </button>
                           )}
                         </td>
                       </tr>
                     );
-                  })}
+                  }).filter(Boolean)}
                 </tbody>
               </table>
             )}
@@ -786,6 +856,11 @@ const DailyUpdates = () => {
             ) : (
               <div className="space-y-4">
                 {updates.map((update) => {
+                  // Ensure update is a valid object
+                  if (!update || typeof update !== 'object' || update.type) {
+                    return null;
+                  }
+                  
                   const employee = employees.find(emp => {
                     if (emp.source === 'user_management') {
                       return emp.original_user_id == update.employee_id;
@@ -794,31 +869,34 @@ const DailyUpdates = () => {
                   });
                   
                   return (
-                    <div key={update.id} className=" rounded-xl p-4 hover:shadow-sm transition-shadow">
+                    <div key={update.id || Math.random()} className=" rounded-xl p-4 hover:shadow-sm transition-shadow">
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex items-center gap-3">
                           <div className="flex items-center gap-2 text-sm text-gray-600">
                             <FiCalendar size={16} />
-                            {new Date(update.date).toLocaleDateString()}
+                            {update.date ? new Date(update.date).toLocaleDateString() : 'N/A'}
                           </div>
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                             update.status === 'Submitted' 
                               ? 'bg-green-100 text-green-800' 
                               : 'bg-yellow-100 text-yellow-800'
                           }`}>
-                            {update.status}
+                            {update.status || 'Draft'}
                           </span>
                         </div>
                         <div className="flex gap-2">
                           {canEdit && canEditUpdate(update) && (
                             <button
+                              type="button"
                               onClick={() => handleEdit(update)}
                               className="p-2 text-gray-600 hover:text-blue-600 hover:text-white rounded-lg transition-colors"
                               style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
                               onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
                               onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                              aria-label={`Edit daily update for ${update.date}`}
+                              title="Edit this daily update"
                             >
-                              <FiEdit size={16} />
+                              <FiEdit size={16} aria-hidden="true" />
                             </button>
                           )}
                         </div>
@@ -828,13 +906,13 @@ const DailyUpdates = () => {
                         <div>
                           <h4 className="font-medium text-gray-900 mb-1">Employee</h4>
                           <p className="text-gray-700 text-sm">
-                            {employee?.employee_code || `EMP${update.employee_id}`} - {employee?.name || `Employee ${update.employee_id}`}
+                            {employee?.employee_code || `EMP${update.employee_id || 'N/A'}`} - {employee?.name || `Employee ${update.employee_id || 'N/A'}`}
                           </p>
                         </div>
                         
                         <div>
                           <h4 className="font-medium text-gray-900 mb-1">Work Done</h4>
-                          <p className="text-gray-700 text-sm">{update.work_done}</p>
+                          <p className="text-gray-700 text-sm">{update.work_done || 'No description'}</p>
                         </div>
                         
                         {update.blockers && (
@@ -860,7 +938,7 @@ const DailyUpdates = () => {
                       </div>
                     </div>
                   );
-                })}
+                }).filter(Boolean)}
               </div>
             )}
           </div>

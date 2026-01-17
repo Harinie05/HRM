@@ -372,8 +372,12 @@ export default function EmployeeCertifications() {
               borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
             }}>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-gray-100 border-0 rounded-xl flex items-center justify-center">
-                  <FiAward className="w-5 h-5 text-black" />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiAward className="w-5 h-5" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">
                   {editing ? "Edit Certification" : "Add Certification"}

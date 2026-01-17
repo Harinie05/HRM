@@ -225,6 +225,22 @@ def upload_document(
     return doc
 
 # -----------------------------------------------------------
+# GET PHOTOS FOR EMPLOYEE FROM DOCUMENT_UPLOAD TABLE
+# -----------------------------------------------------------
+@router.get("/documents/photo/{candidate_id}")
+def get_employee_photos(candidate_id: int, db: Session = Depends(get_tenant_db)):
+    """Get all photo documents for a specific candidate from document_upload table"""
+    try:
+        photos = db.query(DocumentUpload).filter(
+            DocumentUpload.candidate_id == candidate_id,
+            DocumentUpload.document_type == 'photo'
+        ).order_by(DocumentUpload.uploaded_at.desc()).all()
+        
+        return photos
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch photos: {str(e)}")
+
+# -----------------------------------------------------------
 # 5) VIEW ALL DOCUMENTS OF A CANDIDATE
 # -----------------------------------------------------------
 @router.get("/{candidate_id}/documents", response_model=list[DocumentUploadResponse])

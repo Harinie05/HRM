@@ -12,25 +12,7 @@ from utils.permission import require_permission
 
 router = APIRouter()
 
-# Create sample data for testing
-@router.post("/work-assignments/create-sample-data")
-async def create_sample_data(db: Session = Depends(get_tenant_db)):
-    try:
-        existing_review = db.query(PMSReview).first()
-        if not existing_review:
-            sample_review = PMSReview(
-                employee_id=1,
-                cycle="Sample Review Cycle",
-                review_type="Annual",
-                status="Draft"
-            )
-            db.add(sample_review)
-            db.commit()
-            return {"message": "Sample review created"}
-        return {"message": "Sample data already exists"}
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=500, detail=str(e))
+
 
 # Get review cycles with automated progress
 @router.get("/work-assignments/review-cycles")
@@ -177,7 +159,14 @@ async def get_assignments(
             SELECT wa.id, wa.title, wa.category, wa.weightage_percentage, wa.frequency, 
                    wa.review_cycle_id, wa.assigned_employee_id, wa.status, wa.is_active,
                    wa.deleted_at,
-                   u.name as employee_name, rc.cycle
+                   CASE 
+                     WHEN wa.employee_name IS NOT NULL AND wa.employee_code IS NOT NULL 
+                     THEN CONCAT(wa.employee_name, ' (', wa.employee_code, ')')
+                     WHEN wa.employee_name IS NOT NULL 
+                     THEN wa.employee_name
+                     ELSE COALESCE(u.name, 'Unknown Employee')
+                   END as employee_name, 
+                   rc.cycle
             FROM work_assignments wa
             LEFT JOIN users u ON wa.assigned_employee_id = u.id
             LEFT JOIN pms_reviews rc ON wa.review_cycle_id = rc.id
@@ -299,6 +288,45 @@ async def create_assignment(
     user = Depends(require_permission("add_work_assignment"))
 ):
     try:
+        # Get employee details from the frontend selection
+        employee_name = "Unknown Employee"
+        employee_code = "Unknown Code"
+        assigned_employee_id = assignment.get("assigned_employee_id")
+        
+        # Handle prefixed user IDs
+        actual_employee_id = assigned_employee_id
+        if str(assigned_employee_id).startswith('user_'):
+            actual_employee_id = assigned_employee_id.replace('user_', '')
+        
+        # Get employee name and code from frontend data if provided
+        if assignment.get("employee_name") and assignment.get("employee_code"):
+            employee_name = assignment.get("employee_name")
+            employee_code = assignment.get("employee_code")
+        else:
+            # Fallback to database lookup
+            try:
+                # Try onboarding table first
+                onboarding_result = db.execute(text("""
+                    SELECT candidate_name, employee_id FROM onboarding_candidates 
+                    WHERE application_id = :emp_id AND employee_id IS NOT NULL
+                    LIMIT 1
+                """), {"emp_id": actual_employee_id}).fetchone()
+                
+                if onboarding_result:
+                    employee_name = onboarding_result[0]
+                    employee_code = onboarding_result[1]
+                else:
+                    # Try users table as fallback
+                    user_result = db.execute(text("""
+                        SELECT name, employee_code FROM users WHERE id = :emp_id LIMIT 1
+                    """), {"emp_id": actual_employee_id}).fetchone()
+                    
+                    if user_result:
+                        employee_name = user_result[0]
+                        employee_code = user_result[1] or f"EMP{actual_employee_id}"
+            except Exception as e:
+                print(f"Error getting employee details: {e}")
+        
         # First create the tables if they don't exist
         db.execute(text("""
             CREATE TABLE IF NOT EXISTS work_assignments (
@@ -309,6 +337,8 @@ async def create_assignment(
                 frequency VARCHAR(50) NOT NULL,
                 review_cycle_id INT NOT NULL,
                 assigned_employee_id INT NOT NULL,
+                employee_name VARCHAR(255) NULL,
+                employee_code VARCHAR(100) NULL,
                 status VARCHAR(50) DEFAULT 'Active',
                 is_active BOOLEAN DEFAULT 1,
                 deleted_at DATETIME NULL,
@@ -317,13 +347,20 @@ async def create_assignment(
             )
         """))
         
-        # Add deleted_at column if it doesn't exist
+        # Add employee_name and employee_code columns if they don't exist
         try:
             db.execute(text("""
-                ALTER TABLE work_assignments ADD COLUMN deleted_at DATETIME NULL
+                ALTER TABLE work_assignments ADD COLUMN employee_name VARCHAR(255) NULL
             """))
         except:
-            pass  # Column already exists
+            pass
+        
+        try:
+            db.execute(text("""
+                ALTER TABLE work_assignments ADD COLUMN employee_code VARCHAR(100) NULL
+            """))
+        except:
+            pass
         
         # Fix any existing NULL records
         db.execute(text("""
@@ -332,16 +369,27 @@ async def create_assignment(
             WHERE status IS NULL OR is_active IS NULL
         """))
         
+        assignment_data = {
+            "title": assignment.get("title"),
+            "category": assignment.get("category"),
+            "weightage_percentage": assignment.get("weightage_percentage"),
+            "frequency": assignment.get("frequency"),
+            "review_cycle_id": assignment.get("review_cycle_id"),
+            "assigned_employee_id": actual_employee_id,
+            "employee_name": employee_name,
+            "employee_code": employee_code
+        }
+        
         db.execute(text("""
-            INSERT INTO work_assignments (title, category, weightage_percentage, frequency, review_cycle_id, assigned_employee_id, status, is_active, created_at, updated_at)
-            VALUES (:title, :category, :weightage_percentage, :frequency, :review_cycle_id, :assigned_employee_id, 'Active', 1, NOW(), NOW())
-        """), assignment)
+            INSERT INTO work_assignments (title, category, weightage_percentage, frequency, review_cycle_id, assigned_employee_id, employee_name, employee_code, status, is_active, created_at, updated_at)
+            VALUES (:title, :category, :weightage_percentage, :frequency, :review_cycle_id, :assigned_employee_id, :employee_name, :employee_code, 'Active', 1, NOW(), NOW())
+        """), assignment_data)
         
         # Get the inserted ID
         result = db.execute(text("SELECT LAST_INSERT_ID()")).scalar()
         
         # Log the audit trail
-        audit_crud(request, db, user, "CREATE_WORK_ASSIGNMENT", "work_assignments", str(result), {}, assignment)
+        audit_crud(request, db, user, "CREATE_WORK_ASSIGNMENT", "work_assignments", str(result), {}, assignment_data)
         
         db.commit()
         return {"message": "Assignment created successfully"}
@@ -540,10 +588,12 @@ async def get_employees_compat(db: Session = Depends(get_tenant_db)):
 async def get_kpi_dashboard_compat(db: Session = Depends(get_tenant_db)):
     try:
         result = db.execute(text("""
-            SELECT DISTINCT wa.assigned_employee_id, u.name as employee_name, u.employee_code
+            SELECT DISTINCT wa.assigned_employee_id, 
+                   COALESCE(wa.employee_name, u.name, 'Unknown Employee') as employee_name, 
+                   COALESCE(wa.employee_code, u.employee_code, CONCAT('EMP', wa.assigned_employee_id)) as employee_code
             FROM work_assignments wa
             LEFT JOIN users u ON wa.assigned_employee_id = u.id
-            WHERE wa.is_active = 1 AND u.name IS NOT NULL
+            WHERE wa.is_active = 1
         """)).fetchall()
         
         kpi_data = []
@@ -552,16 +602,8 @@ async def get_kpi_dashboard_compat(db: Session = Depends(get_tenant_db)):
             employee_name = row[1]
             employee_code = row[2]
             
-            # Get employee identifier from onboarding if no employee_code
-            employee_identifier = employee_code
-            if not employee_identifier:
-                onboarded_result = db.execute(text("""
-                    SELECT employee_id FROM onboarding_candidates 
-                    WHERE candidate_name = :name AND employee_id IS NOT NULL
-                    LIMIT 1
-                """), {"name": employee_name}).fetchone()
-                if onboarded_result:
-                    employee_identifier = onboarded_result[0]
+            # Use employee_code as identifier, fallback to employee_id
+            employee_identifier = employee_code if employee_code and employee_code != f'EMP{employee_id}' else employee_id
             
             # Get scores using the correct employee identifier
             score_result = db.execute(text("""
@@ -581,12 +623,12 @@ async def get_kpi_dashboard_compat(db: Session = Depends(get_tenant_db)):
                 WHERE assigned_employee_id = :employee_id AND is_active = 1
             """), {"employee_id": employee_id}).scalar() or 0
             
-            print(f"Employee {employee_name} (ID: {employee_id}): assignments={assignment_count}, score={completed_score}")
+            print(f"Employee {employee_name} (ID: {employee_id}, Code: {employee_code}): assignments={assignment_count}, score={completed_score}")
             
             kpi_data.append({
-                "employee_id": employee_identifier or employee_id,
-                "employee": employee_name or "Unknown",
-                "employee_name": employee_name or "Unknown",
+                "employee_id": employee_identifier,
+                "employee": employee_name,
+                "employee_name": employee_name,
                 "target_value": 100,
                 "current_value": round(completed_score, 2),
                 "progress": f"{round(completed_score, 1)}%",

@@ -52,7 +52,13 @@ async def add_medical(
     medical_insurance_number: str = Form(None),
     medical_council_registration_number: str = Form(None),
     medical_council_name: str = Form(None),
+    medical_council_state: str = Form(None),
+    medical_council_country: str = Form(None),
+    medical_council_issue_date: str = Form(None),
     medical_council_expiry_date: str = Form(None),
+    medical_degree: str = Form(None),
+    medical_specialization: str = Form(None),
+    medical_council_status: str = Form("Active"),
     vaccination_records: str = Form(None),
     professional_licenses: str = Form(None),
     license_alert_enabled: str = Form("true"),
@@ -112,7 +118,13 @@ async def add_medical(
             medical_insurance_number=medical_insurance_number,
             medical_council_registration_number=medical_council_registration_number,
             medical_council_name=medical_council_name,
+            medical_council_state=medical_council_state,
+            medical_council_country=medical_council_country,
+            medical_council_issue_date=medical_council_issue_date,
             medical_council_expiry_date=medical_council_expiry_date,
+            medical_degree=medical_degree,
+            medical_specialization=medical_specialization,
+            medical_council_status=medical_council_status,
             vaccination_records=json.loads(vaccination_records) if vaccination_records else None,
             professional_licenses=json.loads(professional_licenses) if professional_licenses else None,
             license_alert_enabled=license_alert_enabled_bool,
@@ -230,7 +242,13 @@ async def update_medical(
     medical_insurance_number: str = Form(None),
     medical_council_registration_number: str = Form(None),
     medical_council_name: str = Form(None),
+    medical_council_state: str = Form(None),
+    medical_council_country: str = Form(None),
+    medical_council_issue_date: str = Form(None),
     medical_council_expiry_date: str = Form(None),
+    medical_degree: str = Form(None),
+    medical_specialization: str = Form(None),
+    medical_council_status: str = Form("Active"),
     vaccination_records: str = Form(None),
     professional_licenses: str = Form(None),
     license_alert_enabled: str = Form("true"),
@@ -270,7 +288,13 @@ async def update_medical(
         setattr(med, 'medical_insurance_number', medical_insurance_number)
         setattr(med, 'medical_council_registration_number', medical_council_registration_number)
         setattr(med, 'medical_council_name', medical_council_name)
+        setattr(med, 'medical_council_state', medical_council_state)
+        setattr(med, 'medical_council_country', medical_council_country)
+        setattr(med, 'medical_council_issue_date', medical_council_issue_date)
         setattr(med, 'medical_council_expiry_date', medical_council_expiry_date)
+        setattr(med, 'medical_degree', medical_degree)
+        setattr(med, 'medical_specialization', medical_specialization)
+        setattr(med, 'medical_council_status', medical_council_status)
         setattr(med, 'vaccination_records', json.loads(vaccination_records) if vaccination_records else None)
         setattr(med, 'professional_licenses', json.loads(professional_licenses) if professional_licenses else None)
         setattr(med, 'license_alert_enabled', license_alert_enabled_bool)
