@@ -170,8 +170,8 @@ export default function TrainingCertificates() {
                 style={{
                   backgroundColor: 'var(--primary-color)'
                 }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color)'}
               >
                 <Award className="w-4 h-4" />
                 Generate Certificate
@@ -439,8 +439,8 @@ export default function TrainingCertificates() {
                 style={{
                   backgroundColor: 'var(--primary-color)'
                 }}
-                onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--secondary-color)')}
-                onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = 'var(--primary-color)')}
+                onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = 'var(--secondary-color)')}
+                onMouseLeave={(e) => !loading && (e.currentTarget.style.backgroundColor = 'var(--primary-color)')}
               >
                 {loading ? "Generating..." : "Generate Certificate"}
               </button>

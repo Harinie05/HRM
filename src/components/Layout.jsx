@@ -26,8 +26,14 @@ export default function Layout({ children, title, subtitle, stats, breadcrumb })
           />
         )}
         
-        {/* Sidebar */}
-        <div className={`${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 transition-transform duration-300 ease-in-out`}>
+        {/* Sidebar - Always visible on desktop, toggle on mobile */}
+        <div className={`
+          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} 
+          lg:translate-x-0 
+          fixed lg:sticky lg:top-0 lg:h-screen
+          inset-y-0 left-0 z-50 
+          transition-transform duration-300 ease-in-out
+        `}>
           <Sidebar 
             isCollapsed={isSidebarCollapsed} 
             onToggle={toggleSidebar}

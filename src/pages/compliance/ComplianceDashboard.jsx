@@ -239,8 +239,8 @@ const ComplianceDashboard = () => {
               onClick={handleTakeAction}
               style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
               className="mt-2 text-white px-3 py-1 rounded text-xs transition-colors"
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)'}
             >
               Take Action
             </button>
@@ -252,8 +252,8 @@ const ComplianceDashboard = () => {
               onClick={handleUpdateNow}
               style={{ backgroundColor: 'var(--secondary-color, #474e71)' }}
               className="mt-2 text-white px-3 py-1 rounded text-xs transition-colors"
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color, #474e71)'}
             >
               Update Now
             </button>

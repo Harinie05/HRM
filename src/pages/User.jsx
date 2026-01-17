@@ -375,14 +375,14 @@ export default function Users() {
                       }}
                       onMouseEnter={(e) => {
                         if (filter !== "all") {
-                          e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                          e.target.style.color = 'white';
+                          e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          e.currentTarget.style.color = 'white';
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (filter !== "all") {
-                          e.target.style.backgroundColor = 'transparent';
-                          e.target.style.color = '#6b7280';
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = '#6b7280';
                         }
                       }}
                     >
@@ -401,14 +401,14 @@ export default function Users() {
                       }}
                       onMouseEnter={(e) => {
                         if (filter !== "with-role") {
-                          e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                          e.target.style.color = 'white';
+                          e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          e.currentTarget.style.color = 'white';
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (filter !== "with-role") {
-                          e.target.style.backgroundColor = 'transparent';
-                          e.target.style.color = '#6b7280';
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = '#6b7280';
                         }
                       }}
                     >
@@ -427,14 +427,14 @@ export default function Users() {
                       }}
                       onMouseEnter={(e) => {
                         if (filter !== "without-role") {
-                          e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                          e.target.style.color = 'white';
+                          e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          e.currentTarget.style.color = 'white';
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (filter !== "without-role") {
-                          e.target.style.backgroundColor = 'transparent';
-                          e.target.style.color = '#6b7280';
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = '#6b7280';
                         }
                       }}
                     >
@@ -464,15 +464,15 @@ export default function Users() {
                 {canAdd && (
                   <button 
                     onClick={() => setShowCreateModal(true)}
-                    className="inline-flex items-center justify-center gap-2 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium whitespace-nowrap"
+                    className="inline-flex items-center justify-center gap-2 text-white px-4 py-2 rounded-lg transition-all duration-200 text-sm font-medium whitespace-nowrap hover:shadow-lg"
                     style={{
                       backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                     }}
                     onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                      e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                     }}
                     onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                      e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                     }}
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -800,8 +800,8 @@ export default function Users() {
                   disabled={loading || !name.trim() || !email.trim() || !password.trim() || !role || !department}
                   style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
                   className="flex-1 px-4 py-3 text-white rounded-xl font-medium transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                  onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)')}
-                  onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-color, #2862e9)')}
+                  onMouseEnter={(e) => !e.currentTarget.disabled && (e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)')}
+                  onMouseLeave={(e) => !e.currentTarget.disabled && (e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)')}
                 >
                   {loading ? "Creating..." : "Create"}
                 </button>
@@ -1007,8 +1007,8 @@ export default function Users() {
                   }}
                   style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
                   className="flex-1 px-4 py-3 text-white rounded-xl font-medium transition-colors text-sm"
-                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                 >
                   Update
                 </button>

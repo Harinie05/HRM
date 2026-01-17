@@ -898,14 +898,14 @@ export default function AttendanceLogs() {
                           }}
                           onMouseEnter={(e) => {
                             if (activeTab !== tab.id) {
-                              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                              e.target.style.color = 'white';
+                              e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                              e.currentTarget.style.color = 'white';
                             }
                           }}
                           onMouseLeave={(e) => {
                             if (activeTab !== tab.id) {
-                              e.target.style.backgroundColor = 'transparent';
-                              e.target.style.color = '#6b7280';
+                              e.currentTarget.style.backgroundColor = 'transparent';
+                              e.currentTarget.style.color = '#6b7280';
                             }
                           }}
                         >
@@ -1052,11 +1052,9 @@ export default function AttendanceLogs() {
                                 style={{
                                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                                 }}
-                                onMouseEnter={(e) => {
-                                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                                 }}
-                                onMouseLeave={(e) => {
-                                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                                 }}
                               >
                                 Add
@@ -1226,11 +1224,9 @@ export default function AttendanceLogs() {
                             style={{
                               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                             }}
-                            onMouseEnter={(e) => {
-                              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                             }}
-                            onMouseLeave={(e) => {
-                              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                             }}
                           >
                             <svg className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -1277,11 +1273,9 @@ export default function AttendanceLogs() {
                             style={{
                               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                             }}
-                            onMouseEnter={(e) => {
-                              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                             }}
-                            onMouseLeave={(e) => {
-                              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                             }}
                           >
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -1584,8 +1578,8 @@ export default function AttendanceLogs() {
                         onClick={handleRegularizationSubmit}
                         className="w-full py-2 sm:py-3 text-white rounded-lg font-medium transition-colors text-sm sm:text-base"
                         style={{ backgroundColor: colors.primary }}
-                        onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                       >
                         Submit Request
                       </button>
@@ -1623,8 +1617,8 @@ export default function AttendanceLogs() {
                                 onClick={() => handleApprove(request.id)}
                                 className="px-3 sm:px-4 py-2 text-white rounded-lg text-xs sm:text-sm font-medium transition-colors"
                                 style={{ backgroundColor: colors.primary }}
-                                onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                                onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                               >
                                 Approve
                               </button>
@@ -1814,8 +1808,8 @@ export default function AttendanceLogs() {
                                 onClick={() => handleOdApprove(application.id)}
                                 className="px-3 sm:px-4 py-2 text-white rounded-lg text-xs sm:text-sm font-medium transition-colors"
                                 style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
-                                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
+                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                               >
                                 Approve
                               </button>
@@ -1940,8 +1934,8 @@ export default function AttendanceLogs() {
                       }}
                       className="px-4 sm:px-6 py-2 sm:py-3 text-white rounded-lg font-medium transition-colors text-sm sm:text-base"
                       style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                      onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                     >
                       Generate Report
                     </button>
@@ -1951,12 +1945,10 @@ export default function AttendanceLogs() {
                         backgroundColor: 'var(--primary-color, #4575b5)',
                         border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                       }} 
-                      onMouseEnter={(e) => { 
-                        e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; 
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; 
                         e.target.style.border = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color')}`;
                       }} 
-                      onMouseLeave={(e) => { 
-                        e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; 
+                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; 
                         e.target.style.border = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`;
                       }}
                     >

@@ -1260,11 +1260,9 @@ export default function Onboarding() {
                             style={{
                               backgroundColor: 'var(--primary-color, #4575b5)'
                             }}
-                            onMouseEnter={(e) => {
-                              e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                             }}
-                            onMouseLeave={(e) => {
-                              e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                             }}
                             onClick={() => window.open(`${api.defaults.baseURL}/recruitment/onboarding/document/${doc.id}/view`, '_blank')}
                           >

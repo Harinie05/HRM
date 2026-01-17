@@ -277,14 +277,14 @@ export default function StaffScheduling() {
             }}
             onMouseEnter={(e) => {
               if (activeTab !== tab) {
-                e.target.style.backgroundColor = colors.secondary;
-                e.target.style.color = 'white';
+                e.currentTarget.style.backgroundColor = colors.secondary;
+                e.currentTarget.style.color = 'white';
               }
             }}
             onMouseLeave={(e) => {
               if (activeTab !== tab) {
-                e.target.style.backgroundColor = 'transparent';
-                e.target.style.color = '#6b7280';
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = '#6b7280';
               }
             }}
           >
@@ -464,8 +464,8 @@ export default function StaffScheduling() {
                     backgroundColor: colors.primary,
                     borderColor: colors.primary
                   }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                 >
                   {editingLoad ? 'Update Patient Load' : 'Record Patient Load'}
                 </button>
@@ -646,8 +646,8 @@ export default function StaffScheduling() {
                     backgroundColor: colors.primary,
                     borderColor: colors.primary
                   }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                 >
                   {editingAllocation ? 'Update Staff Allocation' : 'Create Staff Allocation'}
                 </button>

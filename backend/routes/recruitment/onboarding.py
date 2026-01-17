@@ -241,6 +241,16 @@ def list_onboarding_candidates(request: Request, db: Session = Depends(get_tenan
     return candidates
 
 # -----------------------------------------------------------
+# 6.1) GET ONBOARDING RECORD BY CANDIDATE ID
+# -----------------------------------------------------------
+@router.get("/candidate/{candidate_id}")
+def get_onboarding_by_candidate_id(candidate_id: int, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+    onboarding = db.query(OnboardingCandidate).filter(OnboardingCandidate.application_id == candidate_id).first()
+    if not onboarding:
+        raise HTTPException(status_code=404, detail="Onboarding record not found")
+    return onboarding
+
+# -----------------------------------------------------------
 # 7) LIST ALL ONBOARDED EMPLOYEES FOR EIS
 # -----------------------------------------------------------
 @router.get("/list")

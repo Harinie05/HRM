@@ -931,8 +931,8 @@ export default function NABHCompliance() {
               type="submit"
               style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
               className="px-8 py-3 text-white rounded-lg border-0 transition-colors text-lg"
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)'}
             >
               Save NABH Compliance Record
             </button>

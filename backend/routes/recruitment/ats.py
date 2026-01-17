@@ -13,6 +13,7 @@ from models.models_tenant import (
     ApplicationStageHistory,
     OfferLetter,
     OnboardingCandidate,
+    OrganizationBranding,
 )
 from schemas.schemas_tenant import (
     CandidateResponse,
@@ -309,19 +310,6 @@ def move_to_next_round(
             
         elif req.action == "rejected":
             setattr(candidate, 'stage', "Rejected")
-            
-            # Send rejection email
-            rejection_success = send_rejection_email(candidate, job)
-            
-            # Audit rejection email
-            audit_crud(request, db, user, "SEND_REJECTION_EMAIL", "email_communications", str(candidate.id), {}, {
-                "recipient": candidate.email,
-                "subject": f"Application Update - {job.title} Position",
-                "email_type": "rejection_notification",
-                "status": "sent" if rejection_success else "failed",
-                "candidate_name": candidate.name,
-                "job_title": job.title
-            })
         elif req.action == "next_round":
             setattr(candidate, 'stage', f"Round {req.next_round} Scheduled")
             setattr(candidate, 'current_round', req.next_round)
@@ -331,25 +319,57 @@ def move_to_next_round(
         db.commit()
         
         # Send email notification
-        if req.action in ["selected", "next_round"]:
+        if req.action == "rejected":
+            rejection_success = send_rejection_email(candidate, job, db)
+            audit_crud(request, db, user, "SEND_REJECTION_EMAIL", "email_communications", str(candidate.id), {}, {
+                "recipient": candidate.email,
+                "subject": f"Application Update - {job.title} Position",
+                "email_type": "rejection_notification",
+                "status": "sent" if rejection_success else "failed",
+                "candidate_name": candidate.name,
+                "job_title": job.title
+            })
+        elif req.action == "selected":
+            logger.info(f"📧 Preparing to send SELECTION email for candidate {candidate.id} - {candidate.name}")
+            logger.info(f"📧 Candidate email: {candidate.email}")
+            logger.info(f"📧 Job title: {job.title}")
             email_success = send_round_notification_email(
                 candidate=candidate,
                 job=job,
                 action=req.action,
-                next_round=req.next_round if req.action == "next_round" else None,
-                interview_date=req.interview_date if req.action == "next_round" else None,
-                interview_time=req.interview_time if req.action == "next_round" else None
+                db=db,
+                next_round=None,
+                interview_date=None,
+                interview_time=None
             )
-            
-            # Audit email communication
+            logger.info(f"📧 Email send result: {email_success}")
+            audit_crud(request, db, user, "SEND_SELECTION_EMAIL", "email_communications", str(candidate.id), {}, {
+                "recipient": candidate.email,
+                "subject": f"Selection notification - {job.title}",
+                "email_type": "selection_notification",
+                "action": req.action,
+                "status": "sent" if email_success else "failed",
+                "candidate_name": candidate.name,
+                "job_title": job.title
+            })
+        elif req.action == "next_round":
+            email_success = send_round_notification_email(
+                candidate=candidate,
+                job=job,
+                action=req.action,
+                db=db,
+                next_round=req.next_round,
+                interview_date=req.interview_date,
+                interview_time=req.interview_time
+            )
             audit_crud(request, db, user, "SEND_INTERVIEW_EMAIL", "email_communications", str(candidate.id), {}, {
                 "recipient": candidate.email,
-                "subject": f"Interview notification - {req.action}",
+                "subject": f"Interview notification - Round {req.next_round}",
                 "email_type": "interview_notification",
                 "action": req.action,
                 "status": "sent" if email_success else "failed",
                 "candidate_name": candidate.name,
-                "job_title": job.title if job else "Unknown"
+                "job_title": job.title
             })
         
         return {"message": f"Candidate {req.action} successfully", "candidate": candidate}
@@ -402,13 +422,19 @@ def create_offer_and_onboarding(candidate, job, db):
         db.rollback()
         logger.error(f"Failed to create offer/onboarding for {candidate.name}: {str(e)}")
 
-def send_round_notification_email(candidate, job, action, next_round=None, interview_date=None, interview_time=None):
+def get_organization_name(db: Session) -> str:
+    """Get organization name from branding table"""
+    org_branding = db.query(OrganizationBranding).first()
+    return org_branding.organization_name if org_branding else "Company"
+
+def send_round_notification_email(candidate, job, action, db, next_round=None, interview_date=None, interview_time=None):
     """Send email notification for round progression"""
     try:
+        company_name = get_organization_name(db)
         round_names = job.round_names or []
         
         if action == "selected":
-            subject = f"🎉 Congratulations! You've been selected for {job.title} position"
+            subject = f"Congratulations! You've been selected for {job.title} position at {company_name}"
             html_body = f"""<!DOCTYPE html>
 <html>
 <head>
@@ -423,23 +449,23 @@ def send_round_notification_email(candidate, job, action, next_round=None, inter
 <body>
     <div class="container">
         <div class="header">
-            <h2>🎉 Congratulations! You've been selected!</h2>
+            <h2>Congratulations! You have been selected</h2>
         </div>
         
         <p>Dear <strong>{candidate.name}</strong>,</p>
         
-        <p>We are delighted to inform you that you have been <strong>selected</strong> for the <strong>{job.title}</strong> position at <strong>NUTRYAH</strong>!</p>
+        <p>We are delighted to inform you that you have been <strong>selected</strong> for the <strong>{job.title}</strong> position at <strong>{company_name}</strong>.</p>
         
         <div class="section">
-            <h3>✅ NEXT STEPS:</h3>
+            <h3>Next Steps:</h3>
             <p>Our HR team will contact you shortly with the offer details and onboarding process.</p>
         </div>
         
-        <p>Welcome to the NUTRYAH family!</p>
+        <p>We look forward to welcoming you to the {company_name} team.</p>
         
         <p><strong>Best regards,</strong><br>
         HR Team<br>
-        NUTRYAH</p>
+        {company_name}</p>
     </div>
 </body>
 </html>"""
@@ -454,10 +480,9 @@ def send_round_notification_email(candidate, job, action, next_round=None, inter
             elif isinstance(round_names, dict) and str(next_round) in round_names:
                 round_name = f"Round {next_round} - {round_names[str(next_round)]}"
             else:
-                # Check if custom round name is provided for additional rounds
                 round_name = f"Round {next_round} - Interview"
             
-            subject = f"🎯 You've been selected for {round_name} - {job.title} position"
+            subject = f"You've been selected for {round_name} - {job.title} position at {company_name}"
             html_body = f"""<!DOCTYPE html>
 <html>
 <head>
@@ -477,7 +502,7 @@ def send_round_notification_email(candidate, job, action, next_round=None, inter
         
         <p>Dear <strong>{candidate.name}</strong>,</p>
         
-        <p>Congratulations! You have been selected for <strong>Round {next_round}</strong> of the interview process for the <strong>{job.title}</strong> position at <strong>NUTRYAH</strong>.</p>
+        <p>Congratulations! You have been selected for <strong>Round {next_round}</strong> of the interview process for the <strong>{job.title}</strong> position at <strong>{company_name}</strong>.</p>
         
         <div class="section">
             <h3>📅 ROUND {next_round} INTERVIEW DETAILS:</h3>
@@ -501,12 +526,16 @@ def send_round_notification_email(candidate, job, action, next_round=None, inter
         
         <p><strong>Best regards,</strong><br>
         HR Team<br>
-        NUTRYAH</p>
+        {company_name}</p>
     </div>
 </body>
 </html>"""
+        else:
+            logger.error(f"❌ Invalid action '{action}' for email notification")
+            return False
         
         # Send email
+        logger.info(f"📧 Sending {action} email to {candidate.email}")
         success = send_email(
             to_email=candidate.email,
             subject=subject,
@@ -525,9 +554,10 @@ def send_round_notification_email(candidate, job, action, next_round=None, inter
         return False
 
 # Complete the incomplete function at the end
-def send_rejection_email(candidate, job):
+def send_rejection_email(candidate, job, db):
     """Send rejection email to candidate"""
     try:
+        company_name = get_organization_name(db)
         subject = f"Application Update - {job.title} Position"
         html_body = f"""<!DOCTYPE html>
 <html>
@@ -548,7 +578,7 @@ def send_rejection_email(candidate, job):
         
         <p>Dear <strong>{candidate.name}</strong>,</p>
         
-        <p>Thank you for your interest in the <strong>{job.title}</strong> position at <strong>NUTRYAH</strong> and for taking the time to participate in our interview process.</p>
+        <p>Thank you for your interest in the <strong>{job.title}</strong> position at <strong>{company_name}</strong> and for taking the time to participate in our interview process.</p>
         
         <div class="section">
             <p>After careful consideration, we have decided to move forward with other candidates whose qualifications more closely match our current requirements.</p>
@@ -558,11 +588,11 @@ def send_rejection_email(candidate, job):
         
         <p>We will keep your resume on file and will reach out if a suitable position becomes available.</p>
         
-        <p>Thank you again for your time and interest in NUTRYAH.</p>
+        <p>Thank you again for your time and interest in {company_name}.</p>
         
         <p><strong>Best regards,</strong><br>
         HR Team<br>
-        NUTRYAH</p>
+        {company_name}</p>
     </div>
 </body>
 </html>"""

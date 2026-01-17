@@ -228,11 +228,9 @@ export default function EmployeeExperience() {
                 style={{
                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                 }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                 }}
               >
                 <FiPlus className="w-4 h-4" />
@@ -250,12 +248,10 @@ export default function EmployeeExperience() {
               color: 'white',
               borderColor: 'var(--primary-color, #4575b5)'
             }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
               e.target.style.borderColor = 'var(--secondary-color, #6b7280)';
             }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
               e.target.style.borderColor = 'var(--primary-color, #4575b5)';
             }}
           >
@@ -753,11 +749,9 @@ export default function EmployeeExperience() {
                   style={{
                     backgroundColor: 'var(--primary-color, #4575b5)'
                   }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                   }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                   }}
                 >
                   {editing ? "Update" : "Save"} Experience

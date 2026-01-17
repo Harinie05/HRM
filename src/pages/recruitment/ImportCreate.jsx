@@ -123,11 +123,9 @@ export default function ImportCandidates() {
               style={{
                 backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
               }}
-              onMouseEnter={(e) => {
-                e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
               }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
               }}
             >
               + Add Candidate
@@ -174,10 +172,10 @@ export default function ImportCandidates() {
                             color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                           }}
                           onMouseEnter={(e) => {
-                            e.target.style.color = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                            e.currentTarget.style.color = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                           }}
                           onMouseLeave={(e) => {
-                            e.target.style.color = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                            e.currentTarget.style.color = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                           }}
                         >
                           📄 View Resume
@@ -320,11 +318,9 @@ export default function ImportCandidates() {
                   style={{
                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                   }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                   }}
                   onClick={saveCandidate}
                 >

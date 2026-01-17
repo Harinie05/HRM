@@ -301,8 +301,8 @@ export default function ReviewCycle() {
               onClick={() => setShowDeleted(true)}
               className="text-white px-4 py-2 rounded-lg transition-colors text-sm whitespace-nowrap"
               style={{ backgroundColor: 'var(--primary-color)' }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color)'}
             >
               Show Deleted ({deletedCount})
             </button>
@@ -312,8 +312,8 @@ export default function ReviewCycle() {
               onClick={() => setShowDeleted(false)}
               className="text-white px-4 py-2 rounded-lg transition-colors text-sm whitespace-nowrap"
               style={{ backgroundColor: 'var(--primary-color)' }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color)'}
             >
               Hide Deleted
             </button>
@@ -325,8 +325,8 @@ export default function ReviewCycle() {
               style={{
                 backgroundColor: 'var(--primary-color)'
               }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color)'}
             >
               <Plus className="w-4 h-4" />
               Create Review Cycle
@@ -441,8 +441,8 @@ export default function ReviewCycle() {
                 style={{
                   backgroundColor: 'var(--primary-color)'
                 }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color)'}
               >
                 {editingCycle ? 'Update Cycle' : 'Create Cycle'}
               </button>

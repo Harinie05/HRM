@@ -337,8 +337,8 @@ export default function PayrollAdjustments() {
           {canAdd && (
             <button 
               onClick={() => handleOpenModal()}
-              onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-              onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
               className="px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium w-full sm:w-auto justify-center text-white"
               style={{ 
                 backgroundColor: colors.primary,
@@ -634,8 +634,8 @@ export default function PayrollAdjustments() {
                 <button
                   type="submit"
                   disabled={loading}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                   className="flex-1 px-4 py-2 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium transition-colors"
                   style={{
                     backgroundColor: colors.primary,

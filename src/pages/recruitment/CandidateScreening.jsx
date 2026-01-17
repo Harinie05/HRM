@@ -206,8 +206,8 @@ export default function CandidateScreening() {
                   style={{
                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
-                  onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71')}
-                  onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5')}
+                  onMouseEnter={(e) => !e.currentTarget.disabled && (e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71')}
+                  onMouseLeave={(e) => !e.currentTarget.disabled && (e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5')}
                 >
                   Schedule Interviews ({selectedCandidates.length})
                 </button>
@@ -220,8 +220,8 @@ export default function CandidateScreening() {
                   style={{
                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
                 >
                   View ATS Pipeline
                 </button>
@@ -311,11 +311,11 @@ export default function CandidateScreening() {
                         
                         <td className="p-3 text-center">
                           <span className={`px-2 py-1 text-xs rounded ${
-                            app.match_score >= 80 ? 'bg-green-100 text-green-700' :
-                            app.match_score >= 60 ? 'bg-yellow-100 text-yellow-700' :
+                            (app.match_score || 0) >= 80 ? 'bg-green-100 text-green-700' :
+                            (app.match_score || 0) >= 60 ? 'bg-yellow-100 text-yellow-700' :
                             'bg-red-100 text-red-700'
                           }`}>
-                            {app.match_score}%
+                            {Math.round(app.match_score || 0)}%
                           </span>
                         </td>
                         
@@ -364,11 +364,11 @@ export default function CandidateScreening() {
                         </div>
                       </div>
                       <span className={`px-2 py-1 text-xs rounded ${
-                        app.match_score >= 80 ? 'bg-green-100 text-green-700' :
-                        app.match_score >= 60 ? 'bg-yellow-100 text-yellow-700' :
+                        (app.match_score || 0) >= 80 ? 'bg-green-100 text-green-700' :
+                        (app.match_score || 0) >= 60 ? 'bg-yellow-100 text-yellow-700' :
                         'bg-red-100 text-red-700'
                       }`}>
-                        {app.match_score}%
+                        {Math.round(app.match_score || 0)}%
                       </span>
                     </div>
                     
@@ -509,8 +509,8 @@ export default function CandidateScreening() {
                 style={{
                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
               >
                 Cancel
               </button>
@@ -520,8 +520,8 @@ export default function CandidateScreening() {
                 style={{
                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
               >
                 Schedule Round 1 & Send Invitations
               </button>

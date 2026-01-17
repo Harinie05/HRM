@@ -159,13 +159,11 @@ export default function JobRequisition() {
                 style={{
                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                  e.target.style.color = 'white';
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                  e.currentTarget.style.color = 'white';
                 }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
-                  e.target.style.color = 'white';
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                  e.currentTarget.style.color = 'white';
                 }}
               >
                 <Plus className="w-4 h-4" />
@@ -349,13 +347,11 @@ export default function JobRequisition() {
                 style={{
                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                  e.target.style.color = 'white';
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                  e.currentTarget.style.color = 'white';
                 }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
-                  e.target.style.color = 'white';
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                  e.currentTarget.style.color = 'white';
                 }}
               >
                 Create Job Requisition
@@ -820,12 +816,10 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
                   border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                 }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                   e.target.style.border = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}`;
                 }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                   e.target.style.border = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`;
                 }}
                 onClick={submitForm}

@@ -391,10 +391,9 @@ const DailyUpdates = () => {
                   style={{ backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' }}
                   onMouseEnter={(e) => {
                     const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                    e.target.style.backgroundColor = hoverColor;
+                    e.currentTarget.style.backgroundColor = hoverColor;
                   }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                   }}
                 >
                   <FiPlus className="w-4 h-4" />
@@ -624,11 +623,9 @@ const DailyUpdates = () => {
                       backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
                       border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                     }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                     }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                     }}
                   >
                     {editingUpdate ? 'Update' : 'Save'}
@@ -747,8 +744,8 @@ const DailyUpdates = () => {
                               onClick={() => handleEdit(update)}
                               className="text-gray-600 hover:text-blue-600 hover:text-white p-2 rounded-lg transition-colors"
                               style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                              onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                              onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                             >
                               <FiEdit size={16} />
                             </button>
@@ -810,8 +807,8 @@ const DailyUpdates = () => {
                               onClick={() => handleEdit(update)}
                               className="p-2 text-gray-600 hover:text-blue-600 hover:text-white rounded-lg transition-colors"
                               style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                              onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                              onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                             >
                               <FiEdit size={16} />
                             </button>

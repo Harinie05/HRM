@@ -58,6 +58,7 @@ export default function ReportingStructure() {
 
   const fetchData = async (status = statusFilter) => {
     console.log("Fetching reporting data...");
+    const tenant_db = localStorage.getItem("tenant_db");
     
     // Fetch levels
     try {
@@ -83,7 +84,6 @@ export default function ReportingStructure() {
     
     // Fetch departments (always active)
     try {
-      const tenant_db = localStorage.getItem("tenant_db");
       const deptsRes = await api.get(`/hospitals/departments/${tenant_db}/list`);
       console.log("API Response - Departments:", deptsRes.data);
       const deptsData = deptsRes.data?.departments || [];
@@ -290,11 +290,9 @@ export default function ReportingStructure() {
                 style={{
                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                 }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                 }}
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -370,11 +368,9 @@ export default function ReportingStructure() {
                   style={{
                     backgroundColor: 'var(--primary-color, #4575b5)',
                   }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                   }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                   }}
                 >
                   {editingLevel ? 'Update Level' : 'Create Level'}
@@ -499,11 +495,9 @@ export default function ReportingStructure() {
                 style={{
                   backgroundColor: 'var(--primary-color, #4575b5)',
                 }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                 }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                 }}
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -588,11 +582,9 @@ export default function ReportingStructure() {
                   style={{
                     backgroundColor: 'var(--primary-color, #4575b5)',
                   }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                   }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                   }}
                 >
                   {editingHierarchy ? 'Update Rule' : 'Create Rule'}

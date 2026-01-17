@@ -332,8 +332,8 @@ const QualityIndicators = () => {
                   onClick={() => setShowDeleted(true)}
                   className="text-white px-3 py-1 rounded-md text-sm whitespace-nowrap transition-colors"
                   style={{ backgroundColor: 'var(--primary-color)' }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color)'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color)'}
                 >
                   Show Deleted ({deletedCount})
                 </button>
@@ -343,8 +343,8 @@ const QualityIndicators = () => {
                   onClick={() => setShowDeleted(false)}
                   className="text-white px-3 py-1 rounded-md text-sm whitespace-nowrap transition-colors"
                   style={{ backgroundColor: 'var(--primary-color)' }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color)'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color)'}
                 >
                   Hide Deleted
                 </button>
@@ -357,8 +357,8 @@ const QualityIndicators = () => {
                 backgroundColor: 'var(--primary-color)',
                 display: (hasPermission('add_quality_indicator') || isAdmin()) ? 'flex' : 'none'
               }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color)'}
             >
               <Plus className="w-4 h-4" />
               Add Quality Indicator
@@ -464,8 +464,8 @@ const QualityIndicators = () => {
                     disabled={loading}
                     className="text-white px-4 py-2 rounded-md transition-colors"
                     style={{ backgroundColor: 'var(--primary-color)' }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color)'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color)'}
                   >
                     {loading ? 'Saving...' : editingIndicator ? 'Update' : 'Save'}
                   </button>
@@ -655,8 +655,8 @@ const QualityIndicators = () => {
                   onClick={() => setShowDeleted(true)}
                   className="text-white px-3 py-1 rounded-md text-sm whitespace-nowrap transition-colors"
                   style={{ backgroundColor: 'var(--primary-color)' }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color)'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color)'}
                 >
                   Show Deleted ({deletedRecordsCount})
                 </button>
@@ -666,8 +666,8 @@ const QualityIndicators = () => {
                   onClick={() => setShowDeleted(false)}
                   className="text-white px-3 py-1 rounded-md text-sm whitespace-nowrap transition-colors"
                   style={{ backgroundColor: 'var(--primary-color)' }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color)'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color)'}
                 >
                   Hide Deleted
                 </button>
@@ -680,8 +680,8 @@ const QualityIndicators = () => {
                 backgroundColor: 'var(--primary-color)',
                 display: (hasPermission('measure_quality_metrics') || isAdmin()) ? 'flex' : 'none'
               }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color)'}
             >
               <Plus className="w-4 h-4" />
               Add KPI Record

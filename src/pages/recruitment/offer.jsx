@@ -281,15 +281,20 @@ export default function Offer() {
       // Update offer status to completed
       await api.post(`/recruitment/offer/${offerId}/status?status=Onboarding completed`);
       
-      // Find the candidate and create EIS record automatically
+      // Find the offer to get candidate_id
       const offer = offers.find(o => o.id === offerId);
       if (offer) {
-        await api.post(`/eis/employee/create-from-onboarding/${offer.candidate_id}`);
+        // Get onboarding record by candidate_id to get the onboarding_id
+        const onboardingResponse = await api.get(`/recruitment/onboarding/candidate/${offer.candidate_id}`);
+        if (onboardingResponse.data && onboardingResponse.data.id) {
+          await api.post(`/eis/employee/create-from-onboarding/${onboardingResponse.data.id}`);
+        }
       }
       
       showToast("Candidate onboarding completed and added to EIS successfully!");
       fetchOffers();
     } catch (err) {
+      console.error("Error in handleOnboarded:", err);
       showToast("Failed to complete onboarding", 'error');
     }
   };
@@ -370,6 +375,12 @@ export default function Offer() {
         probation_period: "3 Months",
         employee_id: onboardingFormData.employee_id
       });
+      
+      // Update offer status to "Onboarding Started"
+      const offer = offers.find(o => o.candidate_id === selectedOnboardingCandidate.candidateId);
+      if (offer) {
+        await api.post(`/recruitment/offer/${offer.id}/status?status=Onboarding Started`);
+      }
       
       showToast("Onboarding started successfully! Joining formalities email sent to candidate.");
       setShowOnboardingForm(false);
@@ -612,11 +623,9 @@ export default function Offer() {
                                 style={{
                                   backgroundColor: 'var(--primary-color, #4575b5)'
                                 }}
-                                onMouseEnter={(e) => {
-                                  e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                                 }}
-                                onMouseLeave={(e) => {
-                                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                                 }}
                                 onClick={() => generateDocumentLink(o.id)}
                               >
@@ -632,11 +641,9 @@ export default function Offer() {
                                 style={{
                                   backgroundColor: 'var(--primary-color, #4575b5)'
                                 }}
-                                onMouseEnter={(e) => {
-                                  e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                                 }}
-                                onMouseLeave={(e) => {
-                                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                                 }}
                                 onClick={() => {
                                   setSelectedOfferForVerification(o);
@@ -655,11 +662,9 @@ export default function Offer() {
                                 style={{
                                   backgroundColor: 'var(--primary-color, #4575b5)'
                                 }}
-                                onMouseEnter={(e) => {
-                                  e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                                 }}
-                                onMouseLeave={(e) => {
-                                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                                 }}
                                 onClick={() => viewDocuments(o.id)}
                               >
@@ -675,11 +680,9 @@ export default function Offer() {
                                 style={{
                                   backgroundColor: 'var(--primary-color, #4575b5)'
                                 }}
-                                onMouseEnter={(e) => {
-                                  e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                                 }}
-                                onMouseLeave={(e) => {
-                                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                                 }}
                                 onClick={() => {
                                   if (!o.bgv_id) {
@@ -701,11 +704,9 @@ export default function Offer() {
                                 style={{
                                   backgroundColor: 'var(--primary-color, #4575b5)'
                                 }}
-                                onMouseEnter={(e) => {
-                                  e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                                 }}
-                                onMouseLeave={(e) => {
-                                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                                 }}
                                 onClick={() => startOnboarding(o.candidate_id, o.candidate_name, o.job_title, o.department)}
                               >
@@ -721,11 +722,9 @@ export default function Offer() {
                                 style={{
                                   backgroundColor: 'var(--primary-color, #4575b5)'
                                 }}
-                                onMouseEnter={(e) => {
-                                  e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                                 }}
-                                onMouseLeave={(e) => {
-                                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                                 }}
                                 onClick={() => handleOnboarded(o.id)}
                               >
@@ -819,11 +818,9 @@ export default function Offer() {
                           style={{
                             backgroundColor: 'var(--primary-color, #4575b5)'
                           }}
-                          onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                           }}
-                          onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                           }}
                           onClick={() => generateDocumentLink(o.id)}
                         >
@@ -839,11 +836,9 @@ export default function Offer() {
                           style={{
                             backgroundColor: 'var(--primary-color, #4575b5)'
                           }}
-                          onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                           }}
-                          onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                           }}
                           onClick={() => {
                             setSelectedOfferForVerification(o);
@@ -862,11 +857,9 @@ export default function Offer() {
                           style={{
                             backgroundColor: 'var(--primary-color, #4575b5)'
                           }}
-                          onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                           }}
-                          onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                           }}
                           onClick={() => viewDocuments(o.id)}
                         >
@@ -882,11 +875,9 @@ export default function Offer() {
                           style={{
                             backgroundColor: 'var(--primary-color, #4575b5)'
                           }}
-                          onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                           }}
-                          onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                           }}
                           onClick={() => {
                             if (!o.bgv_id) {
@@ -908,11 +899,9 @@ export default function Offer() {
                           style={{
                             backgroundColor: 'var(--primary-color, #4575b5)'
                           }}
-                          onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                           }}
-                          onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                           }}
                           onClick={() => startOnboarding(o.candidate_id, o.candidate_name, o.job_title, o.department)}
                         >
@@ -928,11 +917,9 @@ export default function Offer() {
                           style={{
                             backgroundColor: 'var(--primary-color, #4575b5)'
                           }}
-                          onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                           }}
-                          onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                           }}
                           onClick={() => handleOnboarded(o.id)}
                         >
@@ -1059,11 +1046,9 @@ export default function Offer() {
                               backgroundColor: 'var(--primary-color, #4575b5)',
                               borderColor: 'var(--primary-color, #4575b5)'
                             }}
-                            onMouseEnter={(e) => {
-                              e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                             }}
-                            onMouseLeave={(e) => {
-                              e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                             }}
                             onClick={() => {
                               setSelected(c);
@@ -1123,11 +1108,9 @@ export default function Offer() {
                           backgroundColor: 'var(--primary-color, #4575b5)',
                           borderColor: 'var(--primary-color, #4575b5)'
                         }}
-                        onMouseEnter={(e) => {
-                          e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                         }}
-                        onMouseLeave={(e) => {
-                          e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                         }}
                         onClick={() => {
                           setSelected(c);
@@ -1316,11 +1299,9 @@ export default function Offer() {
                     style={{
                       backgroundColor: 'var(--primary-color, #4575b5)'
                     }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                     }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                     }}
                     onClick={generateOffer}
                   >
@@ -1377,22 +1358,12 @@ export default function Offer() {
           {/* ================================================================== */}
           {showBGVModal && selectedBGV && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-              <div className="bg-white p-6 rounded-xl w-[450px] shadow-xl relative border" style={{
-                background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
-              }}>
-                <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-10" style={{
-                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-                  transform: 'translate(30%, -30%)'
-                }}></div>
-                <div className="relative z-10">
-
+              <div className="bg-white p-6 rounded-xl w-[500px] shadow-xl max-h-[80vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 <h2 className="text-lg font-semibold mb-4">
                   BGV – {selectedBGV.candidate_name}
                 </h2>
 
                 <div className="space-y-3">
-
                   <select
                     className="p-2 rounded w-full"
                     style={{
@@ -1449,13 +1420,21 @@ export default function Offer() {
                   </select>
 
                   {/* BGV Verification Checkboxes */}
-                  <div className=" p-3 rounded bg-content" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
-                    <h4 className="font-medium mb-2 text-sm">Verification Checklist:</h4>
+                  <div className="p-4 rounded bg-gray-50 relative" style={{
+                    background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}08, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}08)`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
+                    <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-xl opacity-10" style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                      transform: 'translate(30%, -30%)'
+                    }}></div>
+                    <div className="relative z-10">
+                    <h4 className="font-medium mb-3 text-sm">Verification Checklist:</h4>
                     <div className="space-y-2">
                       <label className="flex items-center text-sm">
                         <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
-                          className="mr-2"
+                          className="mr-3"
                           checked={bgvForm.identity_verified}
                           onChange={(e) =>
                             setBgvForm({ ...bgvForm, identity_verified: e.target.checked })
@@ -1466,7 +1445,7 @@ export default function Offer() {
                       <label className="flex items-center text-sm">
                         <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
-                          className="mr-2"
+                          className="mr-3"
                           checked={bgvForm.address_verified}
                           onChange={(e) =>
                             setBgvForm({ ...bgvForm, address_verified: e.target.checked })
@@ -1477,7 +1456,7 @@ export default function Offer() {
                       <label className="flex items-center text-sm">
                         <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
-                          className="mr-2"
+                          className="mr-3"
                           checked={bgvForm.employment_verified}
                           onChange={(e) =>
                             setBgvForm({ ...bgvForm, employment_verified: e.target.checked })
@@ -1488,7 +1467,7 @@ export default function Offer() {
                       <label className="flex items-center text-sm">
                         <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
-                          className="mr-2"
+                          className="mr-3"
                           checked={bgvForm.education_verified}
                           onChange={(e) =>
                             setBgvForm({ ...bgvForm, education_verified: e.target.checked })
@@ -1499,7 +1478,7 @@ export default function Offer() {
                       <label className="flex items-center text-sm">
                         <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
                           type="checkbox"
-                          className="mr-2"
+                          className="mr-3"
                           checked={bgvForm.criminal_verified}
                           onChange={(e) =>
                             setBgvForm({ ...bgvForm, criminal_verified: e.target.checked })
@@ -1507,6 +1486,7 @@ export default function Offer() {
                         />
                         Criminal Background Check
                       </label>
+                    </div>
                     </div>
                   </div>
 
@@ -1537,18 +1517,14 @@ export default function Offer() {
                     style={{
                       backgroundColor: 'var(--primary-color, #4575b5)'
                     }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                     }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                     }}
                     onClick={updateBGV}
                   >
                     Update
                   </button>
-                </div>
-
                 </div>
               </div>
             </div>
@@ -1559,20 +1535,10 @@ export default function Offer() {
           {/* ================================================================== */}
           {showDocuments && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-              <div className="bg-white p-6 rounded-xl w-[600px] shadow-xl max-h-[80vh] overflow-y-auto relative border" style={{
+              <div className="bg-white p-6 rounded-xl w-[600px] shadow-xl max-h-[80vh] overflow-y-auto" style={{
               scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
-                background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
+              msOverflowStyle: 'none'
               }}>
-                <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-10" style={{
-                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-                  transform: 'translate(30%, -30%)'
-                }}></div>
-                <div className="relative z-10">
-
                 <h2 className="text-lg font-semibold mb-4">
                   📄 Uploaded Documents
                 </h2>
@@ -1619,8 +1585,6 @@ export default function Offer() {
                     Close
                   </button>
                 </div>
-
-                </div>
               </div>
             </div>
           )}
@@ -1630,19 +1594,10 @@ export default function Offer() {
           {/* ================================================================== */}
           {showOnboardingForm && selectedOnboardingCandidate && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white p-6 w-[900px] max-h-[90vh] overflow-y-auto rounded-xl shadow-xl relative border" style={{
+              <div className="bg-white p-6 w-[900px] max-h-[90vh] overflow-y-auto rounded-xl shadow-xl" style={{
               scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
-                background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
+              msOverflowStyle: 'none'
               }}>
-                <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-10" style={{
-                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
-                  transform: 'translate(30%, -30%)'
-                }}></div>
-                <div className="relative z-10">
                 <h2 className="text-2xl font-semibold mb-6 text-center">
                   Employee Onboarding Form - {selectedOnboardingCandidate.candidateName}
                 </h2>
@@ -1753,9 +1708,13 @@ export default function Offer() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Emergency Contact Phone *</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <input
                       type="tel"
-                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded w-full"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={onboardingFormData.emergency_contact_phone}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, emergency_contact_phone: e.target.value})}
                       required
@@ -1794,9 +1753,13 @@ export default function Offer() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Joining Date *</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <input
                       type="date"
-                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded w-full"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={onboardingFormData.joining_date}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, joining_date: e.target.value})}
                       required
@@ -1805,9 +1768,13 @@ export default function Offer() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Department *</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <input
                       type="text"
-                      className=" p-2 rounded w-full bg-gray-100" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded w-full"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={onboardingFormData.department}
                       readOnly
                     />
@@ -1815,9 +1782,13 @@ export default function Offer() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Designation *</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <input
                       type="text"
-                      className=" p-2 rounded w-full bg-gray-100" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded w-full"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={onboardingFormData.designation}
                       readOnly
                     />
@@ -1825,9 +1796,13 @@ export default function Offer() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Work Location</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <input
                       type="text"
-                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded w-full"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={onboardingFormData.work_location}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, work_location: e.target.value})}
                       placeholder="Main Office"
@@ -1836,9 +1811,13 @@ export default function Offer() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Reporting Manager</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <input
                       type="text"
-                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded w-full"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={onboardingFormData.reporting_manager}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, reporting_manager: e.target.value})}
                       placeholder="To be assigned"
@@ -1851,35 +1830,44 @@ export default function Offer() {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium mb-1">Bank Name *</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <label className="block text-sm font-medium mb-1">Bank Name</label>
+                    <input
                       type="text"
-                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded w-full"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={onboardingFormData.bank_name}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, bank_name: e.target.value})}
-                      required
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium mb-1">Account Number *</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <label className="block text-sm font-medium mb-1">Account Number</label>
+                    <input
                       type="text"
-                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded w-full"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={onboardingFormData.account_number}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, account_number: e.target.value})}
-                      required
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium mb-1">IFSC Code *</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <label className="block text-sm font-medium mb-1">IFSC Code</label>
+                    <input
                       type="text"
-                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded w-full"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={onboardingFormData.ifsc_code}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, ifsc_code: e.target.value})}
-                      required
                     />
                   </div>
 
@@ -1889,24 +1877,30 @@ export default function Offer() {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium mb-1">Aadhaar Number *</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <label className="block text-sm font-medium mb-1">Aadhaar Number</label>
+                    <input
                       type="text"
-                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded w-full"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={onboardingFormData.aadhar_number}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, aadhar_number: e.target.value})}
-                      required
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium mb-1">PAN Number *</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <label className="block text-sm font-medium mb-1">PAN Number</label>
+                    <input
                       type="text"
-                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded w-full"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={onboardingFormData.pan_number}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, pan_number: e.target.value})}
-                      required
                     />
                   </div>
 
@@ -1931,9 +1925,13 @@ export default function Offer() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">City *</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <input
                       type="text"
-                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded w-full"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={onboardingFormData.city}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, city: e.target.value})}
                       required
@@ -1942,9 +1940,13 @@ export default function Offer() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">State *</label>
-                    <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                    <input
                       type="text"
-                      className=" p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="p-2 rounded w-full"
+                      style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                        border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                      }}
                       value={onboardingFormData.state}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, state: e.target.value})}
                       required
@@ -1965,17 +1967,14 @@ export default function Offer() {
                     style={{
                       backgroundColor: 'var(--primary-color, #4575b5)'
                     }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                     }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                     }}
                     onClick={submitOnboardingForm}
                   >
                     Submit Onboarding Form
                   </button>
-                </div>
                 </div>
               </div>
             </div>
@@ -2189,11 +2188,9 @@ export default function Offer() {
                     style={{
                       backgroundColor: 'var(--primary-color, #4575b5)'
                     }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                     }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                     }}
                     onClick={copyToClipboard}
                   >

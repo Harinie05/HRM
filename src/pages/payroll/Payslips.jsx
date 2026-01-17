@@ -463,8 +463,8 @@ export default function Payslips() {
             <button 
               onClick={handleGeneratePayslips}
               disabled={loading}
-              onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-              onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
               className="px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium justify-center text-white disabled:opacity-50 disabled:cursor-not-allowed"
               style={{ 
                 backgroundColor: colors.primary,
@@ -479,8 +479,8 @@ export default function Payslips() {
             <button 
               onClick={handleSendEmail}
               disabled={loading}
-              onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-              onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
               className="px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium justify-center text-white disabled:opacity-50 disabled:cursor-not-allowed"
               style={{ 
                 backgroundColor: colors.primary,
@@ -640,8 +640,8 @@ export default function Payslips() {
                           <div className="mt-6">
                             <button 
                               onClick={handleGeneratePayslips}
-                              onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                              onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                               className="text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors border border-black"
                               style={{ backgroundColor: colors.primary }}
                             >
@@ -744,8 +744,8 @@ export default function Payslips() {
                   <div className="mt-6">
                     <button 
                       onClick={handleGeneratePayslips}
-                      onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                       className="text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors border border-black"
                       style={{ backgroundColor: colors.primary }}
                     >
@@ -911,8 +911,8 @@ export default function Payslips() {
                     }
                   }}
                   disabled={loading}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                   className="flex-1 text-white px-4 py-2 rounded-xl disabled:opacity-50"
                   style={{ backgroundColor: colors.primary }}
                 >
@@ -1120,8 +1120,8 @@ export default function Payslips() {
                   onClick={() => handleDownloadPayslip(selectedPayslip)}
                   className="flex-1 px-4 py-2 text-white rounded-lg flex items-center justify-center gap-2 text-sm font-medium"
                   style={{ backgroundColor: colors.primary }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                 >
                   <Download size={16} />
                   Download

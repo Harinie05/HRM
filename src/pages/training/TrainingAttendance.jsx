@@ -240,8 +240,8 @@ export default function TrainingAttendance() {
                 style={{
                   backgroundColor: 'var(--primary-color)'
                 }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color)'}
               >
                 <UserCheck className="w-4 h-4" />
                 Mark Attendance
@@ -563,8 +563,8 @@ export default function TrainingAttendance() {
                 style={{
                   backgroundColor: 'var(--primary-color)'
                 }}
-                onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--secondary-color)')}
-                onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = 'var(--primary-color)')}
+                onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = 'var(--secondary-color)')}
+                onMouseLeave={(e) => !loading && (e.currentTarget.style.backgroundColor = 'var(--primary-color)')}
               >
                 {loading ? "Saving..." : editingRecord ? "Update Attendance" : "Mark Attendance"}
               </button>

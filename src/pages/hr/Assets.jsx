@@ -455,8 +455,8 @@ export default function Assets() {
                     backgroundColor: colors.primary,
                     borderColor: colors.primary
                   }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                 >
                   Submit for Approval
                 </button>
@@ -524,8 +524,8 @@ export default function Assets() {
                               backgroundColor: colors.primary,
                               borderColor: colors.primary
                             }}
-                            onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                            onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                           >
                             <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -542,8 +542,8 @@ export default function Assets() {
                               backgroundColor: colors.secondary,
                               borderColor: colors.secondary
                             }}
-                            onMouseEnter={(e) => e.target.style.backgroundColor = colors.primary}
-                            onMouseLeave={(e) => e.target.style.backgroundColor = colors.secondary}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.primary}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
                           >
                             <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -610,8 +610,8 @@ export default function Assets() {
                           backgroundColor: colors.primary,
                           borderColor: colors.primary
                         }}
-                        onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -627,8 +627,8 @@ export default function Assets() {
                           backgroundColor: colors.secondary,
                           borderColor: colors.secondary
                         }}
-                        onMouseEnter={(e) => e.target.style.backgroundColor = colors.primary}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = colors.secondary}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.primary}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

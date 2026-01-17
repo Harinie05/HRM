@@ -422,11 +422,9 @@ export default function EmployeeListPage() {
                   style={{
                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                   }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                   }}
                 >
                   <Plus size={16} />
@@ -767,13 +765,13 @@ export default function EmployeeListPage() {
                   backgroundColor: !formData.selectedUser || !formData.employeeCode ? '' : 'var(--primary-color, #4575b5)'
                 }}
                 onMouseEnter={(e) => {
-                  if (!e.target.disabled) {
-                    e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                   }
                 }}
                 onMouseLeave={(e) => {
-                  if (!e.target.disabled) {
-                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                   }
                 }}
               >

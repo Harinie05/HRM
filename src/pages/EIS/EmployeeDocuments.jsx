@@ -175,11 +175,9 @@ export default function EmployeeDocuments() {
                 style={{
                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                 }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                 }}
               >
                 <FiFileText className="w-4 h-4" />
@@ -197,12 +195,10 @@ export default function EmployeeDocuments() {
               color: 'white',
               borderColor: 'var(--primary-color, #4575b5)'
             }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
               e.target.style.borderColor = 'var(--secondary-color, #6b7280)';
             }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
               e.target.style.borderColor = 'var(--primary-color, #4575b5)';
             }}
           >

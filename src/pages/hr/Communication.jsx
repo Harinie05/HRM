@@ -698,8 +698,8 @@ export default function Communication() {
                     backgroundColor: colors.primary,
                     borderColor: colors.primary
                   }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                 >
                   OK
                 </button>

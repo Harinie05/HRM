@@ -105,12 +105,10 @@ export default function EmployeeExit() {
               color: 'white',
               borderColor: 'var(--primary-color, #4575b5)'
             }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
               e.target.style.borderColor = 'var(--secondary-color, #6b7280)';
             }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
               e.target.style.borderColor = 'var(--primary-color, #4575b5)';
             }}
           >
@@ -307,12 +305,12 @@ export default function EmployeeExit() {
                 }}
                 onMouseEnter={(e) => {
                   if (!saved && !loading) {
-                    e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                    e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!saved && !loading) {
-                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                    e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)';
                   }
                 }}
               >

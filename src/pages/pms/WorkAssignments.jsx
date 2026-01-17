@@ -308,8 +308,8 @@ export default function WorkAssignments() {
               style={{
                 backgroundColor: 'var(--primary-color)'
               }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color)'}
             >
               Show Deleted ({deletedCount})
             </button>
@@ -321,8 +321,8 @@ export default function WorkAssignments() {
               style={{
                 backgroundColor: 'var(--primary-color)'
               }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color)'}
             >
               Hide Deleted
             </button>
@@ -334,8 +334,8 @@ export default function WorkAssignments() {
               style={{
                 backgroundColor: 'var(--primary-color)'
               }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color)'}
             >
               <Plus className="w-4 h-4" />
               New Assignment

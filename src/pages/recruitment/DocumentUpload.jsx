@@ -291,12 +291,12 @@ export default function DocumentUpload() {
                 }}
                 onMouseEnter={(e) => {
                   if (getRequiredUploaded() >= getTotalRequired()) {
-                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                    e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (getRequiredUploaded() >= getTotalRequired()) {
-                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                   }
                 }}
               >

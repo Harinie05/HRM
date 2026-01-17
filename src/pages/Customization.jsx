@@ -512,8 +512,8 @@ export default function Customization() {
               onClick={saveSettings}
               style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
               className="px-6 py-2 text-white rounded-lg transition-colors"
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)'}
             >
               Save branding
             </button>

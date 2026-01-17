@@ -862,10 +862,9 @@ export default function Dashboard() {
                 }}
                 onMouseEnter={(e) => {
                   const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                  e.target.style.backgroundColor = hoverColor;
+                  e.currentTarget.style.backgroundColor = hoverColor;
                 }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                 }}
               >
                 <Eye className="h-3 w-3" />
@@ -946,10 +945,9 @@ export default function Dashboard() {
                     }}
                     onMouseEnter={(e) => {
                       const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                      e.target.style.backgroundColor = hoverColor;
+                      e.currentTarget.style.backgroundColor = hoverColor;
                     }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                     }}
                   >
                     <Bell className="h-3 w-3" />
@@ -1113,10 +1111,9 @@ export default function Dashboard() {
                   }}
                   onMouseEnter={(e) => {
                     const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                    e.target.style.backgroundColor = hoverColor;
+                    e.currentTarget.style.backgroundColor = hoverColor;
                   }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                   }}
                 >
                   <Calendar className="h-3 w-3" />
@@ -1251,10 +1248,9 @@ export default function Dashboard() {
                     }}
                     onMouseEnter={(e) => {
                       const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                      e.target.style.backgroundColor = hoverColor;
+                      e.currentTarget.style.backgroundColor = hoverColor;
                     }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                     }}
                   >
                     ‹ Previous
@@ -1278,10 +1274,9 @@ export default function Dashboard() {
                     }}
                     onMouseEnter={(e) => {
                       const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                      e.target.style.backgroundColor = hoverColor;
+                      e.currentTarget.style.backgroundColor = hoverColor;
                     }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                     }}
                   >
                     Next ›
@@ -1541,8 +1536,8 @@ export default function Dashboard() {
                 onClick={() => setShowDocumentModal(false)}
                 className="text-white px-6 py-2 rounded-lg transition-colors duration-200 font-medium border border-black shadow-md"
                 style={{ backgroundColor: 'var(--secondary-color, #474e71)' }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-hover, #3a3f5c)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-hover, #3a3f5c)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color, #474e71)'}
               >
                 Close
               </button>

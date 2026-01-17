@@ -24,9 +24,13 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
     employee_code: null
   });
 
+  // Get tenant name immediately for initial display
+  const tenantDb = localStorage.getItem("tenant_db") || "hospital";
+  const defaultName = tenantDb.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  
   // 🔹 Dynamic hospital info - load from backend first
   const [hospitalInfo, setHospitalInfo] = useState({
-    name: "Your Hospital Name",
+    name: defaultName,
     tagline: "Smart • Secure • NABH-Standard"
   });
 
@@ -47,10 +51,19 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
           // Fallback to localStorage
           const storedName = localStorage.getItem("hospital_name");
           const storedTagline = localStorage.getItem("hospital_tagline");
+          const tenantDb = localStorage.getItem("tenant_db");
+          
           if (storedName) {
             setHospitalInfo({
               name: storedName,
               tagline: storedTagline || "Smart • Secure • NABH-Standard"
+            });
+          } else if (tenantDb) {
+            // Use tenant DB name as fallback - handle underscores and capitalize properly
+            const displayName = tenantDb.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+            setHospitalInfo({
+              name: displayName,
+              tagline: "Smart • Secure • NABH-Standard"
             });
           }
         }
@@ -58,10 +71,19 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
         // Fallback to localStorage on error
         const storedName = localStorage.getItem("hospital_name");
         const storedTagline = localStorage.getItem("hospital_tagline");
+        const tenantDb = localStorage.getItem("tenant_db");
+        
         if (storedName) {
           setHospitalInfo({
             name: storedName,
             tagline: storedTagline || "Smart • Secure • NABH-Standard"
+          });
+        } else if (tenantDb) {
+          // Use tenant DB name as fallback - handle underscores and capitalize properly
+          const displayName = tenantDb.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+          setHospitalInfo({
+            name: displayName,
+            tagline: "Smart • Secure • NABH-Standard"
           });
         }
       }
@@ -542,9 +564,14 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
             px-2 sm:px-3 py-1.5 rounded-full transition min-h-[44px]"
           >
             <div
-              className="h-7 w-7 sm:h-9 sm:w-9 rounded-full bg-blue-200
-              text-[#3B5BDB] flex items-center justify-center
-              font-bold text-xs sm:text-sm flex-shrink-0"
+              className="h-7 w-7 sm:h-9 sm:w-9 rounded-full
+              flex items-center justify-center
+              font-bold text-xs sm:text-sm flex-shrink-0 shadow-sm"
+              style={{
+                backgroundColor: 'white',
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                border: `2px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+              }}
             >
               {userInitial}
             </div>

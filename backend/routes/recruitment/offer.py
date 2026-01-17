@@ -6,7 +6,7 @@ from typing import Optional
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
 from routes.hospital import get_current_user, check_permission
-from models.models_tenant import Candidate, OfferLetter, JobRequisition, BGV
+from models.models_tenant import Candidate, OfferLetter, JobRequisition, BGV, OrganizationBranding
 from schemas.schemas_tenant import OfferCreate, OfferUpdate, OfferStatusUpdate, OfferOut
 from utils.email import send_email
 import uuid, os
@@ -151,8 +151,16 @@ def send_offer(offer_id: int, request: Request, db: Session = Depends(get_tenant
     setattr(offer, 'token', token)
     setattr(offer, 'offer_status', "Sent")
 
+    company_name = "Company"
+    try:
+        org_branding = db.query(OrganizationBranding).first()
+        if org_branding:
+            company_name = org_branding.organization_name
+    except:
+        pass
+    
     # Professional offer email
-    subject = f"🎉 Job Offer - {offer.job_title} Position at NUTRYAH"
+    subject = f"🎉 Job Offer - {offer.job_title} Position at {company_name}"
     
     email_html = f"""<!DOCTYPE html>
 <html>
@@ -177,7 +185,7 @@ def send_offer(offer_id: int, request: Request, db: Session = Depends(get_tenant
         
         <p>Dear <strong>{offer.candidate_name}</strong>,</p>
         
-        <p>We are delighted to extend an offer of employment for the position of <strong>{offer.job_title}</strong> at <strong>NUTRYAH</strong>.</p>
+        <p>We are delighted to extend an offer of employment for the position of <strong>{offer.job_title}</strong> at <strong>{company_name}</strong>.</p>
         
         <div class="offer-details">
             <h3>📋 Offer Details:</h3>
@@ -208,11 +216,11 @@ def send_offer(offer_id: int, request: Request, db: Session = Depends(get_tenant
             </p>
         </div>
         
-        <p>This offer is valid for 7 days from the date of this email. We look forward to welcoming you to the NUTRYAH team!</p>
+        <p>This offer is valid for 7 days from the date of this email. We look forward to welcoming you to the {company_name} team!</p>
         
         <p><strong>Best regards,</strong><br>
         HR Team<br>
-        NUTRYAH</p>
+        {company_name}</p>
         
         <hr>
         <p style="font-size: 12px; color: #666;">This is an automated email. Please reply with your acceptance or rejection.</p>

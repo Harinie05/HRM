@@ -435,8 +435,8 @@ export default function LeaveCalendar() {
               onClick={() => setCurrentDate(new Date())}
               style={{ backgroundColor: colors.primary }}
               className="px-6 py-3 text-sm text-white rounded-2xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-              onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-              onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
             >
               Today
             </button>

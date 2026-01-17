@@ -22,7 +22,7 @@ def get_reporting_levels(request: Request, status: str = "active"):
             return JSONResponse({"error": "No authorization header"}, status_code=401)
         
         # Extract tenant from header
-        tenant = request.headers.get("tenant-id") or "test"
+        tenant = request.headers.get("tenant") or request.headers.get("tenant-id") or "test"
         print(f"Using tenant: {tenant}")
         
         engine = get_tenant_engine(tenant)
@@ -72,7 +72,7 @@ async def create_reporting_level(request: Request):
                 return JSONResponse({"error": "Could not parse request data"}, status_code=400)
         
         # Extract tenant from header
-        tenant = request.headers.get("tenant-id") or "test"
+        tenant = request.headers.get("tenant") or request.headers.get("tenant-id") or "test"
         engine = get_tenant_engine(tenant)
         
         with engine.connect() as conn:
@@ -205,7 +205,7 @@ def get_reporting_hierarchy(request: Request, status: str = "active"):
         print(f"=== GET HIERARCHY: status={status} ===")
         
         # Extract tenant from header
-        tenant = request.headers.get("tenant-id") or "test"
+        tenant = request.headers.get("tenant") or request.headers.get("tenant-id") or "test"
         print(f"Using tenant: {tenant}")
         
         engine = get_tenant_engine(tenant)
@@ -266,7 +266,7 @@ async def create_hierarchy_rule(request: Request):
                 return JSONResponse({"error": "Could not parse request data"}, status_code=400)
         
         # Extract tenant from header
-        tenant = request.headers.get("tenant-id") or "test"
+        tenant = request.headers.get("tenant") or request.headers.get("tenant-id") or "test"
         engine = get_tenant_engine(tenant)
         
         with engine.connect() as conn:

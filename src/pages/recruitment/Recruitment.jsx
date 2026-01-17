@@ -56,44 +56,27 @@ export default function Recruitment() {
 
   const fetchMyProfile = async () => {
     try {
-      // Get tenant_db from localStorage
       const tenantDb = localStorage.getItem("tenant_db");
       if (!tenantDb) {
         console.error("No tenant_db found");
         return;
       }
       
-      // Get current user's email from token or localStorage
-      const userEmail = localStorage.getItem("user_email") || "";
-      
-      // Try users table first (system users with employee_code)
+      // Get current user info from /me endpoint
       try {
-        const res = await api.get(`/hospitals/users/${tenantDb}/list`);
-        const currentUser = res.data.users?.find(user => user.email === userEmail);
+        const meRes = await api.get(`/hospitals/users/${tenantDb}/me`);
+        console.log("Current user from /me:", meRes.data);
         
-        if (currentUser?.employee_code) {
-          setEmployeeCode(currentUser.employee_code);
+        if (meRes.data?.employee_code) {
+          console.log("Setting employee code from /me:", meRes.data.employee_code);
+          setEmployeeCode(meRes.data.employee_code);
           return;
         }
       } catch (err) {
-        console.log("User not found in users table");
+        console.log("Failed to get user from /me endpoint", err);
       }
       
-      // Try onboarding table for onboarded employees
-      try {
-        const onboardingRes = await api.get("/recruitment/onboarding/list");
-        const onboardedEmployee = onboardingRes.data?.find(emp => 
-          emp.candidate_name && emp.employee_id && 
-          (emp.email === userEmail || emp.candidate_name.toLowerCase().includes(userEmail.split('@')[0]))
-        );
-        
-        if (onboardedEmployee?.employee_id) {
-          setEmployeeCode(onboardedEmployee.employee_id);
-          return;
-        }
-      } catch (err) {
-        console.log("Employee not found in onboarding table");
-      }
+      console.log("No employee code found for user");
     } catch (err) {
       console.error("Failed to fetch employee code", err);
     }
@@ -446,11 +429,9 @@ export default function Recruitment() {
                 style={{
                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                 }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                 }}
               >
                 Clear Filters
@@ -497,11 +478,9 @@ export default function Recruitment() {
                 style={{
                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                 }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                 }}
               >
                 Clear filters
@@ -609,7 +588,7 @@ export default function Recruitment() {
                                 </button>
 
                                 {openLinkMenu === job.id && (
-                                  <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-2xl z-50 overflow-hidden" style={{
+                                  <div className="absolute right-0 mt-2 w-64 sm:w-72 bg-white rounded-xl shadow-2xl z-50 overflow-hidden" style={{
                                     border: `2px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
                                   }}>
                                     <div className="p-3 text-xs font-semibold text-gray-500 uppercase tracking-wider" style={{
@@ -708,7 +687,8 @@ export default function Recruitment() {
                                     className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none cursor-pointer"
                                     style={{
                                       backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
-                                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`,
+                                      wordBreak: 'break-all'
                                     }}
                                     onClick={(e) => {
                                       e.target.select();
@@ -729,7 +709,8 @@ export default function Recruitment() {
                                     className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none cursor-pointer"
                                     style={{
                                       backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
-                                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`,
+                                      wordBreak: 'break-all'
                                     }}
                                     onClick={(e) => {
                                       e.target.select();
@@ -753,7 +734,7 @@ export default function Recruitment() {
               <div className="md:hidden">
                 <div className="p-4 space-y-4">
                   {filteredJobs.map((job) => (
-                    <div key={job.id} className="bg-white border-0 rounded-xl p-4 shadow-sm">
+                    <div key={job.id} className="bg-white border-0 rounded-xl p-4 shadow-sm overflow-visible">
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex-1">
                           <h3 className="font-medium text-gray-900 text-sm">{job.title}</h3>
@@ -829,19 +810,19 @@ export default function Recruitment() {
                         )}
 
                         {canGenerateLinks && (
-                          <div className="relative link-dropdown">
+                          <div className="relative link-dropdown w-full">
                             <button
                               onClick={() =>
                                 setOpenLinkMenu(openLinkMenu === job.id ? null : job.id)
                               }
-                              className="flex items-center px-3 py-1.5 text-xs bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors"
+                              className="flex items-center justify-center w-full px-3 py-1.5 text-xs bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors"
                             >
                               <FiLink size={12} className="mr-1" />
-                              Links
+                              {openLinkMenu === job.id ? 'Close Links' : 'Generate Links'}
                             </button>
 
                             {openLinkMenu === job.id && (
-                              <div className="absolute left-0 mt-2 w-72 bg-white rounded-xl shadow-2xl z-50 overflow-hidden" style={{
+                              <div className="mt-2 w-full bg-white rounded-xl shadow-2xl overflow-hidden" style={{
                                 border: `2px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
                               }}>
                                 <div className="p-3 text-xs font-semibold text-gray-500 uppercase tracking-wider" style={{
@@ -940,7 +921,8 @@ export default function Recruitment() {
                                 className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none cursor-pointer mt-1"
                                 style={{
                                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
-                                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`,
+                                  wordBreak: 'break-all'
                                 }}
                                 onClick={(e) => {
                                   e.target.select();
@@ -961,7 +943,8 @@ export default function Recruitment() {
                                 className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none cursor-pointer mt-1"
                                 style={{
                                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
-                                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`,
+                                  wordBreak: 'break-all'
                                 }}
                                 onClick={(e) => {
                                   e.target.select();
@@ -1425,11 +1408,9 @@ function JobFormModal({ mode, job, onClose }) {
             style={{
               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
             }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
             }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
             }}
           >
             {isView ? 'Close' : 'Cancel'}
@@ -1441,11 +1422,9 @@ function JobFormModal({ mode, job, onClose }) {
               style={{
                 backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
               }}
-              onMouseEnter={(e) => {
-                e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
               }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
               }}
             >
               {mode === "create" ? (

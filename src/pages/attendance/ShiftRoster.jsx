@@ -1107,8 +1107,8 @@ export default function ShiftRoster() {
                     onClick={() => setShowCreateShift(true)}
                     className="text-white px-4 py-2 rounded-lg transition-colors flex items-center space-x-2 text-sm font-medium"
                     style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                    onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                    onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                   >
                     <Plus className="w-4 h-4" />
                     <span>Create Shift</span>
@@ -1135,8 +1135,8 @@ export default function ShiftRoster() {
                     onClick={() => setShowCreateShift(true)}
                     className="text-white px-6 py-3 rounded-lg font-medium transition-colors"
                     style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                    onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                    onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                   >
                     Create Shift
                   </button>
@@ -1289,8 +1289,8 @@ export default function ShiftRoster() {
                       disabled={!selectedUser}
                       className="px-4 py-2 text-white rounded-lg font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                      onMouseEnter={(e) => { if (!e.target.disabled) e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                      onMouseLeave={(e) => { if (!e.target.disabled) e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                      onMouseEnter={(e) => { if (!e.currentTarget.disabled) e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                      onMouseLeave={(e) => { if (!e.currentTarget.disabled) e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                     >
                       Add to Roster
                     </button>
@@ -1359,8 +1359,8 @@ export default function ShiftRoster() {
                         disabled={!bulkShift || selectedUsersForBulk.length === 0}
                         className="w-full px-4 py-2 text-white rounded-lg font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                        onMouseEnter={(e) => { if (!e.target.disabled) e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                        onMouseLeave={(e) => { if (!e.target.disabled) e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                        onMouseEnter={(e) => { if (!e.currentTarget.disabled) e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                        onMouseLeave={(e) => { if (!e.currentTarget.disabled) e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                       >
                         Apply to Selected ({selectedUsersForBulk.length})
                       </button>
@@ -1405,8 +1405,8 @@ export default function ShiftRoster() {
                     onClick={() => navigateDate(-1)}
                     className="p-2 sm:p-3 text-white rounded-lg transition-colors"
                     style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                    onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                    onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                   >
                     <ChevronDown className="rotate-90" size={20} />
                   </button>
@@ -1419,8 +1419,8 @@ export default function ShiftRoster() {
                     onClick={() => navigateDate(1)}
                     className="p-2 sm:p-3 text-white rounded-lg transition-colors"
                     style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                    onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                    onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                   >
                     <ChevronDown className="-rotate-90" size={20} />
                   </button>
@@ -1431,8 +1431,8 @@ export default function ShiftRoster() {
                 onClick={() => setCurrentDate(new Date())}
                 className="px-4 sm:px-6 py-2 sm:py-3 text-white rounded-lg text-sm font-semibold transition-colors"
                 style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
               >
                 Today
               </button>
@@ -1688,8 +1688,8 @@ export default function ShiftRoster() {
                                 : 'text-white'
                             }`}
                             style={!user.is_deleted ? { backgroundColor: 'var(--primary-color, #4575b5)' } : {}}
-                            onMouseEnter={(e) => { if (!user.is_deleted) e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                            onMouseLeave={(e) => { if (!user.is_deleted) e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                            onMouseEnter={(e) => { if (!user.is_deleted) e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                            onMouseLeave={(e) => { if (!user.is_deleted) e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                           >
                             {user.is_deleted ? 'Restore' : 'Remove'}
                           </button>
@@ -1729,8 +1729,8 @@ export default function ShiftRoster() {
                   onClick={() => setShowOnCallForm(true)}
                   className="text-white px-4 py-2 rounded-lg transition-colors flex items-center space-x-2 text-sm"
                   style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                  onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                  onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                 >
                   <Plus className="w-4 h-4" />
                   <span>Add On-Call Duty</span>
@@ -1817,8 +1817,8 @@ export default function ShiftRoster() {
                 }}
                 className="text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
                 style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
               >
                 {showNightShiftRulesList ? 'Hide Rules' : 'View All Rules'}
               </button>
@@ -1864,8 +1864,8 @@ export default function ShiftRoster() {
                                   onClick={() => editNightShiftRule(rule.id)}
                                   className="px-2 py-1 text-white text-xs rounded font-medium transition-colors"
                                   style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                                  onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                                  onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                                 >
                                   Edit
                                 </button>
@@ -1873,8 +1873,8 @@ export default function ShiftRoster() {
                                   onClick={() => deleteNightShiftRule(rule.id)}
                                   className="px-2 py-1 text-white text-xs rounded font-medium transition-colors"
                                   style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                                  onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                                  onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                                 >
                                   Delete
                                 </button>
@@ -1997,8 +1997,8 @@ export default function ShiftRoster() {
                       onClick={editingNightShiftRule ? () => updateNightShiftRule(editingNightShiftRule.id) : saveNightShiftRules}
                       className="px-4 py-2 text-white rounded-lg font-medium text-sm transition-colors"
                       style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                      onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                      onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                     >
                       {editingNightShiftRule ? 'Update Rule' : 'Save Night Shift Rules'}
                     </button>
@@ -2016,8 +2016,8 @@ export default function ShiftRoster() {
                         }}
                         className="mt-2 px-4 py-2 text-white rounded-lg font-medium text-sm transition-colors"
                         style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                        onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                        onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                       >
                         Cancel Edit
                       </button>
@@ -2044,8 +2044,8 @@ export default function ShiftRoster() {
                     onClick={() => setShowCreateShift(false)}
                     className="p-2 rounded-lg transition-colors"
                     style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                    onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                    onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                   >
                     <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -2095,16 +2095,16 @@ export default function ShiftRoster() {
                     onClick={() => setShowCreateShift(false)}
                     className="flex-1 px-4 py-3 text-white rounded-lg font-medium transition-colors"
                     style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                    onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                    onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                   >
                     Cancel
                   </button>
                   <button onClick={createShift}
                     className="flex-1 px-4 py-3 text-white border-0 text-gray-900 rounded-lg hover:bg-gray-50 font-medium transition-colors"
                     style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                    onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                    onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                   >
                     Create Shift
                   </button>
@@ -2129,8 +2129,8 @@ export default function ShiftRoster() {
                     onClick={() => setShowOnCallForm(false)}
                     className="p-2 rounded-lg transition-colors"
                     style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                    onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                    onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                   >
                     <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -2238,8 +2238,8 @@ export default function ShiftRoster() {
                     onClick={() => setShowOnCallForm(false)}
                     className="flex-1 px-4 py-3 text-white rounded-lg font-medium transition-colors"
                     style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                    onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                    onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                   >
                     Cancel
                   </button>
@@ -2247,8 +2247,8 @@ export default function ShiftRoster() {
                     onClick={saveOnCallDuty}
                     className="flex-1 px-4 py-3 text-white rounded-lg font-medium transition-colors"
                     style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                    onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                    onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                   >
                     Add On-Call Duty
                   </button>

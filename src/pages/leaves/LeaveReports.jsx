@@ -307,8 +307,8 @@ export default function LeaveReports() {
                 onClick={exportToCSV}
                 className="text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 font-semibold relative z-20"
                 style={{ backgroundColor: colors.primary }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
               >
                 <Download size={18} />
                 Export CSV

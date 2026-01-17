@@ -344,11 +344,9 @@ const ResignationTracking = () => {
                 style={{
                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                 }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                 }}
               >
                 <Plus className="w-4 h-4" />
@@ -449,8 +447,8 @@ const ResignationTracking = () => {
                   type="submit" 
                   className="flex-1 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200"
                   style={{ backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
                 >
                   Apply Resignation
                 </button>

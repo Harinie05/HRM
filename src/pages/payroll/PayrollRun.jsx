@@ -324,12 +324,12 @@ export default function PayrollRun() {
             }}
             onMouseEnter={(e) => {
               if (canCreate) {
-                e.target.style.backgroundColor = colors.secondary;
+                e.currentTarget.style.backgroundColor = colors.secondary;
               }
             }}
             onMouseLeave={(e) => {
               if (canCreate) {
-                e.target.style.backgroundColor = colors.primary;
+                e.currentTarget.style.backgroundColor = colors.primary;
               }
             }}
           >
@@ -742,12 +742,12 @@ export default function PayrollRun() {
                   }}
                   onMouseEnter={(e) => {
                     if (!loading && validationChecked) {
-                      e.target.style.backgroundColor = colors.secondary;
+                      e.currentTarget.style.backgroundColor = colors.secondary;
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!loading && validationChecked) {
-                      e.target.style.backgroundColor = colors.primary;
+                      e.currentTarget.style.backgroundColor = colors.primary;
                     }
                   }}
                 >
@@ -994,8 +994,8 @@ export default function PayrollRun() {
                     backgroundColor: colors.primary,
                     borderColor: colors.primary
                   }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                 >
                   <Play size={16} />
                   Proceed with Payroll

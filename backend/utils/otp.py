@@ -2,7 +2,7 @@ import random
 import string
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from models.models_tenant import LoginOTP
+from models.models_tenant import LoginOTP, OrganizationBranding
 from utils.email import send_email
 import logging
 
@@ -15,6 +15,10 @@ def generate_otp() -> str:
 def send_login_otp(db: Session, email: str, tenant_code: str, user_name: str | None = None) -> bool:
     """Generate and send OTP for login verification"""
     try:
+        # Get organization name
+        org_branding = db.query(OrganizationBranding).first()
+        company_name = org_branding.organization_name if org_branding else "Company"
+        
         # Generate OTP
         otp_code = generate_otp()
         expires_at = datetime.utcnow() + timedelta(minutes=5)  # 5 minutes expiry
@@ -36,13 +40,13 @@ def send_login_otp(db: Session, email: str, tenant_code: str, user_name: str | N
         db.commit()
         
         # Send email
-        subject = "Login OTP - Nutryah HRM"
+        subject = f"Login OTP - {company_name} HRM"
         html_content = f"""
         <html>
         <body style="font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5;">
             <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
                 <div style="text-align: center; margin-bottom: 30px;">
-                    <h1 style="color: #2862e9; margin: 0;">Nutryah HRM</h1>
+                    <h1 style="color: #2862e9; margin: 0;">{company_name} HRM</h1>
                     <p style="color: #666; margin: 5px 0;">Human Resource Management System</p>
                 </div>
                 
@@ -50,7 +54,7 @@ def send_login_otp(db: Session, email: str, tenant_code: str, user_name: str | N
                 
                 <p style="color: #555; line-height: 1.6;">
                     Hello {user_name or '------'},<br><br>
-                    Your login OTP for Nutryah HRM is:
+                    Your login OTP for {company_name} HRM is:
                 </p>
                 
                 <div style="text-align: center; margin: 30px 0;">
@@ -66,7 +70,7 @@ def send_login_otp(db: Session, email: str, tenant_code: str, user_name: str | N
                 
                 <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #888; font-size: 12px;">
                     <p>This is an automated message. Please do not reply to this email.</p>
-                    <p>© 2024 Nutryah HRM. All rights reserved.</p>
+                    <p>© 2024 {company_name} HRM. All rights reserved.</p>
                 </div>
             </div>
         </body>

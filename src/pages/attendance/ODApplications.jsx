@@ -344,10 +344,9 @@ export default function ODApplications() {
                   }}
                   onMouseEnter={(e) => {
                     const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                    e.target.style.backgroundColor = hoverColor;
+                    e.currentTarget.style.backgroundColor = hoverColor;
                   }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                   }}
                 >
                   <FiPlus className="w-4 h-4" />
@@ -439,10 +438,9 @@ export default function ODApplications() {
                                     }}
                                     onMouseEnter={(e) => {
                                       const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                                      e.target.style.backgroundColor = hoverColor;
+                                      e.currentTarget.style.backgroundColor = hoverColor;
                                     }}
-                                    onMouseLeave={(e) => {
-                                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                                     }}
                                     title="Approve"
                                   >
@@ -525,10 +523,9 @@ export default function ODApplications() {
                               }}
                               onMouseEnter={(e) => {
                                 const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                                e.target.style.backgroundColor = hoverColor;
+                                e.currentTarget.style.backgroundColor = hoverColor;
                               }}
-                              onMouseLeave={(e) => {
-                                e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                               }}
                             >
                               Approve
@@ -698,8 +695,8 @@ export default function ODApplications() {
                   disabled={loading}
                   className="flex-1 px-4 py-2 text-white rounded-lg text-sm transition-colors"
                   style={{ backgroundColor: loading ? '#9ca3af' : colors.primary }}
-                  onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = colors.secondary)}
-                  onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = colors.primary)}
+                  onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = colors.secondary)}
+                  onMouseLeave={(e) => !loading && (e.currentTarget.style.backgroundColor = colors.primary)}
                 >
                   {loading ? "Submitting..." : "Submit Application"}
                 </button>

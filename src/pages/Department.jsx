@@ -464,14 +464,14 @@ export default function Departments() {
                       }}
                       onMouseEnter={(e) => {
                         if (filter !== "all") {
-                          e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                          e.target.style.color = 'white';
+                          e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          e.currentTarget.style.color = 'white';
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (filter !== "all") {
-                          e.target.style.backgroundColor = 'transparent';
-                          e.target.style.color = '#6b7280';
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = '#6b7280';
                         }
                       }}
                     >
@@ -490,14 +490,14 @@ export default function Departments() {
                       }}
                       onMouseEnter={(e) => {
                         if (filter !== "with-description") {
-                          e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                          e.target.style.color = 'white';
+                          e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          e.currentTarget.style.color = 'white';
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (filter !== "with-description") {
-                          e.target.style.backgroundColor = 'transparent';
-                          e.target.style.color = '#6b7280';
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = '#6b7280';
                         }
                       }}
                     >
@@ -516,14 +516,14 @@ export default function Departments() {
                       }}
                       onMouseEnter={(e) => {
                         if (filter !== "without-description") {
-                          e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                          e.target.style.color = 'white';
+                          e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          e.currentTarget.style.color = 'white';
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (filter !== "without-description") {
-                          e.target.style.backgroundColor = 'transparent';
-                          e.target.style.color = '#6b7280';
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = '#6b7280';
                         }
                       }}
                     >
@@ -558,11 +558,9 @@ export default function Departments() {
                     style={{
                       backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                     }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                     }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                     }}
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -766,14 +764,14 @@ export default function Departments() {
                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
                   onMouseEnter={(e) => {
-                    if (!e.target.disabled) {
+                    if (!e.currentTarget.disabled) {
                       const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                      e.target.style.backgroundColor = hoverColor;
+                      e.currentTarget.style.backgroundColor = hoverColor;
                     }
                   }}
                   onMouseLeave={(e) => {
-                    if (!e.target.disabled) {
-                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    if (!e.currentTarget.disabled) {
+                      e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                     }
                   }}
                 >
@@ -872,10 +870,9 @@ export default function Departments() {
                   }}
                   onMouseEnter={(e) => {
                     const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                    e.target.style.backgroundColor = hoverColor;
+                    e.currentTarget.style.backgroundColor = hoverColor;
                   }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                   }}
                 >
                   Update

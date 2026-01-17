@@ -447,10 +447,10 @@ export default function Login() {
                   color: 'var(--primary-color, #4575b5)'
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.color = 'var(--primary-hover, #3a6299)';
+                  e.currentTarget.style.color = 'var(--primary-hover, #3a6299)';
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.color = 'var(--primary-color, #4575b5)';
+                  e.currentTarget.style.color = 'var(--primary-color, #4575b5)';
                 }}
               >
                 resend code →

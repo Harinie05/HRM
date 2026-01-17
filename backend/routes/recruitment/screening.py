@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
-from models.models_tenant import PublicCandidate, Candidate, JobRequisition
+from models.models_tenant import PublicCandidate, Candidate, JobRequisition, OrganizationBranding
 from datetime import datetime
 from database import logger
 from utils.email import send_email
@@ -172,6 +172,10 @@ def shortlist_candidates_with_interviews(
             if not job:
                 logger.warning(f"⚠️ Job ID {public_candidate.job_id} not found")
                 continue
+            
+            # Get organization name from branding table
+            org_branding = db.query(OrganizationBranding).first()
+            company_name = org_branding.organization_name if org_branding else "Company"
                 
             # Check if already in ATS (by email AND job_id to avoid duplicates)
             existing = db.query(Candidate).filter(
@@ -212,7 +216,7 @@ def shortlist_candidates_with_interviews(
                 candidate_name=public_candidate.name,
                 candidate_email=public_candidate.email,
                 job_title=job.title,
-                company_name="NUTRYAH",
+                company_name=company_name,
                 interview_date=schedule.interview_date,
                 interview_time=schedule.interview_time,
                 round_names=job.round_names or []

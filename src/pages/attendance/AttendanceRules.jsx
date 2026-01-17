@@ -386,12 +386,10 @@ export default function AttendanceRules() {
                       backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
                       border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                     }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                       e.target.style.border = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color')}`;
                     }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                       e.target.style.border = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`;
                     }}
                   >
@@ -465,11 +463,9 @@ export default function AttendanceRules() {
                                 style={{ 
                                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                                 }}
-                                onMouseEnter={(e) => {
-                                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                                 }}
-                                onMouseLeave={(e) => {
-                                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                                 }}
                               >
                                 {r.is_active ? 'Deactivate' : 'Activate'}
@@ -537,11 +533,9 @@ export default function AttendanceRules() {
                             style={{ 
                               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                             }}
-                            onMouseEnter={(e) => {
-                              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                             }}
-                            onMouseLeave={(e) => {
-                              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                             }}
                           >
                             {r.is_active ? 'Deactivate' : 'Activate'}
@@ -582,12 +576,10 @@ export default function AttendanceRules() {
                       backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
                       border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
                     }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                       e.target.style.border = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color')}`;
                     }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                       e.target.style.border = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`;
                     }}
                   >
@@ -631,11 +623,9 @@ export default function AttendanceRules() {
                             style={{ 
                               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                             }}
-                            onMouseEnter={(e) => {
-                              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                             }}
-                            onMouseLeave={(e) => {
-                              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                             }}
                           >
                             {l.is_active ? 'Deactivate' : 'Activate'}
@@ -691,11 +681,9 @@ export default function AttendanceRules() {
                           style={{ 
                             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                           }}
-                          onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                           }}
-                          onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                           }}
                         >
                           {l.is_active ? 'Deactivate' : 'Activate'}
@@ -771,11 +759,9 @@ export default function AttendanceRules() {
                   style={{ 
                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                   }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                   }}
                 >
                   Add Rule
@@ -851,11 +837,9 @@ export default function AttendanceRules() {
                   style={{ 
                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                   }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                   }}
                 >
                   Add Location

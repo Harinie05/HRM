@@ -345,14 +345,14 @@ const QualityIndicators = () => {
             }}
             onMouseEnter={(e) => {
               if (activeTab !== 'manage') {
-                e.target.style.backgroundColor = colors.secondary;
-                e.target.style.color = 'white';
+                e.currentTarget.style.backgroundColor = colors.secondary;
+                e.currentTarget.style.color = 'white';
               }
             }}
             onMouseLeave={(e) => {
               if (activeTab !== 'manage') {
-                e.target.style.backgroundColor = 'transparent';
-                e.target.style.color = '#6b7280';
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = '#6b7280';
               }
             }}
           >
@@ -368,14 +368,14 @@ const QualityIndicators = () => {
             }}
             onMouseEnter={(e) => {
               if (activeTab !== 'records') {
-                e.target.style.backgroundColor = colors.secondary;
-                e.target.style.color = 'white';
+                e.currentTarget.style.backgroundColor = colors.secondary;
+                e.currentTarget.style.color = 'white';
               }
             }}
             onMouseLeave={(e) => {
               if (activeTab !== 'records') {
-                e.target.style.backgroundColor = 'transparent';
-                e.target.style.color = '#6b7280';
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = '#6b7280';
               }
             }}
           >
@@ -400,14 +400,14 @@ const QualityIndicators = () => {
                 }}
                 onMouseEnter={(e) => {
                   if (!showDeleted) {
-                    e.target.style.backgroundColor = colors.secondary;
-                    e.target.style.color = 'white';
+                    e.currentTarget.style.backgroundColor = colors.secondary;
+                    e.currentTarget.style.color = 'white';
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!showDeleted) {
-                    e.target.style.backgroundColor = 'transparent';
-                    e.target.style.color = colors.primary;
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = colors.primary;
                   }
                 }}
               >
@@ -421,8 +421,8 @@ const QualityIndicators = () => {
                 backgroundColor: colors.primary,
                 borderColor: colors.primary
               }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-              onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
             >
               <Plus className="w-4 h-4" />
               Add Quality Indicator
@@ -541,8 +541,8 @@ const QualityIndicators = () => {
                       backgroundColor: colors.primary,
                       borderColor: colors.primary
                     }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                   >
                     {loading ? 'Saving...' : editingIndicator ? 'Update' : 'Save'}
                   </button>
@@ -640,12 +640,10 @@ const QualityIndicators = () => {
                 backgroundColor: colors.primary,
                 borderColor: colors.primary
               }}
-              onMouseEnter={(e) => {
-                e.target.style.backgroundColor = colors.secondary;
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = colors.secondary;
                 e.target.style.borderColor = colors.secondary;
               }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = colors.primary;
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = colors.primary;
                 e.target.style.borderColor = colors.primary;
               }}
             >
@@ -738,8 +736,8 @@ const QualityIndicators = () => {
                       backgroundColor: colors.primary,
                       borderColor: colors.primary
                     }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                   >
                     {loading ? 'Saving...' : editingRecord ? 'Update' : 'Save'}
                   </button>

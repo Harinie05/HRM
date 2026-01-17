@@ -265,13 +265,13 @@ export default function Branch() {
                 backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
               }}
               onMouseEnter={(e) => {
-                if (!e.target.disabled) {
-                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                 }
               }}
               onMouseLeave={(e) => {
-                if (!e.target.disabled) {
-                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                 }
               }}
             >

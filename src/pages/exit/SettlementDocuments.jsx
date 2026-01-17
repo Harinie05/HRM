@@ -568,8 +568,8 @@ export default function SettlementDocuments() {
                     onClick={handleCalculateSettlement}
                     style={{ backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' }}
                     className="px-3 py-2 text-white text-sm rounded-xl font-medium whitespace-nowrap transition-all duration-200"
-                    onMouseEnter={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
                   >
                     Calculate Settlement
                   </button>
@@ -690,8 +690,8 @@ export default function SettlementDocuments() {
                         onClick={handleApproveSettlement}
                         style={{ backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' }}
                         className="w-full text-white py-2.5 rounded-xl font-medium text-sm transition-all duration-200 shadow-sm hover:shadow-md"
-                        onMouseEnter={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
                       >
                         Approve Settlement
                       </button>
@@ -749,8 +749,8 @@ export default function SettlementDocuments() {
                       onClick={handleGenerateExperienceLetter}
                       style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
                       className="px-2 sm:px-3 py-1 text-white text-xs sm:text-sm rounded whitespace-nowrap"
-                      onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                     >
                       Generate Letter
                     </button>
@@ -759,8 +759,8 @@ export default function SettlementDocuments() {
                       onClick={() => setIsEditingLetter(!isEditingLetter)}
                       style={{ backgroundColor: 'var(--secondary-color, #474e71)' }}
                       className="px-2 sm:px-3 py-1 text-white text-xs sm:text-sm rounded whitespace-nowrap"
-                      onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color, #474e71)'}
                     >
                       {isEditingLetter ? 'Preview' : 'Edit'}
                     </button>
@@ -916,8 +916,8 @@ export default function SettlementDocuments() {
                           onClick={handleSaveExperienceLetter}
                           style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
                           className="w-full text-white py-2 rounded text-sm"
-                          onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
-                          onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                         >
                           Save Changes
                         </button>
@@ -977,8 +977,8 @@ export default function SettlementDocuments() {
                         onClick={handleDownloadPDF}
                         style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
                         className="w-full text-white py-2 rounded text-sm"
-                        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                       >
                         Download PDF
                       </button>
@@ -988,8 +988,8 @@ export default function SettlementDocuments() {
                         onClick={handleEmailEmployee}
                         style={{ backgroundColor: 'var(--secondary-color, #474e71)' }}
                         className="w-full text-white py-2 rounded text-sm"
-                        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color, #474e71)'}
                       >
                         Email to Employee
                       </button>

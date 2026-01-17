@@ -450,8 +450,8 @@ export default function Lifecycle() {
                     backgroundColor: colors.primary,
                     borderColor: colors.primary
                   }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                 >
                   Submit for Approval
                 </button>
@@ -511,8 +511,8 @@ export default function Lifecycle() {
                             backgroundColor: colors.primary,
                             borderColor: colors.primary
                           }}
-                          onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                          onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                         >
                           <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -579,8 +579,8 @@ export default function Lifecycle() {
                         backgroundColor: colors.primary,
                         borderColor: colors.primary
                       }}
-                      onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                     >
                       <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />

@@ -623,8 +623,8 @@ export default function LabourRegister() {
                 type="submit"
                 style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
                 className="px-6 py-2 text-white rounded-lg border-0 transition-colors"
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)'}
               >
                 {editingRecord ? 'Update' : 'Add'} Labour Register Entry
               </button>
@@ -635,8 +635,8 @@ export default function LabourRegister() {
                 onClick={cancelEdit}
                 style={{ backgroundColor: 'var(--secondary-color, #474e71)' }}
                 className="px-6 py-2 text-white rounded-lg border-0 transition-colors"
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color, #474e71)'}
               >
                 Cancel Edit
               </button>

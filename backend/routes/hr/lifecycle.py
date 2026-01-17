@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
-from models.models_tenant import EmployeeLifecycleAction
+from models.models_tenant import EmployeeLifecycleAction, OrganizationBranding
 from schemas.schemas_tenant import (
     LifecycleActionCreate,
     LifecycleActionUpdate,
@@ -153,6 +153,10 @@ def approve_lifecycle_action(approval_data: dict, request: Request, db: Session 
         
         db.commit()
         
+        # Get organization name
+        org_branding = db.query(OrganizationBranding).first()
+        company_name = org_branding.organization_name if org_branding else "Company"
+        
         # Professional email content
         if is_approved:
             subject = f"Lifecycle Action Approved - {action.action_type.title()}"
@@ -184,7 +188,7 @@ def approve_lifecycle_action(approval_data: dict, request: Request, db: Session 
                         
                         <p>Best regards,<br>
                         <strong>Human Resources Department</strong><br>
-                        Nutryah HRM</p>
+                        {company_name} HRM</p>
                     </div>
                 </body>
                 </html>
@@ -214,7 +218,7 @@ def approve_lifecycle_action(approval_data: dict, request: Request, db: Session 
                         
                         <p>Best regards,<br>
                         <strong>Human Resources Department</strong><br>
-                        Nutryah HRM</p>
+                        {company_name} HRM</p>
                     </div>
                 </body>
                 </html>
@@ -242,7 +246,7 @@ def approve_lifecycle_action(approval_data: dict, request: Request, db: Session 
                         
                         <p>Best regards,<br>
                         <strong>Human Resources Department</strong><br>
-                        Nutryah HRM</p>
+                        {company_name} HRM</p>
                     </div>
                 </body>
                 </html>
@@ -273,7 +277,7 @@ def approve_lifecycle_action(approval_data: dict, request: Request, db: Session 
                     
                     <p>Best regards,<br>
                     <strong>Human Resources Department</strong><br>
-                    Nutryah HRM</p>
+                    {company_name} HRM</p>
                 </div>
             </body>
             </html>

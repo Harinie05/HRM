@@ -312,8 +312,8 @@ export default function KnowledgeTransfer() {
                       onClick={() => setShowCreateForm(true)}
                       style={{ backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' }}
                       className="px-4 py-2 text-white rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-200"
-                      onMouseEnter={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
                     >
                       Create KT Plan
                     </button>
@@ -463,8 +463,8 @@ export default function KnowledgeTransfer() {
                       type="submit"
                       style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
                       className="px-4 sm:px-6 py-2 text-white rounded-lg text-sm"
-                      onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                     >
                       Create KT Plan
                     </button>
@@ -513,8 +513,8 @@ export default function KnowledgeTransfer() {
                                   onClick={() => acknowledgeItem(item.id)}
                                   style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
                                   className="px-2 sm:px-3 py-1 text-xs sm:text-sm text-white rounded whitespace-nowrap"
-                                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
-                                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                                 >
                                   Mark Complete
                                 </button>
@@ -551,8 +551,8 @@ export default function KnowledgeTransfer() {
                           onClick={() => approveKT("manager")}
                           style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
                           className="px-3 sm:px-4 py-2 text-white rounded-lg text-sm"
-                          onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
-                          onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                         >
                           Manager Approve
                         </button>
@@ -562,8 +562,8 @@ export default function KnowledgeTransfer() {
                           onClick={() => approveKT("hr")}
                           style={{ backgroundColor: 'var(--secondary-color, #474e71)' }}
                           className="px-3 sm:px-4 py-2 text-white rounded-lg text-sm"
-                          onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
-                          onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color, #474e71)'}
                         >
                           HR Approve
                         </button>

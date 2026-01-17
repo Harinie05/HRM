@@ -125,14 +125,14 @@ export default function PMSManagement() {
                       }}
                       onMouseEnter={(e) => {
                         if (tab !== tabName) {
-                          e.target.style.backgroundColor = 'var(--secondary-color)';
-                          e.target.style.color = 'white';
+                          e.currentTarget.style.backgroundColor = 'var(--secondary-color)';
+                          e.currentTarget.style.color = 'white';
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (tab !== tabName) {
-                          e.target.style.backgroundColor = 'transparent';
-                          e.target.style.color = '#6b7280';
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = '#6b7280';
                         }
                       }}
                     >

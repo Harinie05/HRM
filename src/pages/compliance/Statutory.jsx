@@ -684,8 +684,8 @@ export default function Statutory() {
               type="submit"
               style={{ backgroundColor: 'var(--primary-color, #2862e9)', border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}` }}
               className="px-6 py-2 text-white rounded-lg transition-colors"
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)'}
             >
               {editingRecord ? 'Update' : 'Calculate & Save'} Statutory Deductions
             </button>
@@ -695,8 +695,8 @@ export default function Statutory() {
                 onClick={cancelEdit}
                 style={{ backgroundColor: 'var(--secondary-color, #474e71)', border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}` }}
                 className="px-6 py-2 text-white rounded-lg transition-colors"
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color, #474e71)'}
               >
                 Cancel Edit
               </button>
@@ -747,12 +747,12 @@ export default function Statutory() {
                   }}
                   onMouseEnter={(e) => {
                     if (!showDeleted) {
-                      e.target.style.backgroundColor = '#f9fafb';
+                      e.currentTarget.style.backgroundColor = '#f9fafb';
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!showDeleted) {
-                      e.target.style.backgroundColor = 'white';
+                      e.currentTarget.style.backgroundColor = 'white';
                     }
                   }}
                 >

@@ -241,8 +241,8 @@ export default function TrainingApplications() {
               style={{
                 backgroundColor: 'var(--primary-color)'
               }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color)'}
             >
               <Send className="w-4 h-4" />
               Send Email
@@ -376,8 +376,8 @@ export default function TrainingApplications() {
                             style={{
                               backgroundColor: 'var(--primary-color)'
                             }}
-                            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
-                            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color)'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color)'}
                           >
                             Accept
                           </button>
@@ -452,8 +452,8 @@ export default function TrainingApplications() {
                 style={{
                   backgroundColor: 'var(--primary-color)'
                 }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color)'}
               >
                 <Send className="w-4 h-4" />
                 Send Emails

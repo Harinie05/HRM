@@ -381,8 +381,8 @@ export default function SalaryStructure() {
                 backgroundColor: colors.primary,
                 borderColor: colors.primary
               }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-              onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
             >
               <Plus size={18} />
               Add Structure
@@ -702,8 +702,8 @@ export default function SalaryStructure() {
                     backgroundColor: colors.primary,
                     borderColor: colors.primary
                   }}
-                  onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = colors.secondary)}
-                  onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = colors.primary)}
+                  onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = colors.secondary)}
+                  onMouseLeave={(e) => !loading && (e.currentTarget.style.backgroundColor = colors.primary)}
                 >
                   {loading ? "Saving..." : (editingStructure ? "Update" : "Create")}
                 </button>
@@ -787,12 +787,12 @@ export default function SalaryStructure() {
                 }}
                 onMouseEnter={(e) => {
                   if (selectedEmployees.length > 0 && !loading) {
-                    e.target.style.backgroundColor = colors.secondary;
+                    e.currentTarget.style.backgroundColor = colors.secondary;
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (selectedEmployees.length > 0 && !loading) {
-                    e.target.style.backgroundColor = colors.primary;
+                    e.currentTarget.style.backgroundColor = colors.primary;
                   }
                 }}
               >

@@ -376,11 +376,9 @@ export default function ATS() {
                                 style={{
                                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                                 }}
-                                onMouseEnter={(e) => {
-                                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                                 }}
-                                onMouseLeave={(e) => {
-                                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                                 }}
                               >
                                 <FiArrowRight className="mr-1" size={12} />
@@ -439,11 +437,9 @@ export default function ATS() {
                           style={{
                             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                           }}
-                          onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                           }}
-                          onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                           }}
                         >
                           <FiArrowRight size={12} />
@@ -614,8 +610,8 @@ export default function ATS() {
                   className="px-6 py-2 text-white rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
                   onClick={submitMove}
                   disabled={!moveForm.action}
-                  onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)')}
-                  onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-color, #2862e9)')}
+                  onMouseEnter={(e) => !e.currentTarget.disabled && (e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)')}
+                  onMouseLeave={(e) => !e.currentTarget.disabled && (e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)')}
                 >
                   <FiArrowRight size={16} />
                   Send Email & Move

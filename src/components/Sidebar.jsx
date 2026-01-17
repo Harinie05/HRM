@@ -56,10 +56,15 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
   );
   const [openPayrollMenu, setOpenPayrollMenu] = useState(false);
   const [openAnalyticsMenu, setOpenAnalyticsMenu] = useState(false);
+  
+  // Get tenant name immediately for initial display
+  const tenantDb = localStorage.getItem("tenant_db") || "hospital";
+  const defaultName = tenantDb.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  
   const [companyInfo, setCompanyInfo] = useState({
-    name: "Your Hospital Name",
-    tagline: "",
-    initials: "YH"
+    name: defaultName,
+    tagline: "Smart • Secure • NABH-Standard",
+    initials: defaultName.split(' ').map(word => word.charAt(0).toUpperCase()).join('').substring(0, 2)
   });
 
   // Keep dropdown menus open based on current route
@@ -125,6 +130,7 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
           // Fallback to localStorage
           const storedName = localStorage.getItem("hospital_name");
           const storedTagline = localStorage.getItem("hospital_tagline");
+          const tenantDb = localStorage.getItem("tenant_db");
           
           if (storedName) {
             const initials = storedName.split(' ').map(word => word.charAt(0).toUpperCase()).join('').substring(0, 2);
@@ -133,24 +139,37 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
               tagline: storedTagline || "Smart • Secure • NABH-Standard",
               initials
             });
+          } else if (tenantDb) {
+            // Use tenant DB name as fallback - handle underscores and capitalize properly
+            const displayName = tenantDb.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+            const initials = displayName.split(' ').map(word => word.charAt(0).toUpperCase()).join('').substring(0, 2);
+            setCompanyInfo({
+              name: displayName,
+              tagline: "Smart • Secure • NABH-Standard",
+              initials
+            });
           } else {
             // Final fallback to company profile API if user has permission
             if (isAdmin() || hasPermission("view_company_profile")) {
-              const profileResponse = await api.get('/organization/company-profile');
-              if (profileResponse.data && profileResponse.data.company_name) {
-                const name = profileResponse.data.company_name;
-                const tagline = profileResponse.data.tagline || "";
-                const initials = name.split(' ').map(word => word.charAt(0).toUpperCase()).join('').substring(0, 2);
-                
-                // Store in localStorage for future use
-                localStorage.setItem("hospital_name", name);
-                localStorage.setItem("hospital_tagline", tagline);
-                
-                setCompanyInfo({
-                  name,
-                  tagline,
-                  initials
-                });
+              try {
+                const profileResponse = await api.get('/organization/company-profile');
+                if (profileResponse.data && profileResponse.data.company_name) {
+                  const name = profileResponse.data.company_name;
+                  const tagline = profileResponse.data.tagline || "";
+                  const initials = name.split(' ').map(word => word.charAt(0).toUpperCase()).join('').substring(0, 2);
+                  
+                  // Store in localStorage for future use
+                  localStorage.setItem("hospital_name", name);
+                  localStorage.setItem("hospital_tagline", tagline);
+                  
+                  setCompanyInfo({
+                    name,
+                    tagline,
+                    initials
+                  });
+                }
+              } catch (err) {
+                console.log('Company profile API failed:', err);
               }
             }
           }
@@ -160,12 +179,22 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
         // Fallback to localStorage on error
         const storedName = localStorage.getItem("hospital_name");
         const storedTagline = localStorage.getItem("hospital_tagline");
+        const tenantDb = localStorage.getItem("tenant_db");
         
         if (storedName) {
           const initials = storedName.split(' ').map(word => word.charAt(0).toUpperCase()).join('').substring(0, 2);
           setCompanyInfo({
             name: storedName,
             tagline: storedTagline || "Smart • Secure • NABH-Standard",
+            initials
+          });
+        } else if (tenantDb) {
+          // Use tenant DB name as fallback - handle underscores and capitalize properly
+          const displayName = tenantDb.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+          const initials = displayName.split(' ').map(word => word.charAt(0).toUpperCase()).join('').substring(0, 2);
+          setCompanyInfo({
+            name: displayName,
+            tagline: "Smart • Secure • NABH-Standard",
             initials
           });
         }

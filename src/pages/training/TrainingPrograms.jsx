@@ -218,8 +218,8 @@ export default function TrainingPrograms() {
               style={{
                 backgroundColor: 'var(--primary-color)'
               }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color)'}
             >
               <Plus className="w-4 h-4" />
               New Program
@@ -296,8 +296,8 @@ export default function TrainingPrograms() {
                               style={{
                                 backgroundColor: 'var(--primary-color)'
                               }}
-                              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
-                              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
+                              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color)'}
+                              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color)'}
                             >
                               <Plus size={16} />
                               Create First Program
@@ -693,8 +693,8 @@ export default function TrainingPrograms() {
                 style={{
                   backgroundColor: 'var(--primary-color)'
                 }}
-                onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--secondary-color)')}
-                onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = 'var(--primary-color)')}
+                onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = 'var(--secondary-color)')}
+                onMouseLeave={(e) => !loading && (e.currentTarget.style.backgroundColor = 'var(--primary-color)')}
               >
                 {loading ? "Saving..." : (editingProgram ? "Update Program" : "Create Program")}
               </button>

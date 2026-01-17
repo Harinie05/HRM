@@ -451,8 +451,8 @@ export default function ClearanceWorkflow() {
                       onClick={() => setShowInterviewForm(true)}
                       style={{ backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' }}
                       className="px-4 py-2 text-white text-sm rounded-xl font-medium transition-all duration-200 whitespace-nowrap"
-                      onMouseEnter={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
                     >
                       Conduct Exit Interview
                     </button>
@@ -513,8 +513,8 @@ export default function ClearanceWorkflow() {
                                   onClick={() => handleApproveClearance(clearance.id)}
                                   style={{ backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' }}
                                   className="text-white text-sm px-4 py-2 rounded-xl font-medium transition-all duration-200 whitespace-nowrap"
-                                  onMouseEnter={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
-                                  onMouseLeave={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
+                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
+                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
                                 >
                                   Mark Completed
                                 </button>
@@ -572,8 +572,8 @@ export default function ClearanceWorkflow() {
                                   onClick={() => updateDepartmentClearance(selectedExit.id, clearance.department, 'Completed')}
                                   style={{ backgroundColor: 'var(--primary-color, #2862e9)', borderColor: 'var(--primary-color, #2862e9)' }}
                                   className="text-white text-xs sm:text-sm px-3 sm:px-4 py-2 border rounded-xl font-medium transition-all duration-200 whitespace-nowrap"
-                                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
-                                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                                 >
                                   Mark Completed
                                 </button>
@@ -712,8 +712,8 @@ export default function ClearanceWorkflow() {
                   type="submit"
                   style={{ backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' }}
                   className="flex-1 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200"
-                  onMouseEnter={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
                 >
                   Complete Interview
                 </button>

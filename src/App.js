@@ -141,6 +141,17 @@ function App() {
       });
     };
 
+    // Set default colors first
+    const defaultColors = {
+      primaryColor: '#4575b5',
+      secondaryColor: '#474e71',
+      sidebarBg: '#2c3e5f',
+      headerFooterBg: '#3B5BDB',
+      sidebarTextColor: '#ffffff',
+      headerTextColor: '#ffffff'
+    };
+    applyColors(defaultColors);
+
     const loadColorsFromBackend = async () => {
       try {
         const response = await api.get('/api/organization/branding');
@@ -159,7 +170,7 @@ function App() {
           applyColors(colors);
         }
       } catch (error) {
-        console.log('No branding data found in database');
+        console.log('No branding data found in database, using defaults');
       }
     };
     

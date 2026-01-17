@@ -303,8 +303,8 @@ export default function LeaveTypes({ activeView = "types" }) {
                 onClick={() => activeView === "types" ? handleOpenModal() : handleOpenPolicyModal()}
                 style={{ backgroundColor: colors.primary }}
                 className="text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 relative z-20"
-                onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
               >
                 <Plus size={18} />
                 {activeView === "types" ? "Add Leave Type" : "Add Leave Policy"}
@@ -1064,8 +1064,8 @@ export default function LeaveTypes({ activeView = "types" }) {
                   type="submit"
                   style={{ backgroundColor: colors.primary }}
                   className="flex-1 px-6 py-3 text-white rounded-2xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                 >
                   {editingType ? "Update" : "Create"}
                 </button>
@@ -1226,8 +1226,8 @@ export default function LeaveTypes({ activeView = "types" }) {
                     }}
                     style={{ backgroundColor: colors.primary }}
                     className="px-4 py-3 text-white rounded-2xl text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-                    onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                   >
                     Add
                   </button>
@@ -1304,8 +1304,8 @@ export default function LeaveTypes({ activeView = "types" }) {
                   type="submit"
                   style={{ backgroundColor: colors.primary }}
                   className="flex-1 px-6 py-3 text-white rounded-2xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                 >
                   {editingPolicy ? "Update" : "Create"}
                 </button>

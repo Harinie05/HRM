@@ -412,14 +412,14 @@ const LocumConsultants = () => {
                       }}
                       onMouseEnter={(e) => {
                         if (activeTab !== 'list') {
-                          e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                          e.target.style.color = 'white';
+                          e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          e.currentTarget.style.color = 'white';
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (activeTab !== 'list') {
-                          e.target.style.backgroundColor = 'transparent';
-                          e.target.style.color = '#6b7280';
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = '#6b7280';
                         }
                       }}
                     >
@@ -440,14 +440,14 @@ const LocumConsultants = () => {
                       }}
                       onMouseEnter={(e) => {
                         if (activeTab !== 'availability') {
-                          e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                          e.target.style.color = 'white';
+                          e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          e.currentTarget.style.color = 'white';
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (activeTab !== 'availability') {
-                          e.target.style.backgroundColor = 'transparent';
-                          e.target.style.color = '#6b7280';
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = '#6b7280';
                         }
                       }}
                     >
@@ -468,14 +468,14 @@ const LocumConsultants = () => {
                       }}
                       onMouseEnter={(e) => {
                         if (activeTab !== 'payouts') {
-                          e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
-                          e.target.style.color = 'white';
+                          e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          e.currentTarget.style.color = 'white';
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (activeTab !== 'payouts') {
-                          e.target.style.backgroundColor = 'transparent';
-                          e.target.style.color = '#6b7280';
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = '#6b7280';
                         }
                       }}
                     >
@@ -498,11 +498,9 @@ const LocumConsultants = () => {
                       style={{
                         backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                       }}
-                      onMouseEnter={(e) => {
-                        e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                       }}
-                      onMouseLeave={(e) => {
-                        e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                       }}
                     >
                       <Plus size={16} />
@@ -764,11 +762,9 @@ const LocumConsultants = () => {
                       style={{
                         backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                       }}
-                      onMouseEnter={(e) => {
-                        e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                       }}
-                      onMouseLeave={(e) => {
-                        e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                       }}
                     >
                       <Plus size={16} />
@@ -875,11 +871,9 @@ const LocumConsultants = () => {
                       style={{
                         backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                       }}
-                      onMouseEnter={(e) => {
-                        e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                       }}
-                      onMouseLeave={(e) => {
-                        e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                       }}
                     >
                       <Plus size={16} />
@@ -946,11 +940,9 @@ const LocumConsultants = () => {
                                     style={{
                                       backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                                     }}
-                                    onMouseEnter={(e) => {
-                                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                                     }}
-                                    onMouseLeave={(e) => {
-                                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                                     }}
                                   >
                                     Process Payroll
@@ -1040,11 +1032,9 @@ const LocumConsultants = () => {
                                 style={{
                                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                                 }}
-                                onMouseEnter={(e) => {
-                                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                                 }}
-                                onMouseLeave={(e) => {
-                                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                                 }}
                               >
                                 Process Payroll
@@ -1314,11 +1304,9 @@ const LocumConsultants = () => {
                       style={{
                         backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                       }}
-                      onMouseEnter={(e) => {
-                        e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                       }}
-                      onMouseLeave={(e) => {
-                        e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                       }}
                     >
                       {editingConsultant ? 'Update Consultant' : 'Add Consultant'}
@@ -1466,11 +1454,9 @@ const LocumConsultants = () => {
                       style={{
                         backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                       }}
-                      onMouseEnter={(e) => {
-                        e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                       }}
-                      onMouseLeave={(e) => {
-                        e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                       }}
                     >
                       Add Availability
@@ -1666,11 +1652,9 @@ const LocumConsultants = () => {
                       style={{
                         backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                       }}
-                      onMouseEnter={(e) => {
-                        e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                       }}
-                      onMouseLeave={(e) => {
-                        e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                       }}
                     >
                       Add Payout

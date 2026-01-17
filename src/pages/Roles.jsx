@@ -548,93 +548,218 @@ export default function Roles() {
     } else {
       let newList = [...list, perm];
       
-      // Special handling for view_self - select view_all in modules that have view_self
-      if (perm === 'view_self') {
-        // Define modules that have view_self permission - add view_all for these
-        const modulesWithViewSelf = [
-          'view_all',
-          'view_employee_profile',
-          'view_employee_documents',
-          'view_leave_applications',
-          'view_leave_balance',
-          'view_leave_calendar',
-          'view_salary_slips',
-          'view_attendance',
-          'view_punch_logs'
-        ];
-        
-        // Add view_all and related permissions for modules with view_self
-        modulesWithViewSelf.forEach(viewPerm => {
-          if (!newList.includes(viewPerm) && permissions.some(p => p.name === viewPerm)) {
-            newList.push(viewPerm);
-          }
-        });
-      } else {
-        // Auto-select view permissions for ALL modules when any other permission is selected
-        const getViewPermissionsForAllModules = () => {
-          return [
-            // Global
-            'view_self',
-            // User Management
-            'view_users', 'view_user_roles',
-            // Employee Management
-            'view_employees', 'view_employee_profile', 'view_employee_documents',
-            // Organization Setup
-            'view_company_profile', 'view_branch', 'view_department', 'view_designation',
-            // Reporting Structure
-            'view_reporting_structure', 'view_hierarchy',
-            // Holiday Calendar
-            'view_holidays',
-            // Job Requisition
-            'view_job_requisition',
-            // Recruitment
-            'view_candidates', 'view_candidate', 'view_ats_candidates', 'view_offers_sent', 'view_onboarding_candidates', 'view_consultants',
-            // Exit Management
-            'view_resignations', 'view_kt_plans', 'view_settlements', 'view_exit_interviews',
-            // Compliance
-            'view_statutory_calculations', 'view_labour_register', 'view_leave_compliance', 'view_nabh_compliance',
-            // Training & Development
-            'view_training_programs', 'view_training_calendar', 'view_training_requests', 'view_training_attendance', 'view_training_certificates',
-            // Performance Management
-            'view_work_assignments', 'view_goals_kpi', 'view_review_cycles', 'view_feedback', 'view_appraisals', 'view_quality_indicators',
-            // Shift & Roster Management
-            'view_shifts', 'view_roster', 'view_weekly_roster', 'VIEW_ROSTER', 'MANAGE_ROSTER', 'MANAGE_NIGHT_SHIFT_RULES', 'MANAGE_ON_CALL_DUTY',
-            // Attendance Management
-            'view_attendance', 'view_punch_logs', 'view_od_applications', 'view_attendance_rules', 'view_attendance_locations', 'view_daily_updates', 'view_attendance_permission', 'view_attendance_reports',
-            // HR Operations
-            'view_lifecycle_actions', 'view_hr_letters', 'view_grievances', 'view_assets', 'view_insurance_benefits', 'view_staff_schedules',
-            // Dashboard
-            'view_documents_alerts', 'view_audit_log',
-            // Payroll Management
-            'view_salary_structure', 'view_statutory_rules', 'view_payroll_run', 'view_payroll_adjustments', 'view_salary_slips', 'view_payroll_reports', 'view_compliance_reports', 'view_payment_status',
-            // Leave Management
-            'view_leave_types', 'view_leave_policies', 'view_leave_rules', 'view_leave_applications', 'view_leave_calendar', 'view_leave_reports', 'view_leave_balance', 'view_leave_trends',
-            // Customization
-            'view_customization'
-          ];
-        };
-        
-        // Get all view permissions
-        const allViewPermissions = getViewPermissionsForAllModules();
-        
-        // Add all missing view permissions that exist in the system
-        allViewPermissions.forEach(viewPerm => {
-          if (!newList.includes(viewPerm) && permissions.some(p => p.name === viewPerm)) {
-            newList.push(viewPerm);
-          }
-        });
+      // 1. If view_self is selected, also select view_all
+      if (perm === 'view_self' && !newList.includes('view_all')) {
+        if (permissions.some(p => p.name === 'view_all')) {
+          newList.push('view_all');
+        }
       }
       
-      // Existing auto-selecting dependent permissions
-      if (perm === 'view_employees' && !newList.includes('mark_onboarded')) {
-        newList.push('mark_onboarded');
-      }
+      // 2. Auto-select corresponding view permission for the module
+      const moduleViewMap = {
+        // User Management
+        'add_user': 'view_users',
+        'edit_user': 'view_users',
+        'delete_user': 'view_users',
+        'add_user_department': 'view_user_departments',
+        'edit_user_department': 'view_user_departments',
+        'delete_user_department': 'view_user_departments',
+        'add_user_role': 'view_user_roles',
+        'edit_user_role': 'view_user_roles',
+        'delete_user_role': 'view_user_roles',
+        
+        // Employee Management
+        'edit_employee': 'view_employees',
+        'delete_employee': 'view_employees',
+        'create_employee_code': 'view_employees',
+        'edit_employee_profile': 'view_employee_profile',
+        'upload_employee_documents': 'view_employee_documents',
+        'delete_employee_documents': 'view_employee_documents',
+        'verify_employee_documents': 'view_employee_documents',
+        
+        // Organization Setup
+        'add_company_profile': 'view_company_profile',
+        'edit_company_profile': 'view_company_profile',
+        'add_branch': 'view_branch',
+        'edit_branch': 'view_branch',
+        'delete_branch': 'view_branch',
+        'add_department': 'view_department',
+        'edit_department': 'view_department',
+        'delete_department': 'view_department',
+        'add_designation': 'view_designation',
+        'edit_designation': 'view_designation',
+        'delete_designation': 'view_designation',
+        
+        // Reporting Structure
+        'add_reporting_level': 'view_reporting_levels',
+        'edit_reporting_level': 'view_reporting_levels',
+        'delete_reporting_level': 'view_reporting_levels',
+        'add_hierarchy_rule': 'view_hierarchy_rules',
+        'edit_hierarchy_rule': 'view_hierarchy_rules',
+        'delete_hierarchy_rule': 'view_hierarchy_rules',
+        
+        // Holiday Calendar
+        'add_holiday': 'view_holidays',
+        'edit_holiday': 'view_holidays',
+        'delete_holiday': 'view_holidays',
+        
+        // Job Requisition
+        'add_job_requisition': 'view_job_requisition',
+        'edit_job_requisition': 'view_job_requisition',
+        'delete_job_requisition': 'view_job_requisition',
+        
+        // Recruitment
+        'edit_candidates': 'view_candidates',
+        'delete_candidates': 'view_candidates',
+        'screen_candidates': 'view_candidates',
+        'select_candidates': 'view_candidate',
+        'schedule_interviews': 'view_candidate',
+        'move_candidates': 'view_ats_candidates',
+        'generate_offer_link': 'view_offers_sent',
+        'verify_documents': 'view_offers_sent',
+        'start_onboarding': 'view_onboarding_candidates',
+        'mark_onboarded': 'view_onboarding_candidates',
+        'add_consultant': 'view_consultants',
+        'edit_consultant': 'view_consultants',
+        'delete_consultant': 'view_consultants',
+        
+        // Exit Management
+        'approve_resignation': 'view_resignations',
+        'add_kt_plan': 'view_kt_plans',
+        'create_kt_plan': 'view_kt_plans',
+        'complete_kt_items': 'view_kt_plans',
+        'calculate_settlements': 'view_settlements',
+        'approve_settlements': 'view_settlements',
+        'conduct_exit_interview': 'view_exit_interviews',
+        
+        // Compliance
+        'add_statutory_calculation': 'view_statutory_calculations',
+        'edit_statutory_calculation': 'view_statutory_calculations',
+        'delete_statutory_calculation': 'view_statutory_calculations',
+        'add_labour_register': 'view_labour_register',
+        'edit_labour_register': 'view_labour_register',
+        'delete_labour_register': 'view_labour_register',
+        'add_leave_compliance': 'view_leave_compliance',
+        'edit_leave_compliance': 'view_leave_compliance',
+        'delete_leave_compliance': 'view_leave_compliance',
+        'add_nabh_compliance': 'view_nabh_compliance',
+        'edit_nabh_compliance': 'view_nabh_compliance',
+        'delete_nabh_compliance': 'view_nabh_compliance',
+        
+        // Training & Development
+        'add_training_program': 'view_training_programs',
+        'edit_training_program': 'view_training_programs',
+        'delete_training_program': 'view_training_programs',
+        'add_training_request': 'view_training_requests',
+        'approve_training_request': 'view_training_requests',
+        'reject_training_request': 'view_training_requests',
+        'mark_training_attendance': 'view_training_attendance',
+        'generate_training_certificate': 'view_training_certificates',
+        
+        // Performance Management
+        'add_work_assignment': 'view_work_assignments',
+        'edit_work_assignment': 'view_work_assignments',
+        'delete_work_assignment': 'view_work_assignments',
+        'create_review_cycle': 'view_review_cycles',
+        'edit_review_cycle': 'view_review_cycles',
+        'delete_review_cycle': 'view_review_cycles',
+        'give_feedback': 'view_feedback',
+        'edit_feedback': 'view_feedback',
+        'delete_feedback': 'view_feedback',
+        'add_appraisal': 'view_appraisals',
+        'edit_appraisal': 'view_appraisals',
+        'delete_appraisal': 'view_appraisals',
+        'add_quality_indicator': 'view_quality_indicators',
+        'edit_quality_indicator': 'view_quality_indicators',
+        'delete_quality_indicator': 'view_quality_indicators',
+        
+        // Shift & Roster
+        'add_shift': 'view_shifts',
+        'edit_shift': 'view_shifts',
+        'delete_shift': 'view_shifts',
+        'manage_roster': 'view_roster',
+        'manage_weekly_roster': 'view_weekly_roster',
+        
+        // Attendance
+        'mark_attendance': 'view_attendance',
+        'approve_attendance': 'view_attendance',
+        'punch_in': 'view_punch_logs',
+        'punch_out': 'view_punch_logs',
+        'apply_od': 'view_od_applications',
+        'approve_od': 'view_od_applications',
+        'reject_od': 'view_od_applications',
+        'add_attendance_rule': 'view_attendance_rules',
+        'edit_attendance_rule': 'view_attendance_rules',
+        'delete_attendance_rule': 'view_attendance_rules',
+        'add_attendance_location': 'view_attendance_locations',
+        'edit_attendance_location': 'view_attendance_locations',
+        'delete_attendance_location': 'view_attendance_locations',
+        'add_daily_update': 'view_daily_updates',
+        'edit_daily_update': 'view_daily_updates',
+        'delete_daily_update': 'view_daily_updates',
+        'apply_attendance_permission': 'view_attendance_permission',
+        'approve_attendance_permission': 'view_attendance_permission',
+        'reject_attendance_permission': 'view_attendance_permission',
+        
+        // HR Operations
+        'add_lifecycle_action': 'view_lifecycle_actions',
+        'edit_lifecycle_action': 'view_lifecycle_actions',
+        'delete_lifecycle_action': 'view_lifecycle_actions',
+        'add_hr_letter': 'view_hr_letters',
+        'edit_hr_letter': 'view_hr_letters',
+        'delete_hr_letter': 'view_hr_letters',
+        'add_grievance': 'view_grievances',
+        'edit_grievance': 'view_grievances',
+        'delete_grievance': 'view_grievances',
+        'add_asset': 'view_assets',
+        'edit_asset': 'view_assets',
+        'delete_asset': 'view_assets',
+        'add_insurance_benefit': 'view_insurance_benefits',
+        'edit_insurance_benefit': 'view_insurance_benefits',
+        'delete_insurance_benefit': 'view_insurance_benefits',
+        'add_staff_schedule': 'view_staff_schedules',
+        'edit_staff_schedule': 'view_staff_schedules',
+        'delete_staff_schedule': 'view_staff_schedules',
+        
+        // Payroll
+        'add_salary_structure': 'view_salary_structure',
+        'edit_salary_structure': 'view_salary_structure',
+        'delete_salary_structure': 'view_salary_structure',
+        'add_statutory_rule': 'view_statutory_rules',
+        'edit_statutory_rule': 'view_statutory_rules',
+        'delete_statutory_rule': 'view_statutory_rules',
+        'create_payroll_run': 'view_payroll_run',
+        'process_payroll_run': 'view_payroll_run',
+        'approve_payroll_run': 'view_payroll_run',
+        'delete_payroll_run': 'view_payroll_run',
+        'add_payroll_adjustment': 'view_payroll_adjustments',
+        'edit_payroll_adjustment': 'view_payroll_adjustments',
+        'delete_payroll_adjustment': 'view_payroll_adjustments',
+        'generate_salary_slips': 'view_salary_slips',
+        'download_salary_slips': 'view_salary_slips',
+        'email_salary_slips': 'view_salary_slips',
+        
+        // Leave Management
+        'add_leave_type': 'view_leave_types',
+        'edit_leave_type': 'view_leave_types',
+        'delete_leave_type': 'view_leave_types',
+        'add_leave_policy': 'view_leave_policies',
+        'edit_leave_policy': 'view_leave_policies',
+        'delete_leave_policy': 'view_leave_policies',
+        'add_leave_rule': 'view_leave_rules',
+        'edit_leave_rule': 'view_leave_rules',
+        'delete_leave_rule': 'view_leave_rules',
+        'apply_leave': 'view_leave_applications',
+        'edit_leave_application': 'view_leave_applications',
+        'approve_leave': 'view_leave_applications',
+        'reject_leave': 'view_leave_applications'
+      };
       
-      if (perm === 'view_punch_logs' && !newList.includes('view_employees')) {
-        newList.push('view_employees');
-        // Also add mark_onboarded since view_employees was added
-        if (!newList.includes('mark_onboarded')) {
-          newList.push('mark_onboarded');
+      // Check if this permission needs a view permission
+      const requiredViewPerm = moduleViewMap[perm];
+      if (requiredViewPerm && !newList.includes(requiredViewPerm)) {
+        if (permissions.some(p => p.name === requiredViewPerm)) {
+          newList.push(requiredViewPerm);
         }
       }
       
@@ -963,11 +1088,9 @@ export default function Roles() {
                   style={{
                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                   }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                   }}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3128,8 +3251,8 @@ export default function Roles() {
                   disabled={loading || !name.trim()}
                   style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
                   className="flex-1 px-4 py-3 text-white rounded-xl font-medium transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed border border-black"
-                  onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)')}
-                  onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-color, #2862e9)')}
+                  onMouseEnter={(e) => !e.currentTarget.disabled && (e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)')}
+                  onMouseLeave={(e) => !e.currentTarget.disabled && (e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)')}
                 >
                   {loading ? "Creating..." : "Create Role"}
                 </button>
@@ -5319,8 +5442,8 @@ export default function Roles() {
                   disabled={loading || !editName.trim()}
                   style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
                   className="flex-1 px-4 py-3 text-white rounded-xl font-medium transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed border border-black"
-                  onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)')}
-                  onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-color, #2862e9)')}
+                  onMouseEnter={(e) => !e.currentTarget.disabled && (e.currentTarget.style.backgroundColor = 'var(--secondary-color, #6b7280)')}
+                  onMouseLeave={(e) => !e.currentTarget.disabled && (e.currentTarget.style.backgroundColor = 'var(--primary-color, #2862e9)')}
                 >
                   {loading ? "Updating..." : "Update Role"}
                 </button>

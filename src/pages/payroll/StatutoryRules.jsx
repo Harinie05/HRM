@@ -320,8 +320,8 @@ export default function StatutoryRules() {
         <div className="mt-6 flex justify-center sm:justify-end relative z-10">
           <button
             onClick={submit}
-            onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-            onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
             className="px-8 py-2.5 rounded-lg font-medium transition-all flex items-center gap-2 text-sm w-full sm:w-auto justify-center text-white shadow-sm hover:shadow-md"
             style={{ 
               backgroundColor: colors.primary,
