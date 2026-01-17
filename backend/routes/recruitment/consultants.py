@@ -3,12 +3,14 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from typing import List, Optional
 import io
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
-from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_LEFT, TA_CENTER
 from datetime import datetime
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
+from utils.pdf_format import PDFHeaderFooterTemplate
 from routes.hospital import get_current_user
 from models.models_tenant import VisitingConsultant, ConsultantAvailability, ConsultantPayout
 from schemas.schemas_tenant import (
@@ -18,6 +20,9 @@ from schemas.schemas_tenant import (
 )
 from utils.email import send_email
 from routes.hospital import get_current_user, check_permission
+import logging
+
+logger = logging.getLogger("HRM")
 
 router = APIRouter()
 
@@ -168,94 +173,176 @@ def process_payroll(payout_id: int, request: Request, db: Session = Depends(get_
     
     return db_payout
 
-@router.put("/payouts/{payout_id}", response_model=ConsultantPayoutOut)
-def update_payout(payout_id: int, payout: ConsultantPayoutCreate, db: Session = Depends(get_tenant_db)):
-    db_payout = db.query(ConsultantPayout).filter(ConsultantPayout.id == payout_id).first()
-    if not db_payout:
-        raise HTTPException(status_code=404, detail="Payout not found")
-    
-    for key, value in payout.model_dump().items():
-        if key != "consultant_id":  # Don't update consultant_id
-            setattr(db_payout, key, value)
-    
-    db.commit()
-    db.refresh(db_payout)
-    return db_payout
-
 @router.get("/consultants/payouts/{payout_id}/payslip")
-def generate_payslip(payout_id: int, db: Session = Depends(get_tenant_db), user = Depends(check_permission("generate_payslip"))):
-    # Get payout and consultant details
-    db_payout = db.query(ConsultantPayout).filter(ConsultantPayout.id == payout_id).first()
-    if not db_payout:
-        raise HTTPException(status_code=404, detail="Payout not found")
-    
-    db_consultant = db.query(VisitingConsultant).filter(VisitingConsultant.id == db_payout.consultant_id).first()
-    if not db_consultant:
-        raise HTTPException(status_code=404, detail="Consultant not found")
-    
-    # Create PDF
-    buffer = io.BytesIO()
-    p = canvas.Canvas(buffer, pagesize=letter)
-    width, height = letter
-    
-    # Header
-    p.setFont("Helvetica-Bold", 16)
-    p.drawString(50, height - 50, "CONSULTANT PAYSLIP")
-    
-    # Hospital info (you can customize this)
-    p.setFont("Helvetica", 10)
-    p.drawString(50, height - 80, "Hospital Name")
-    p.drawString(50, height - 95, "Address Line 1")
-    p.drawString(50, height - 110, "City, State - PIN")
-    
-    # Date
-    p.drawString(400, height - 80, f"Date: {datetime.now().strftime('%d/%m/%Y')}")
-    
-    # Consultant details
-    y_pos = height - 150
-    p.setFont("Helvetica-Bold", 12)
-    p.drawString(50, y_pos, "Consultant Details:")
-    
-    p.setFont("Helvetica", 10)
-    y_pos -= 20
-    p.drawString(50, y_pos, f"Name: {db_consultant.name}")
-    y_pos -= 15
-    p.drawString(50, y_pos, f"Specialization: {db_consultant.specialization}")
-    y_pos -= 15
-    p.drawString(50, y_pos, f"Registration No: {db_consultant.registration_number}")
-    y_pos -= 15
-    p.drawString(50, y_pos, f"Type: {db_consultant.consultant_type}")
-    
-    # Payout details
-    y_pos -= 40
-    p.setFont("Helvetica-Bold", 12)
-    p.drawString(50, y_pos, "Payout Details:")
-    
-    p.setFont("Helvetica", 10)
-    y_pos -= 20
-    p.drawString(50, y_pos, f"Period: {db_payout.period_start.strftime('%d/%m/%Y')} - {db_payout.period_end.strftime('%d/%m/%Y')}")
-    y_pos -= 15
-    p.drawString(50, y_pos, f"Total Cases: {db_payout.total_cases}")
-    y_pos -= 15
-    p.drawString(50, y_pos, f"Total Revenue: ₹{db_payout.total_revenue:,.2f}")
-    y_pos -= 15
-    p.drawString(50, y_pos, f"Hospital Share: ₹{db_payout.hospital_share:,.2f}")
-    y_pos -= 15
-    p.setFont("Helvetica-Bold", 10)
-    p.drawString(50, y_pos, f"Consultant Share: ₹{db_payout.consultant_share:,.2f}")
-    
-    # Footer
-    p.setFont("Helvetica", 8)
-    p.drawString(50, 50, "This is a computer-generated payslip.")
-    
-    p.save()
-    buffer.seek(0)
-    
-    return StreamingResponse(
-        io.BytesIO(buffer.read()),
-        media_type="application/pdf",
-        headers={"Content-Disposition": f"attachment; filename=consultant-payslip-{payout_id}.pdf"}
-    )
+def generate_payslip(payout_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("generate_payslip"))):
+    """Generate consultant payslip PDF with organization header"""
+    try:
+        # Get payout and consultant details
+        db_payout = db.query(ConsultantPayout).filter(ConsultantPayout.id == payout_id).first()
+        if not db_payout:
+            raise HTTPException(status_code=404, detail="Payout not found")
+        
+        db_consultant = db.query(VisitingConsultant).filter(VisitingConsultant.id == db_payout.consultant_id).first()
+        if not db_consultant:
+            raise HTTPException(status_code=404, detail="Consultant not found")
+        
+        # Generate PDF
+        pdf_buffer = generate_consultant_payslip_pdf(db_payout, db_consultant, db)
+        
+        # Audit log
+        audit_crud(request, db, user, "GENERATE_PAYSLIP", "consultant_payouts", str(payout_id), {}, {"action": "generate_pdf"})
+        
+        return StreamingResponse(
+            io.BytesIO(pdf_buffer.getvalue()),
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename=consultant-payslip-{payout_id}.pdf"}
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error generating consultant payslip: {e}")
+        raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)}")
+
+def generate_consultant_payslip_pdf(payout, consultant, db: Session):
+    """Generate PDF for consultant payslip using organization header"""
+    try:
+        buffer = io.BytesIO()
+        
+        # Create document with proper margins for header
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=A4,
+            topMargin=140,  # Space for header
+            bottomMargin=60,  # Space for footer
+            leftMargin=40,
+            rightMargin=40
+        )
+        
+        # Create header/footer template
+        template = PDFHeaderFooterTemplate(db, "CONSULTANT PAYSLIP")
+        
+        styles = getSampleStyleSheet()
+        story = []
+        
+        # Letter details section
+        letter_info_style = ParagraphStyle(
+            'LetterInfo',
+            parent=styles['Normal'],
+            fontSize=10,
+            spaceAfter=6,
+            leftIndent=0
+        )
+        
+        # Date
+        story.append(Paragraph(f"<b>Date:</b> {datetime.now().strftime('%B %d, %Y')}", letter_info_style))
+        
+        # To field
+        story.append(Paragraph(f"<b>To:</b> {consultant.name}", letter_info_style))
+        
+        story.append(Spacer(1, 20))
+        
+        # Subject
+        subject_style = ParagraphStyle(
+            'Subject',
+            parent=styles['Normal'],
+            fontSize=12,
+            spaceAfter=20,
+            fontName='Helvetica-Bold',
+            alignment=TA_CENTER
+        )
+        story.append(Paragraph(f"<b>Subject: Consultant Payslip - {payout.period_start.strftime('%B %Y')}</b>", subject_style))
+        
+        # Content
+        content_style = ParagraphStyle(
+            'Content',
+            parent=styles['Normal'],
+            fontSize=11,
+            spaceAfter=12,
+            leading=16,
+            alignment=TA_LEFT
+        )
+        
+        # Consultant Details Section
+        story.append(Paragraph("<b>CONSULTANT DETAILS</b>", content_style))
+        story.append(Spacer(1, 10))
+        
+        details_style = ParagraphStyle(
+            'Details',
+            parent=styles['Normal'],
+            fontSize=10,
+            spaceAfter=6,
+            leading=14
+        )
+        
+        story.append(Paragraph(f"Name: <b>{consultant.name}</b>", details_style))
+        story.append(Paragraph(f"Specialization: {consultant.specialization}", details_style))
+        story.append(Paragraph(f"Registration Number: {consultant.registration_number}", details_style))
+        story.append(Paragraph(f"Consultant Type: {consultant.consultant_type}", details_style))
+        
+        story.append(Spacer(1, 20))
+        
+        # Payout Details Section
+        story.append(Paragraph("<b>PAYOUT DETAILS</b>", content_style))
+        story.append(Spacer(1, 10))
+        
+        story.append(Paragraph(f"Period: <b>{payout.period_start.strftime('%B %d, %Y')} - {payout.period_end.strftime('%B %d, %Y')}</b>", details_style))
+        story.append(Paragraph(f"Total Cases Handled: {payout.total_cases}", details_style))
+        story.append(Paragraph(f"Total Revenue Generated: ₹{payout.total_revenue:,.2f}", details_style))
+        story.append(Paragraph(f"Hospital Share: ₹{payout.hospital_share:,.2f}", details_style))
+        
+        story.append(Spacer(1, 15))
+        
+        # Net Payable - highlighted
+        net_style = ParagraphStyle(
+            'NetPayable',
+            parent=styles['Normal'],
+            fontSize=14,
+            spaceAfter=12,
+            fontName='Helvetica-Bold',
+            alignment=TA_LEFT
+        )
+        story.append(Paragraph(f"<b>CONSULTANT SHARE: ₹{payout.consultant_share:,.2f}</b>", net_style))
+        
+        story.append(Spacer(1, 30))
+        
+        # Footer note
+        footer_style = ParagraphStyle(
+            'Footer',
+            parent=styles['Normal'],
+            fontSize=9,
+            spaceAfter=8,
+            alignment=TA_LEFT
+        )
+        
+        story.append(Paragraph("This is a computer-generated payslip and does not require a signature.", footer_style))
+        story.append(Paragraph("For any queries, please contact the HR Department.", footer_style))
+        
+        story.append(Spacer(1, 40))
+        
+        # Signature section
+        signature_style = ParagraphStyle(
+            'Signature',
+            parent=styles['Normal'],
+            fontSize=10,
+            spaceAfter=8,
+            alignment=TA_LEFT
+        )
+        
+        story.append(Paragraph("Best regards,", signature_style))
+        story.append(Spacer(1, 40))
+        story.append(Paragraph("_________________________", signature_style))
+        story.append(Paragraph("<b>Finance Department</b>", signature_style))
+        
+        # Build PDF with header and footer
+        doc.build(story, onFirstPage=template.header_footer, onLaterPages=template.header_footer)
+        
+        buffer.seek(0)
+        return buffer
+        
+    except Exception as e:
+        logger.error(f"Error generating consultant payslip PDF: {e}")
+        raise Exception(f"Failed to generate PDF: {str(e)}")
 
 @router.post("/consultants/payouts/{payout_id}/email-payslip")
 def email_payslip(payout_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("send_payslip_email"))):
@@ -274,43 +361,8 @@ def email_payslip(payout_id: int, request: Request, db: Session = Depends(get_te
         raise HTTPException(status_code=400, detail="Consultant email not found")
     
     try:
-        # Generate PDF in memory
-        buffer = io.BytesIO()
-        p = canvas.Canvas(buffer, pagesize=letter)
-        width, height = letter
-        
-        # PDF generation
-        p.setFont("Helvetica-Bold", 16)
-        p.drawString(50, height - 50, "CONSULTANT PAYSLIP")
-        
-        p.setFont("Helvetica", 10)
-        p.drawString(50, height - 80, "Hospital Name")
-        p.drawString(400, height - 80, f"Date: {datetime.now().strftime('%d/%m/%Y')}")
-        
-        y_pos = height - 150
-        p.setFont("Helvetica-Bold", 12)
-        p.drawString(50, y_pos, "Consultant Details:")
-        
-        p.setFont("Helvetica", 10)
-        y_pos -= 20
-        p.drawString(50, y_pos, f"Name: {db_consultant.name}")
-        y_pos -= 15
-        p.drawString(50, y_pos, f"Specialization: {db_consultant.specialization}")
-        
-        y_pos -= 40
-        p.setFont("Helvetica-Bold", 12)
-        p.drawString(50, y_pos, "Payout Details:")
-        
-        p.setFont("Helvetica", 10)
-        y_pos -= 20
-        p.drawString(50, y_pos, f"Period: {db_payout.period_start.strftime('%d/%m/%Y')} - {db_payout.period_end.strftime('%d/%m/%Y')}")
-        y_pos -= 15
-        p.drawString(50, y_pos, f"Total Cases: {db_payout.total_cases}")
-        y_pos -= 15
-        p.drawString(50, y_pos, f"Consultant Share: ₹{db_payout.consultant_share:,.2f}")
-        
-        p.save()
-        buffer.seek(0)
+        # Generate PDF using the new header format
+        pdf_buffer = generate_consultant_payslip_pdf(db_payout, db_consultant, db)
         
         # Email content
         subject = f"Payslip for {db_payout.period_start.strftime('%B %Y')}"
@@ -339,7 +391,7 @@ def email_payslip(payout_id: int, request: Request, db: Session = Depends(get_te
         # Prepare attachment
         attachments = [{
             'filename': f'consultant-payslip-{payout_id}.pdf',
-            'content': buffer.getvalue()
+            'content': pdf_buffer.getvalue()
         }]
         
         # Send email using existing utility

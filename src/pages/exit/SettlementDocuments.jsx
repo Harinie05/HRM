@@ -320,21 +320,8 @@ export default function SettlementDocuments() {
 
   const handleDownloadPDF = async () => {
     try {
-      const pdfData = {
-        employee_name: experienceLetter.employee_name,
-        employee_code: experienceLetter.employee_code,
-        company_name: experienceLetter.company_name,
-        designation: experienceLetter.designation,
-        department: experienceLetter.department,
-        joining_date: experienceLetter.joining_date,
-        last_working_day: experienceLetter.last_working_day,
-        place: experienceLetter.place || 'Bangalore',
-        issued_by: experienceLetter.issued_by,
-        authorized_signatory: experienceLetter.authorized_signatory || 'HR Manager',
-        issued_date: experienceLetter.issued_date
-      };
-      
-      const response = await api.post('/api/generate-experience-pdf', pdfData, {
+      // Use the new endpoint with proper header
+      const response = await api.get(`/api/settlement/experience-letter/${experienceLetter.id}/download`, {
         responseType: 'blob'
       });
       
@@ -972,7 +959,7 @@ export default function SettlementDocuments() {
 
                   {/* Actions */}
                   <div className="space-y-2">
-                    {canDownloadPDF && (
+                    {canDownloadPDF && experienceLetter.id && (
                       <button 
                         onClick={handleDownloadPDF}
                         style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}

@@ -152,8 +152,10 @@ export default function Payslips() {
         const deductions = empAdjustments.filter(adj => adj.adjustment_type === 'Deduction')
           .reduce((sum, adj) => sum + (adj.amount || 0), 0);
         
-        // Calculate final net salary with adjustments
-        const finalNetSalary = (run.net_salary || 0) + additions - deductions;
+        // Calculate final net salary correctly: Total Earnings - Total Deductions
+        const totalEarnings = (run.basic_salary || 0) + (run.hra_salary || 0) + (run.allowances || 0) + additions;
+        const totalDeductions = (run.lop_deduction || 0) + ((run.basic_salary || 0) * 0.12) + (totalEarnings * 0.0175) + deductions;
+        const finalNetSalary = totalEarnings - totalDeductions;
         
         return {
           id: run.id,
@@ -281,14 +283,19 @@ export default function Payslips() {
       const deductions = adjustments.filter(adj => adj.adjustment_type === 'Deduction')
         .reduce((sum, adj) => sum + (adj.amount || 0), 0);
       
-      // Use the stored calculations from payroll run
-      const totalEarnings = (fullPayrollData?.gross_salary || 0) + additions;
-      const pfDeduction = (fullPayrollData?.basic_salary || 0) * 0.12;
-      const esiDeduction = (fullPayrollData?.gross_salary || 0) * 0.0175;
-      const totalDeductions = (fullPayrollData?.lop_deduction || 0) + pfDeduction + esiDeduction + deductions;
+      // Calculate correct totals
+      const basicSalary = fullPayrollData?.basic_salary || 0;
+      const hraSalary = fullPayrollData?.hra_salary || 0;
+      const allowancesSalary = fullPayrollData?.allowances || 0;
+      const lopDeduction = fullPayrollData?.lop_deduction || 0;
       
-      // Use the net salary from database which already accounts for adjustments
-      const finalNetSalary = (fullPayrollData?.net_salary || 0) + additions - deductions;
+      const totalEarnings = basicSalary + hraSalary + allowancesSalary + additions;
+      const pfDeduction = basicSalary * 0.12;
+      const esiDeduction = totalEarnings * 0.0175;
+      const totalDeductions = lopDeduction + pfDeduction + esiDeduction + deductions;
+      
+      // Correct net salary calculation: Total Earnings - Total Deductions
+      const finalNetSalary = totalEarnings - totalDeductions;
       
       setSelectedPayslip({
         ...payslip,
@@ -663,10 +670,10 @@ export default function Payslips() {
                           <div className="text-sm text-gray-900">{payslip.month} {payslip.year}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">₹{payslip.gross_salary?.toLocaleString() || 0}</div>
+                          <div className="text-sm text-gray-900">₹{payslip.gross_salary?.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}) || '0.00'}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">₹{payslip.net_salary?.toLocaleString() || 0}</div>
+                          <div className="text-sm font-medium text-gray-900">₹{payslip.net_salary?.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}) || '0.00'}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -779,11 +786,11 @@ export default function Payslips() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm font-medium text-gray-900">Gross Salary:</span>
-                      <span className="text-sm text-gray-600">₹{payslip.gross_salary?.toLocaleString() || 0}</span>
+                      <span className="text-sm text-gray-600">₹{payslip.gross_salary?.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}) || '0.00'}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm font-medium text-gray-900">Net Salary:</span>
-                      <span className="text-sm font-medium text-gray-900">₹{payslip.net_salary?.toLocaleString() || 0}</span>
+                      <span className="text-sm font-medium text-gray-900">₹{payslip.net_salary?.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}) || '0.00'}</span>
                     </div>
                   </div>
                   <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
@@ -1028,7 +1035,7 @@ export default function Payslips() {
                       <DollarSign className="w-4 h-4" style={{ color: colors.primary }} />
                     </div>
                     <h4 className="font-medium text-sm relative z-10" style={{ color: colors.primary }}>Net Salary</h4>
-                    <div className="text-xl font-bold relative z-10" style={{ color: colors.primary }}>₹{selectedPayslip.finalNetSalary?.toLocaleString()}</div>
+                    <div className="text-xl font-bold relative z-10" style={{ color: colors.primary }}>₹{selectedPayslip.finalNetSalary?.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
                   </div>
                 </div>
               </div>
@@ -1053,25 +1060,25 @@ export default function Payslips() {
                   <div className="space-y-2 text-xs">
                     <div className="flex justify-between py-1 border-b border-gray-100">
                       <span className="text-gray-600">Basic Salary</span>
-                      <span className="font-medium">₹{selectedPayslip.basic_salary?.toLocaleString()}</span>
+                      <span className="font-medium">₹{selectedPayslip.basic_salary?.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                     </div>
                     <div className="flex justify-between py-1 border-b border-gray-100">
                       <span className="text-gray-600">HRA</span>
-                      <span className="font-medium">₹{selectedPayslip.hra_salary?.toLocaleString()}</span>
+                      <span className="font-medium">₹{selectedPayslip.hra_salary?.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                     </div>
                     <div className="flex justify-between py-1 border-b border-gray-100">
                       <span className="text-gray-600">Allowances</span>
-                      <span className="font-medium">₹{selectedPayslip.allowances?.toLocaleString()}</span>
+                      <span className="font-medium">₹{selectedPayslip.allowances?.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                     </div>
                     {selectedPayslip.adjustments?.filter(adj => adj.adjustment_type !== 'Deduction').map((adj, idx) => (
                       <div key={idx} className="flex justify-between py-1">
                         <span style={{ color: colors.primary }}>{adj.adjustment_type}</span>
-                        <span className="font-medium" style={{ color: colors.primary }}>+₹{adj.amount?.toLocaleString()}</span>
+                        <span className="font-medium" style={{ color: colors.primary }}>+₹{adj.amount?.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                       </div>
                     ))}
                     <div className="flex justify-between font-bold pt-2 border-t" style={{ borderColor: `${colors.primary}20` }}>
                       <span style={{ color: colors.primary }}>Total Earnings</span>
-                      <span style={{ color: colors.primary }}>₹{selectedPayslip.totalEarnings?.toLocaleString()}</span>
+                      <span style={{ color: colors.primary }}>₹{selectedPayslip.totalEarnings?.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                     </div>
                   </div>
                 </div>
@@ -1091,25 +1098,25 @@ export default function Payslips() {
                   <div className="space-y-2 text-xs">
                     <div className="flex justify-between py-1 border-b border-gray-100">
                       <span className="text-gray-600">LOP Deduction</span>
-                      <span className="font-medium">₹{selectedPayslip.lop_deduction?.toLocaleString()}</span>
+                      <span className="font-medium">₹{selectedPayslip.lop_deduction?.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                     </div>
                     <div className="flex justify-between py-1 border-b border-gray-100">
                       <span className="text-gray-600">PF (12%)</span>
-                      <span className="font-medium">₹{selectedPayslip.pfDeduction?.toLocaleString()}</span>
+                      <span className="font-medium">₹{selectedPayslip.pfDeduction?.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                     </div>
                     <div className="flex justify-between py-1 border-b border-gray-100">
                       <span className="text-gray-600">ESI (1.75%)</span>
-                      <span className="font-medium">₹{selectedPayslip.esiDeduction?.toLocaleString()}</span>
+                      <span className="font-medium">₹{selectedPayslip.esiDeduction?.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                     </div>
                     {selectedPayslip.adjustments?.filter(adj => adj.adjustment_type === 'Deduction').map((adj, idx) => (
                       <div key={idx} className="flex justify-between py-1">
                         <span style={{ color: colors.secondary }}>{adj.adjustment_type}</span>
-                        <span className="font-medium" style={{ color: colors.secondary }}>-₹{adj.amount?.toLocaleString()}</span>
+                        <span className="font-medium" style={{ color: colors.secondary }}>-₹{adj.amount?.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                       </div>
                     ))}
                     <div className="flex justify-between font-bold pt-2 border-t" style={{ borderColor: `${colors.secondary}20` }}>
                       <span style={{ color: colors.secondary }}>Total Deductions</span>
-                      <span style={{ color: colors.secondary }}>₹{selectedPayslip.totalDeductions?.toLocaleString()}</span>
+                      <span style={{ color: colors.secondary }}>₹{selectedPayslip.totalDeductions?.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                     </div>
                   </div>
                 </div>

@@ -195,7 +195,7 @@ export default function PayrollDashboard() {
                 }} />
               </div>
               <div className="min-w-0 flex-1">
-                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1 truncate">Payroll Management</h1>
+
                 <p className="text-gray-600 text-xs sm:text-sm mb-1">Manage salary structures, statutory rules, payroll processing, payslips, and compliance reports</p>
                 <p className="text-gray-500 text-xs hidden sm:block">Employee Compensation</p>
               </div>

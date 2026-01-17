@@ -463,53 +463,66 @@ def generate_payslip_pdf(employee, payroll_run, adjustments, db: Session):
         month_display = payroll_run.month
         year_display = getattr(payroll_run, 'year', datetime.now().year)
         
-        # Handle department
-        department = getattr(employee, 'department', 'N/A')
-        department_name = str(department) if department != 'N/A' else 'N/A'
+        # Handle department - get name from department object
+        department = getattr(employee, 'department', None)
+        if department and hasattr(department, 'name'):
+            department_name = department.name
+        else:
+            department_name = str(department) if department else 'N/A'
         
-        # Calculate salary components using same logic as frontend view modal
-        gross_salary = getattr(payroll_run, 'gross_salary', 0) or 100000
-        basic_salary = getattr(payroll_run, 'basic_salary', 0)
-        if basic_salary == 0:
-            basic_salary = gross_salary * 0.45
+        # Use the exact same calculation logic as the UI (handleViewPayslip function)
+        # Get full payroll run data
+        fullPayrollData = payroll_run
         
-        hra_salary = getattr(payroll_run, 'hra_salary', 0)
-        if hra_salary == 0:
-            hra_salary = gross_salary * 0.20
-            
-        allowances = getattr(payroll_run, 'allowances', 0)
-        if allowances == 0:
-            allowances = gross_salary * 0.35
-            
-        lop_deduction = getattr(payroll_run, 'lop_deduction', 0) or 8000
+        # Get adjustments for this employee and month
+        adjustments = db.query(PayrollAdjustment).filter(
+            PayrollAdjustment.employee_id == payroll_run.employee_id,
+            PayrollAdjustment.month == payroll_run.month
+        ).all()
         
-        # Process adjustments - separate additions and deductions
-        bonus_adjustments = []
-        deduction_adjustments = []
-        total_bonus = 0
-        total_adjustment_deductions = 0
+        # Calculate adjustment totals (exact same as UI)
+        additions = sum(adj.amount or 0 for adj in adjustments if adj.adjustment_type != 'Deduction')
+        deductions = sum(adj.amount or 0 for adj in adjustments if adj.adjustment_type == 'Deduction')
         
-        for adj in adjustments:
-            if adj.adjustment_type == 'Deduction':
-                deduction_adjustments.append(adj)
-                total_adjustment_deductions += (adj.amount or 0)
-            else:
-                bonus_adjustments.append(adj)
-                total_bonus += (adj.amount or 0)
+        # Since PayrollRun model doesn't have individual components, calculate from gross_salary
+        # This matches what the UI expects to see
+        gross_salary = getattr(fullPayrollData, 'gross_salary', 0) or 0
         
-        # Use exact same calculation logic as frontend view modal
-        total_earnings = basic_salary + hra_salary + allowances + total_bonus
-        pf_deduction = basic_salary * 0.12  # ₹5,400
-        esi_deduction = 1750  # Match view modal exactly
-        total_deductions = lop_deduction + pf_deduction + esi_deduction + total_adjustment_deductions  # ₹16,650
+        # If individual components don't exist, calculate them proportionally
+        basic_salary = getattr(fullPayrollData, 'basic_salary', 0)
+        hra_salary = getattr(fullPayrollData, 'hra_salary', 0) 
+        allowances = getattr(fullPayrollData, 'allowances', 0)
+        lop_deduction = getattr(fullPayrollData, 'lop_deduction', 0)
         
-        # Use the exact net salary from view modal: ₹1,01,500
-        net_salary = 101500
+        # If components are 0, calculate from gross salary (before adjustments)
+        if basic_salary == 0 and hra_salary == 0 and allowances == 0:
+            base_gross = gross_salary - additions  # Remove adjustments to get base
+            basic_salary = base_gross * 0.45  # 45%
+            hra_salary = base_gross * 0.20    # 20%
+            allowances = base_gross * 0.35    # 35%
         
-        # Attendance data
-        present_days = getattr(payroll_run, 'present_days', 21)
-        leave_days = getattr(payroll_run, 'leave_days', 2)
-        lop_days = getattr(payroll_run, 'lop_days', 2)
+        # Calculate totals exactly like UI
+        total_earnings = basic_salary + hra_salary + allowances + additions
+        pf_deduction = basic_salary * 0.12
+        esi_deduction = total_earnings * 0.0175
+        total_deductions = lop_deduction + pf_deduction + esi_deduction + deductions
+        net_salary = total_earnings - total_deductions
+        
+        # Separate adjustments for display
+        bonus_adjustments = [adj for adj in adjustments if adj.adjustment_type != 'Deduction']
+        deduction_adjustments = [adj for adj in adjustments if adj.adjustment_type == 'Deduction']
+        
+        # Calculate totals correctly: Total Earnings - Total Deductions
+        total_earnings = basic_salary + hra_salary + allowances + additions
+        pf_deduction = basic_salary * 0.12
+        esi_deduction = total_earnings * 0.0175
+        total_deductions = lop_deduction + pf_deduction + esi_deduction + deductions
+        net_salary = total_earnings - total_deductions
+        
+        # Use actual attendance data from payroll_run
+        present_days = getattr(payroll_run, 'present_days', 0) or 0
+        lop_days = getattr(payroll_run, 'lop_days', 0) or 0
+        leave_days = getattr(payroll_run, 'leave_days', 0) or 0
         
         # Employee Information Section
         emp_info_data = [
@@ -581,16 +594,16 @@ def generate_payslip_pdf(employee, payroll_run, adjustments, db: Session):
         # Earnings and Deductions Section
         earnings_deductions_data = [
             ['Earnings', '', 'Deductions', ''],
-            ['Basic Salary', f'Rs.{basic_salary:,.0f}', 'LOP Deduction', f'Rs.{lop_deduction:,.0f}'],
-            ['HRA', f'Rs.{hra_salary:,.0f}', 'PF (12%)', f'Rs.{pf_deduction:,.0f}'],
-            ['Allowances', f'Rs.{allowances:,.0f}', 'ESI (1.75%)', f'Rs.{esi_deduction:,.0f}']
+            ['Basic Salary', f'Rs.{basic_salary:,.2f}', 'LOP Deduction', f'Rs.{lop_deduction:,.2f}'],
+            ['HRA', f'Rs.{hra_salary:,.2f}', 'PF (12%)', f'Rs.{pf_deduction:,.2f}'],
+            ['Allowances', f'Rs.{allowances:,.2f}', 'ESI (1.75%)', f'Rs.{esi_deduction:,.2f}']
         ]
         
         # Add bonus adjustments to earnings
         for adj in bonus_adjustments:
             earnings_deductions_data.append([
                 f'{adj.adjustment_type} - {adj.description}',
-                f'Rs.{adj.amount:,.0f}',
+                f'Rs.{adj.amount:,.2f}',
                 '',
                 ''
             ])
@@ -602,20 +615,20 @@ def generate_payslip_pdf(employee, payroll_run, adjustments, db: Session):
             for i, row in enumerate(earnings_deductions_data[1:], 1):
                 if row[2] == '' and row[3] == '':
                     row[2] = f'{adj.adjustment_type} - {adj.description}'
-                    row[3] = f'Rs.{adj.amount:,.0f}'
+                    row[3] = f'Rs.{adj.amount:,.2f}'
                     added = True
                     break
             if not added:
                 earnings_deductions_data.append([
                     '', '',
                     f'{adj.adjustment_type} - {adj.description}',
-                    f'Rs.{adj.amount:,.0f}'
+                    f'Rs.{adj.amount:,.2f}'
                 ])
         
         # Add totals
         earnings_deductions_data.extend([
             ['', '', '', ''],
-            ['Total Earnings', f'Rs.{total_earnings:,.0f}', 'Total Deductions', f'Rs.{total_deductions:,.0f}']
+            ['Total Earnings', f'Rs.{total_earnings:,.2f}', 'Total Deductions', f'Rs.{total_deductions:,.2f}']
         ])
         
         earnings_table = Table(earnings_deductions_data, colWidths=[2.1*inch, 1.4*inch, 2.1*inch, 1.4*inch])
@@ -662,7 +675,7 @@ def generate_payslip_pdf(employee, payroll_run, adjustments, db: Session):
             textColor=colors.Color(0.2, 0.6, 0.2),
             spaceAfter=8
         )
-        story.append(Paragraph(f"<b>NET SALARY: Rs.{net_salary:,.0f}</b>", net_salary_style))
+        story.append(Paragraph(f"<b>NET SALARY: Rs.{net_salary:,.2f}</b>", net_salary_style))
         
         # Amount in words - Compact
         words_style = ParagraphStyle(
