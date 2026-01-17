@@ -201,7 +201,7 @@ export default function Recruitment() {
         {/* Hero Header */}
         <div className="rounded-2xl shadow-sm p-4 sm:p-6 relative overflow-hidden border" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -248,7 +248,7 @@ export default function Recruitment() {
         {/* Enhanced Search */}
         <div className="bg-white rounded-2xl shadow-sm p-6 relative overflow-hidden border" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -289,7 +289,7 @@ export default function Recruitment() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -311,7 +311,7 @@ export default function Recruitment() {
           
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -333,7 +333,7 @@ export default function Recruitment() {
           
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -355,7 +355,7 @@ export default function Recruitment() {
           
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -380,7 +380,7 @@ export default function Recruitment() {
         {showFilters && (
           <div className="bg-white rounded-2xl shadow-sm p-6 relative overflow-hidden border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -451,7 +451,7 @@ export default function Recruitment() {
         {/* JOB TABLE */}
         <div className="rounded-2xl shadow-sm overflow-hidden relative border" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',

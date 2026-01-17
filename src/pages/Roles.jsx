@@ -869,7 +869,7 @@ export default function Roles() {
         {/* Hero Header matching Dashboard */}
         <div className="rounded-2xl shadow-sm p-4 sm:p-6 relative overflow-hidden border" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -927,7 +927,7 @@ export default function Roles() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -951,7 +951,7 @@ export default function Roles() {
 
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -975,7 +975,7 @@ export default function Roles() {
 
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -999,7 +999,7 @@ export default function Roles() {
 
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -1027,7 +1027,7 @@ export default function Roles() {
         {/* Role Management Section */}
         <div className="bg-white rounded-xl shadow-sm relative overflow-hidden border" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -1115,7 +1115,7 @@ export default function Roles() {
         {/* Role List */}
         <div className="bg-white rounded-xl shadow-sm overflow-hidden relative border" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -1141,7 +1141,7 @@ export default function Roles() {
                 {filteredRoles.map((role, index) => (
                   <div key={role.id} className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-300 group relative overflow-hidden border" style={{
                     background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-                    borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                   }}>
                     <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
                       backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -1231,7 +1231,7 @@ export default function Roles() {
       {/* Create Modal */}
       {showCreateModal && canAdd && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto border-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}` }}>
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-bold text-gray-900">Create New Role</h3>
@@ -1263,7 +1263,7 @@ export default function Roles() {
                           key={index}
                           type="button"
                           onClick={() => applyPresetRole(preset)}
-                          className="text-left p-3 bg-white border-0 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors group"
+                          className="text-left p-3 bg-white rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors group" style={{ border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}` }}
                         >
                           <div className="font-medium text-sm text-gray-900 group-hover:text-blue-700">
                             {preset.name}

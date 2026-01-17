@@ -227,7 +227,7 @@ export default function Users() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -251,7 +251,7 @@ export default function Users() {
 
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -275,7 +275,7 @@ export default function Users() {
 
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -299,7 +299,7 @@ export default function Users() {
 
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -369,7 +369,7 @@ export default function Users() {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600 whitespace-nowrap">Filter</span>
-                  <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                  <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}` }}>
                     <button 
                       onClick={() => setFilter("all")}
                       className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
@@ -516,7 +516,7 @@ export default function Users() {
                 {filteredUsers.map((u, index) => (
                   <div key={u.id} className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-300 group relative overflow-hidden border" style={{
                     background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-                    borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                   }}>
                     <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
                       backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -627,7 +627,7 @@ export default function Users() {
       {/* Create Modal matching Department/Roles page */}
       {showCreateModal && canAdd && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto border-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}` }}>
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-medium text-gray-900">Create User</h3>
@@ -833,7 +833,7 @@ export default function Users() {
       {/* Edit Modal matching Department/Roles page */}
       {editing && canEdit && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto border-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}` }}>
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-medium text-gray-900">Edit User</h3>

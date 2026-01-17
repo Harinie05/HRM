@@ -79,8 +79,9 @@ export default function OrganizationLayout() {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Hero Header matching User Management */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
-          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl shadow-sm p-4 sm:p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
@@ -100,7 +101,9 @@ export default function OrganizationLayout() {
               </div>
             </div>
             <div className="flex gap-2 sm:gap-3 flex-shrink-0">
-              <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
+              <div className="bg-white rounded-lg p-2 sm:p-3 shadow-sm" style={{
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
                 <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z"/>
@@ -119,7 +122,7 @@ export default function OrganizationLayout() {
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
             backgroundColor: `${getPrimaryColor()}10`,
-            border: `1px solid ${getPrimaryColor()}20`
+            border: `1px solid ${getPrimaryColor()}`
           }}>
             <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-2xl opacity-15" style={{
               backgroundColor: getPrimaryColor(),
@@ -160,7 +163,7 @@ export default function OrganizationLayout() {
         {/* Content */}
         <div className="px-4">
           <div className="rounded-3xl shadow-xl overflow-hidden relative" style={{
-            border: `1px solid ${getPrimaryColor()}20`,
+            border: `1px solid ${getPrimaryColor()}`,
             background: `linear-gradient(135deg, white 0%, ${getPrimaryColor()}03 100%)`
           }}>
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{

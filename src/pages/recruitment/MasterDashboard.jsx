@@ -197,7 +197,7 @@ export default function MasterDashboard() {
         {/* Hero Header */}
         <div className="rounded-2xl shadow-sm p-4 sm:p-6 relative overflow-hidden border" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -248,7 +248,7 @@ export default function MasterDashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -275,7 +275,7 @@ export default function MasterDashboard() {
 
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -302,7 +302,7 @@ export default function MasterDashboard() {
 
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -329,7 +329,7 @@ export default function MasterDashboard() {
 
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -359,7 +359,7 @@ export default function MasterDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -386,7 +386,7 @@ export default function MasterDashboard() {
 
           <div className="rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -417,7 +417,7 @@ export default function MasterDashboard() {
           {/* Pipeline Chart */}
           <div className="rounded-xl shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -455,7 +455,7 @@ export default function MasterDashboard() {
           {/* Status Distribution */}
           <div className="rounded-xl shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}03 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
@@ -502,7 +502,7 @@ export default function MasterDashboard() {
           {/* Weekly Applications */}
           <div className="rounded-xl shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -544,7 +544,7 @@ export default function MasterDashboard() {
           {/* Conversion Funnel */}
           <div className="rounded-xl shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}03 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',
@@ -579,7 +579,7 @@ export default function MasterDashboard() {
         {/* Quick Actions */}
         <div className="rounded-2xl shadow-sm overflow-hidden relative border" style={{
           background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}02 100%)`,
-          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
         }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
             backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -626,7 +626,7 @@ export default function MasterDashboard() {
                 return (
                   <div key={index} className="rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 group cursor-pointer relative overflow-hidden border" onClick={() => window.location.href = action.href} style={{
                     background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}04 100%)`,
-                    borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                   }}>
                     <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-15" style={{
                       backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -657,7 +657,7 @@ export default function MasterDashboard() {
           {/* Recruitment Pipeline Summary */}
           <div className="rounded-xl shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -740,7 +740,7 @@ export default function MasterDashboard() {
           {/* Job Status Summary */}
           <div className="rounded-xl shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
             background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}03 100%)`,
-            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}20`
+            border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
           }}>
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71',

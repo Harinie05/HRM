@@ -397,7 +397,7 @@ export default function ReportingStructure() {
               levels.map((level) => (
                 <div key={level.id} className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
                   background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-                  borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                 }}>
                   <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
@@ -611,7 +611,7 @@ export default function ReportingStructure() {
               hierarchy.map((rule) => (
                 <div key={rule.id} className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden border" style={{
                   background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
-                  borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
                 }}>
                   <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{
                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
